@@ -1,4 +1,8 @@
+"use client";
+
 import React, { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   Music,
@@ -16,21 +20,22 @@ import Image from "next/image";
 interface SidebarItem {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
-  active: boolean;
+  href: string;
 }
 
 const sidebarItems: SidebarItem[] = [
-  { icon: LayoutDashboard, label: "Dashboard", active: true },
-  { icon: Music, label: "Beats Manager", active: false },
-  { icon: Droplets, label: "Drips Manager", active: false },
-  { icon: Calendar, label: "Studio Bookings", active: false },
-  { icon: ShoppingCart, label: "Custom Orders", active: false },
-  { icon: Briefcase, label: "Latest Work", active: false },
-  { icon: Users, label: "User Management", active: false },
+  { icon: LayoutDashboard, label: "Dashboard", href: "/" },
+  { icon: Music, label: "Beats Manager", href: "/dashboard/beats_manager" },
+  { icon: Droplets, label: "Drips Manager", href: "/dashboard/drips_manager" },
+  { icon: Calendar, label: "Studio Bookings", href: "/dashboard/studio_bookings" },
+  { icon: ShoppingCart, label: "Custom Orders", href: "/dashboard/custom_orders" },
+  { icon: Briefcase, label: "Latest Work", href: "/dashboard/latest_work" },
+  { icon: Users, label: "User Management", href: "/dashboard/user_management" },
 ];
 
 export function DashboardSidebar() {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
     <>
@@ -52,10 +57,8 @@ export function DashboardSidebar() {
 
       {/* Sidebar */}
       <aside
-        className={`
-          fixed lg:static inset-y-0 left-0 z-50 w-80 bg-[#151515] border-r border-[#2d2d44] min-h-screen transform transition-transform duration-300 ease-in-out
-          ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
-        `}
+        className={`fixed lg:static inset-y-0 left-0 z-50 w-80 bg-[#151515] border-r border-[#2d2d44] min-h-screen transform transition-transform duration-300 ease-in-out
+        ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
       >
         {/* Logo */}
         <div className="flex justify-center py-6">
@@ -72,26 +75,22 @@ export function DashboardSidebar() {
         <nav className="p-4 space-y-2">
           {sidebarItems.map((item, index) => {
             const Icon = item.icon;
-            const href =
-              item.label === "Dashboard"
-                ? "/"
-                : `/dashboard/${item.label.replace(/\s+/g, "_").toLowerCase()}`;
+            const isActive = pathname === item.href;
 
             return (
-              <a
-                key={index}
-                href={href}
-                onClick={() => setIsOpen(false)}
-                className={`
-                  w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200
-                  ${item.active
-                    ? "bg-gradient-to-r from-purple-600 to-purple-700 text-white shadow-lg"
-                    : "text-slate-300 hover:bg-purple-600 hover:text-white"}
-                `}
-              >
-                <Icon />
-                <span className="font-medium">{item.label}</span>
-              </a>
+              <Link href={item.href} key={index}>
+                <div
+                  onClick={() => setIsOpen(false)}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-lg hover:cursor-hover transition-colors duration-200 ${
+                    isActive
+                      ? "bg-purple-700 text-white"
+                      : "text-slate-300 hover:bg-purple-600 hover:text-white"
+                  }`}
+                >
+                  <Icon />
+                  <span className="font-medium">{item.label}</span>
+                </div>
+              </Link>
             );
           })}
         </nav>

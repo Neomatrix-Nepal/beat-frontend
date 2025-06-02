@@ -1,90 +1,83 @@
 "use client"
 import React, { useState } from 'react';
-
-import { BeatsTable } from '../../../components/BeatsTable';
+import { DripsTable } from '../../../components/DripsTable';
 import { Upload } from 'lucide-react';
+import { useRouter } from "next/navigation";
 
-interface Beat {
+interface Drip {
   id: string;
   title: string;
-  genre: string;
   price: number;
-  producer: string;
+  size: string;
   uploadDate: string;
   selected: boolean;
 }
 
 const DripManager = () => {
-  const [beats, setBeats] = useState<Beat[]>([
+  const router = useRouter();
+
+  const [drips, setDrips] = useState<Drip[]>([
     {
-      id: '1',
-      title: 'Midnight Dreams',
-      genre: 'Trap',
+      id: '241',
+      title: 'Summer Sweat',
       price: 34,
-      producer: 'Suraj Raj',
+      size: 'M',
       uploadDate: '2024-06-01',
       selected: false
     },
     {
-      id: '2',
+      id: '844',
       title: 'Velvet Pulse',
-      genre: 'R&B',
       price: 29,
-      producer: 'Irfan Aktar',
+      size: 'XL',
       uploadDate: '2024-05-25',
       selected: false
     },
     {
-      id: '3',
+      id: '258',
       title: 'Sunset Mirage',
-      genre: 'Hip Hop',
       price: 45,
-      producer: 'Hina Khan',
+      size: 'L',
       uploadDate: '2024-05-21',
       selected: false
     },
     {
-      id: '4',
+      id: '369',
       title: 'Glass Waves',
-      genre: 'Pop',
       price: 38,
-      producer: 'Chris Shift',
+      size: 'XS',
       uploadDate: '2024-05-19',
       selected: false
     },
     {
-      id: '5',
+      id: '987',
       title: 'Midnight Dreams',
-      genre: 'Trap',
       price: 34,
-      producer: 'Suraj Raj',
+      size: 'XXL',
       uploadDate: '2024-06-01',
       selected: false
     },
     {
-      id: '6',
+      id: '785',
       title: 'Velvet Pulse',
-      genre: 'R&B',
       price: 29,
-      producer: 'Irfan Aktar',
+      size: 'L',
       uploadDate: '2024-05-25',
       selected: false
     },
     {
-      id: '7',
+      id: '987',
       title: 'Sunset Mirage',
-      genre: 'Hip Hop',
       price: 45,
-      producer: 'Hina Khan',
+      size: 'M',
       uploadDate: '2024-05-21',
       selected: false
     },
     {
-      id: '8',
+      id: '332',
       title: 'Glass Waves',
-      genre: 'Pop',
       price: 38,
-      producer: 'Chris Shift',
+      size: 'XXS',
       uploadDate: '2024-05-19',
       selected: false
     }
@@ -92,49 +85,46 @@ const DripManager = () => {
 
   const [selectAll, setSelectAll] = useState(false);
 
-  const handleSelectAll = () => {
+  const handleSelectAllDrips = () => {
     const newSelectAll = !selectAll;
     setSelectAll(newSelectAll);
-    setBeats(beats.map(beat => ({ ...beat, selected: newSelectAll })));
+    setDrips(drips.map(drip => ({ ...drip, selected: newSelectAll })));
   };
 
-  const handleSelectBeat = (id: string) => {
-    setBeats(beats.map(beat => 
-      beat.id === id ? { ...beat, selected: !beat.selected } : beat
+  const handleSelectDrip = (id: string) => {
+    setDrips(drips.map(drip => 
+      drip.id === id ? { ...drip, selected: !drip.selected } : drip
     ));
   };
 
-  const handleDeleteBeat = (id: string) => {
-    setBeats(beats.filter(beat => beat.id !== id));
+  const handleDeleteDrip = (id: string) => {
+    setDrips(drips.filter(drip => drip.id !== id));
   };
 
   return (
-  <div className="min-h-screen bg-slate-900 flex">
-  <div className="flex-1 flex flex-col">
-    
-    {/* Main Content */}
-    <div className="flex-1 p-6">
-      
-      {/* Button aligned right */}
-      <div className="flex justify-end mb-4">
-        <button className="bg-gradient-to-r w-40 from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-6 py-4 rounded-lg flex items-center gap-2 transition-all duration-200 transform hover:scale-105">
-          <Upload size={24} />
-          Upload
-        </button>
+    <div className="min-h-screen bg-slate-900 flex">
+      <div className="flex-1 flex flex-col">
+        {/* Main Content */}
+        <div className="flex-1 p-6">
+          {/* Button aligned right */}
+          <div className="flex justify-end mb-4">
+            <button onClick={() => router.push("/dashboard/drips_manager/add_drips")} className="bg-gradient-to-r w-40 from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-6 py-4 rounded-lg flex items-center gap-2 transition-all duration-200 transform hover:scale-105">
+              <Upload size={24} />
+              Upload
+            </button>
+          </div>
+
+          {/* Drips Table */}
+          <DripsTable 
+            drips={drips}
+            selectAll={selectAll}
+            onSelectAll={handleSelectAllDrips}
+            onSelectDrip={handleSelectDrip}
+            onDeleteDrip={handleDeleteDrip}
+          />
+        </div>
       </div>
-
-      {/* Beats Table */}
-      <BeatsTable 
-        beats={beats}
-        selectAll={selectAll}
-        onSelectAll={handleSelectAll}
-        onSelectBeat={handleSelectBeat}
-        onDeleteBeat={handleDeleteBeat}
-      />
     </div>
-  </div>
-</div>
-
   );
 };
 

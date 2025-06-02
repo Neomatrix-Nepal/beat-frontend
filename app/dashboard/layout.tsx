@@ -11,7 +11,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   <DashboardSidebar />
   
 </div>
-<div className="w-full"> <DashboardHeader/>
+<div className="w-full"> 
+  <DashboardHeader/>
         <main className="w-full">{children}</main>
         </div>
     </div>

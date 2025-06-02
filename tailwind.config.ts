@@ -1,7 +1,6 @@
-import type { Config } from "tailwindcss"
+import type { Config } from "tailwindcss";
 
 const config: Config = {
- 
   content: [
     "./pages/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
@@ -20,12 +19,18 @@ const config: Config = {
     },
     extend: {
       fontFamily: {
-        michroma: ["var(--font-michroma)"],  
+        michroma: ["var(--font-michroma)"],
         geist: ["var(--font-geist-sans)"],
         mono: ["var(--font-geist-mono)"],
       },
       colors: {
-       primary: '#151515',
+        primary: "#151515",
+        foreground: "#252525",
+        first: "#9859E8",
+        second: "#D84CAB",
+      },
+      backgroundImage: {
+        "purple-pink": "linear-gradient(135deg, #9859E8 0%, #D84CAB 100%)",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -49,6 +54,6 @@ const config: Config = {
     },
   },
   plugins: [require("tailwindcss-animate")],
-}
+};
 
-export default config
+export default config;

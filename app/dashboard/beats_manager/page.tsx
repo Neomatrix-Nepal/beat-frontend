@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 
 import { BeatsTable } from '../../../components/BeatsTable';
 import { Upload } from 'lucide-react';
-
+import { useRouter } from "next/navigation";
 interface Beat {
   id: string;
   title: string;
@@ -14,7 +14,9 @@ interface Beat {
   selected: boolean;
 }
 
-const BeatsManager = () => {
+const DripManager = () => {
+  const router = useRouter();
+
   const [beats, setBeats] = useState<Beat[]>([
     {
       id: '1',
@@ -117,13 +119,13 @@ const BeatsManager = () => {
       
       {/* Button aligned right */}
       <div className="flex justify-end mb-4">
-        <button className="bg-gradient-to-r w-40 from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-6 py-4 rounded-lg flex items-center gap-2 transition-all duration-200 transform hover:scale-105">
+        <button  onClick={() => router.push("/dashboard/beats_manager/add_beats")} className="bg-gradient-to-r w-40 from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-6 py-4 rounded-lg flex items-center gap-2 transition-all duration-200 transform hover:scale-105">
           <Upload size={24} />
           Upload
         </button>
       </div>
 
-      
+      {/* Beats Table */}
       <BeatsTable 
         beats={beats}
         selectAll={selectAll}
@@ -138,4 +140,4 @@ const BeatsManager = () => {
   );
 };
 
-export default BeatsManager;
+export default DripManager;
