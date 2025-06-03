@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { LatestWorkTable } from "../../../components/LatestWorkTable";
+import { LatestWorkTable } from "../../../components/table/LatestWorkTable";
 import { Upload } from "lucide-react";
 import { useRouter } from "next/navigation";
 

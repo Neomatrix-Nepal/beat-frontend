@@ -1,6 +1,6 @@
 "use client"
 import React, { useState } from 'react';
-import { DripsTable } from '../../../components/DripsTable';
+import { DripsTable } from '../../../components/table/DripsTable';
 import { Upload } from 'lucide-react';
 import { useRouter } from "next/navigation";
 

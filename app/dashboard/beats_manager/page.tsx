@@ -1,7 +1,7 @@
 "use client"
 import React, { useState } from 'react';
 
-import { BeatsTable } from '../../../components/BeatsTable';
+import { BeatsTable } from '../../../components/table/BeatsTable';
 import { Upload } from 'lucide-react';
 import { useRouter } from "next/navigation";
 interface Beat {
