@@ -3,11 +3,10 @@ const nextConfig = {
   images: {
     domains: ['i.pravatar.cc'],
   },
-};
-
-module.exports = nextConfig;
-module.exports = {
-  eslint: {
+   eslint: {
     ignoreDuringBuilds: true,
   },
 };
+
+module.exports = nextConfig;
+ 
