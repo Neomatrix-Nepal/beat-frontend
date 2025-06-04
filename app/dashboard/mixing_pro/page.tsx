@@ -2,6 +2,8 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { IoMdCheckmark } from "react-icons/io";
+import { RiDeleteBin6Line } from "react-icons/ri";
 import { Upload } from "lucide-react";
 import {
   Pagination,
@@ -72,8 +74,8 @@ const MixingProPage = () => {
   return (
     <div className="min-h-screen bg-[#0F172A] p-6 font-michroma text-white">
       <div className="max-w-7xl mx-auto space-y-6">
-        <div className="flex items-center justify-between">
-          <div className="flex ml-4 items-center gap-3">
+        <div className="flex items-center   justify-between">
+          <div className="flex ml-4  items-center gap-3">
             <input
               type="checkbox"
               checked={selectAll}
@@ -82,13 +84,19 @@ const MixingProPage = () => {
             />
             <span className="text-sm">Select All</span>
           </div>
+        {  <div className="flex gap-2">
           <button
-            onClick={() => router.push("/dashboard/beats_manager/add_beats")}
-            className="flex items-center gap-2 px-5 py-3 text-sm font-semibold rounded-lg bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 transition-transform transform hover:scale-105"
+             className="flex items-center  font-michroma gap-2 px-5 py-3 text-sm font-semibold rounded-lg bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 transition-transform transform hover:scale-105"
           >
-            <Upload size={18} />
-            Upload
+           <IoMdCheckmark size={20}/>
+            Sent
           </button>
+          <button
+             className="flex items-center font-michroma gap-2 px-5 py-3 text-sm font-semibold rounded-lg bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 transition-transform transform hover:scale-105"
+          >
+            <RiDeleteBin6Line size={20} />
+            Delete
+          </button></div>}
         </div>
 
         <MixingProTable

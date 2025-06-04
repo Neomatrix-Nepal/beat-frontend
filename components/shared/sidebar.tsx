@@ -25,13 +25,14 @@ interface SidebarItem {
 
 const sidebarItems: SidebarItem[] = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/" },
+  { icon: ShoppingCart, label: "Customer Orders", href: "/dashboard/custom_orders" },
   { icon: Music, label: "Beats Manager", href: "/dashboard/beats_manager" },
+  { icon: Users, label: "Mixing Pro", href: "/dashboard/mixing_pro" },
+  { icon: Users, label: "Custom Beat", href: "/dashboard/mixing_pro" },
   { icon: Droplets, label: "Drips Manager", href: "/dashboard/drips_manager" },
   { icon: Calendar, label: "Studio Bookings", href: "/dashboard/studio_bookings" },
-  { icon: ShoppingCart, label: "Custom Orders", href: "/dashboard/custom_orders" },
+  { icon: Users, label: "Creators", href: "/dashboard/user_management" },
   { icon: Briefcase, label: "Latest Work", href: "/dashboard/latest_work" },
-  { icon: Users, label: "User Management", href: "/dashboard/user_management" },
-  { icon: Users, label: "Mixing Pro", href: "/dashboard/mixing_pro" },
 ];
 
 export function DashboardSidebar() {
