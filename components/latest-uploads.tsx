@@ -2,33 +2,33 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { UploadCard } from "./upload-card"
 
 const latestUploads = [
-  {
+ {
     id: 1,
     title: "Midnight Dreams",
     artist: "Luna Eclipse",
     price: "$20",
-    image: "/placeholder.svg?height=60&width=60",
+    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=60&h=60", // night sky image
   },
   {
     id: 2,
     title: "Sunkiss Bliss",
     artist: "Hailey Rivera",
     price: "$10",
-    image: "/placeholder.svg?height=60&width=60",
+    image: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=60&h=60", // sunrise/sunset image
   },
   {
     id: 3,
     title: "Midnight Dreams",
     artist: "Luna Eclipse",
     price: "$20",
-    image: "/placeholder.svg?height=60&width=60",
+    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=60&h=60", // same night sky image
   },
   {
     id: 4,
     title: "Midnight Dreams",
     artist: "Luna Eclipse",
     price: "$20",
-    image: "/placeholder.svg?height=60&width=60",
+    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=60&h=60", // same night sky image
   },
 ]
 

@@ -1,0 +1,189 @@
+import React from "react";
+import { Eye, Check, Trash } from "lucide-react";
+import { showDeleteToast, showUpdateToast } from "../../lib/util";
+
+export interface MixingProEntry {
+  id: string;
+  name: string;
+  link: string;
+  uploadDate: string;
+  status: "Pending" | "Sent";
+  selected: boolean;
+}
+
+interface MixingProTableProps {
+  entries: MixingProEntry[];
+  selectAll: boolean;
+  onSelectAll: () => void;
+  onSelectEntry: (id: string) => void;
+  onDeleteEntry: (id: string) => void;
+}
+
+const statusStyles = {
+  Pending: "bg-yellow-700/20 text-yellow-400 border-yellow-700/30",
+  Sent: "bg-green-800/20 text-green-400 border-green-800/30",
+};
+
+export const MixingProTable: React.FC<MixingProTableProps> = ({
+  entries,
+  selectAll,
+  onSelectAll,
+  onSelectEntry,
+  onDeleteEntry,
+}) => {
+  return (
+    <div className="bg-[#101828] rounded-xl border border-[#1D2939] overflow-hidden font-michroma">
+      {/* Desktop Table */}
+      <div className="hidden lg:block overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead className="bg-[#1A2233] text-[#E4E4E7] border-b border-[#2C3A4F]">
+            <tr>
+              <th className="p-4 w-10">
+                <input
+                  type="checkbox"
+                  checked={selectAll}
+                  onChange={onSelectAll}
+                  className="w-4 h-4 text-purple-600 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
+                />
+              </th>
+              <th className="text-left p-4">Name</th>
+              <th className="text-left p-4">Uploaded Link</th>
+              <th className="text-left p-4">Upload Date</th>
+              <th className="text-left p-4">Status</th>
+              <th className="text-left p-4">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {entries.map((entry, index) => (
+              <tr
+                key={entry.id}
+                className={`border-b border-[#2C3A4F] hover:bg-[#1A2233]/50 transition-colors ${
+                  index % 2 === 0 ? "bg-[#1C2433]" : "bg-[#1A1F2E]"
+                }`}
+              >
+                <td className="p-4">
+                  <input
+                    type="checkbox"
+                    checked={entry.selected}
+                    onChange={() => onSelectEntry(entry.id)}
+                    className="w-4 h-4 text-purple-600 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
+                  />
+                </td>
+                <td className="p-4 text-white font-medium">{entry.name}</td>
+                <td className="p-4 text-blue-400 underline">
+                  <a href={entry.link} target="_blank" rel="noopener noreferrer">
+                    {entry.link}
+                  </a>
+                </td>
+                <td className="p-4 text-slate-400">{entry.uploadDate}</td>
+                <td className="p-4">
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-medium border ${statusStyles[entry.status]}`}
+                  >
+                    {entry.status}
+                  </span>
+                </td>
+                <td className="p-4">
+                  <div className="flex items-center gap-2">
+                    <button
+                      className="p-2 rounded-lg text-white hover:bg-slate-600/30 transition-colors"
+                      title="View"
+                    >
+                      <Eye size={16} />
+                    </button>
+                    <button
+                      onClick={() => showUpdateToast("Marked as sent", "Updated")}
+                      className="p-2 rounded-lg text-green-400 hover:bg-green-600/20 transition-colors"
+                      title="Mark Sent"
+                    >
+                      <Check size={16} />
+                    </button>
+                    <button
+                      onClick={() => {
+                        onDeleteEntry(entry.id);
+                        showDeleteToast("Item deleted", "Deleted");
+                      }}
+                      className="p-2 rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
+                      title="Delete"
+                    >
+                      <Trash size={16} />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Mobile Cards */}
+      <div className="lg:hidden space-y-4 p-4">
+         
+        
+        {entries.map((entry, index) => (
+          <div 
+            key={entry.id} 
+            className="bg-[#1A1F2E] rounded-lg p-4 border border-[#2C3A4F]"
+          >
+            <div className="flex items-start justify-between mb-3">
+              <div className="flex items-center gap-3">
+                <input
+                  type="checkbox"
+                  checked={entry.selected}
+                  onChange={() => onSelectEntry(entry.id)}
+                  className="w-4 h-4 text-purple-600 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
+                />
+                <div>
+                  <h3 className="text-white font-medium">{entry.name}</h3>
+                  <a 
+                    href={entry.link} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-blue-400 underline text-sm"
+                  >
+                    View Link
+                  </a>
+                </div>
+              </div>
+              <span
+                className={`px-3 py-1 rounded-full text-xs font-medium border ${statusStyles[entry.status]}`}
+              >
+                {entry.status}
+              </span>
+            </div>
+            
+            <div className="flex items-center justify-between mt-2">
+              <span className="text-slate-400 text-sm">{entry.uploadDate}</span>
+              
+              <div className="flex items-center gap-2">
+                <button
+                  className="p-2 rounded-lg text-white hover:bg-slate-600/30 transition-colors"
+                  title="View"
+                >
+                  <Eye size={16} />
+                </button>
+                <button
+                  onClick={() => showUpdateToast("Marked as sent", "Updated")}
+                  className="p-2 rounded-lg text-green-400 hover:bg-green-600/20 transition-colors"
+                  title="Mark Sent"
+                >
+                  <Check size={16} />
+                </button>
+                <button
+                  onClick={() => {
+                    onDeleteEntry(entry.id);
+                    showDeleteToast("Item deleted", "Deleted");
+                  }}
+                  className="p-2 rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
+                  title="Delete"
+                >
+                  <Trash size={16} />
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};

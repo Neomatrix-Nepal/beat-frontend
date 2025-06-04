@@ -1,7 +1,7 @@
 import React from "react";
 import { Play, Trash } from "lucide-react";
-import { toast } from "@/components/use-toast";
-import { showDeleteToast, showUpdateToast } from "../util";
+import { toast } from "@/lib/use-toast";
+import { showDeleteToast, showUpdateToast } from "../../lib/util";
 
 interface Beat {
   id: string;
@@ -38,17 +38,14 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
   return (
     <div className="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden font-michroma">
       {/* Desktop Table */}
+      
       <div className="hidden lg:block overflow-x-auto">
+        
         <table className="w-full">
           <thead className="bg-slate-700/50 border-b border-slate-600">
             <tr>
               <th className="text-left p-4 w-12">
-                <input
-                  type="checkbox"
-                  checked={selectAll}
-                  onChange={onSelectAll}
-                  className="w-4 h-4 text-purple-600 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
-                />
+               
               </th>
               <th className="text-left p-4 text-slate-300 font-semibold">
                 Title
@@ -161,15 +158,7 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
 
       {/* Mobile Cards */}
       <div className="lg:hidden space-y-4 p-4">
-        <div className="flex items-center gap-3 mb-4">
-          <input
-            type="checkbox"
-            checked={selectAll}
-            onChange={onSelectAll}
-            className="w-4 h-4 text-purple-600 bg-slate-700 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
-          />
-          <span className="text-slate-300 font-semibold">Select All</span>
-        </div>
+        
 
         {beats.map((beat) => (
           <div

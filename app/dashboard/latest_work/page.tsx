@@ -3,6 +3,13 @@ import React, { useState } from "react";
 import { LatestWorkTable } from "../../../components/table/LatestWorkTable";
 import { Upload } from "lucide-react";
 import { useRouter } from "next/navigation";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 interface Work {
   id: string;
@@ -16,66 +23,45 @@ interface Work {
 const LatestWorkManager = () => {
   const router = useRouter();
 
-  const [works, setWorks] = useState<Work[]>([
-    {
-      id: "1",
-      title: "Modern UI/UX Design Workflow",
-      description: "A quick guide to buildin",
-      platform: "YouTube",
-      uploadDate: "2024-06-01",
-      selected: false,
-    },
-    {
-      id: "2",
-      title: "Ultimate Dev Setup Guide 2025",
-      description: "A quick guide to buildin",
-      platform: "YouTube",
-      uploadDate: "2024-05-25",
-      selected: false,
-    },
-    {
-      id: "3",
-      title: "Ultimate Beat Setup Guide 2025",
-      description: "A quick guide to buildin",
-      platform: "Spotify",
-      uploadDate: "2024-05-21",
-      selected: false,
-    },
-    {
-      id: "4",
-      title: "Glass Waves Description to2025",
-      description: "A quick guide to buildin",
-      platform: "Spotify",
-      uploadDate: "2024-05-19",
-      selected: false,
-    },
-    {
-      id: "5",
-      title: "Midnight Dreams",
-      description: "A quick guide to buildin",
-      platform: "YouTube",
-      uploadDate: "2024-06-01",
-      selected: false,
-    },
-    {
-      id: "6",
-      title: "Velvet Pulse",
-      description: "A quick guide to buildin",
-      platform: "Spotify",
-      uploadDate: "2024-05-25",
-      selected: false,
-    },
-    {
-      id: "7",
-      title: "Sunset Mirage",
-      description: "A quick guide to buildin",
-      platform: "YouTube",
-      uploadDate: "2024-05-21",
-      selected: false,
-    },
-  ]);
+  const generateWorks = (count: number): Work[] => {
+    const titles = [
+      "Modern UI/UX Design Workflow",
+      "Ultimate Dev Setup Guide 2025",
+      "Ultimate Beat Setup Guide 2025",
+      "Glass Waves Description",
+      "Midnight Dreams",
+      "Velvet Pulse",
+      "Sunset Mirage",
+    ];
+    const platforms: ("YouTube" | "Spotify")[] = ["YouTube", "Spotify"];
+    const descriptions = [
+      "A quick guide to building modern interfaces",
+      "Complete development environment setup",
+      "Professional audio production techniques",
+      "Creating visual effects with CSS",
+      "Dark theme design principles",
+      "Advanced animation workflows",
+      "Responsive design patterns",
+    ];
 
+    return Array.from({ length: count }, (_, i) => ({
+      id: (i + 1).toString(),
+      title: titles[i % titles.length],
+      description: descriptions[i % descriptions.length],
+      platform: platforms[i % platforms.length],
+      uploadDate: `2024-05-${((i % 28) + 1).toString().padStart(2, "0")}`,
+      selected: false,
+    }));
+  };
+
+  const [works, setWorks] = useState<Work[]>(generateWorks(50));
   const [selectAll, setSelectAll] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const totalPages = Math.ceil(works.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentWorks = works.slice(startIndex, startIndex + itemsPerPage);
 
   const handleSelectAllWorks = () => {
     const newSelectAll = !selectAll;
@@ -95,13 +81,28 @@ const LatestWorkManager = () => {
     setWorks(works.filter((work) => work.id !== id));
   };
 
+  const goToPreviousPage = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+  };
+
+  const goToNextPage = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  };
+
   return (
     <div className="min-h-screen bg-slate-900 flex">
       <div className="flex-1 flex flex-col">
-        {/* Main Content */}
         <div className="flex-1 p-6">
-          {/* Button aligned right */}
-          <div className="flex justify-end mb-4">
+          <div className="gap-2 pl-4 mb-2 h-16 p-4 flex items-center justify-between">
+            <div className="flex gap-2">
+              <input
+                type="checkbox"
+                checked={selectAll}
+                onChange={handleSelectAllWorks}
+                className="w-5 h-5 text-purple-600 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
+              />
+              <p className="text-white font-michroma">Select All</p>
+            </div>
             <button
               onClick={() => router.push("/dashboard/latest_work/add_work")}
               className="bg-gradient-to-r w-40 from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-6 py-4 rounded-lg flex items-center gap-2 transition-all duration-200 transform hover:scale-105"
@@ -111,14 +112,43 @@ const LatestWorkManager = () => {
             </button>
           </div>
 
-          {/* Latest Work Table */}
           <LatestWorkTable
-            works={works}
+            works={currentWorks}
             selectAll={selectAll}
             onSelectAll={handleSelectAllWorks}
             onSelectWork={handleSelectWork}
             onDeleteWork={handleDeleteWork}
           />
+
+          <div className="mt-6 flex justify-center">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    onClick={goToPreviousPage}
+                    className={
+                      currentPage === 1
+                        ? "pointer-events-none bg-gray-600 opacity-50"
+                        : "bg-white"
+                    }
+                  />
+                </PaginationItem>
+                <PaginationItem className="text-white text-sm px-3 py-1">
+                  Page {currentPage} of {totalPages}
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationNext
+                    onClick={goToNextPage}
+                    className={
+                      currentPage === totalPages
+                        ? "pointer-events-none bg-gray-600 opacity-50"
+                        : "bg-white"
+                    }
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
         </div>
       </div>
     </div>

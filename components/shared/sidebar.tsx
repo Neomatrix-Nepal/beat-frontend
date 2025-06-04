@@ -14,7 +14,7 @@ import {
   Menu,
   X,
 } from "lucide-react";
-import logo from "../image/logo.png";
+import logo from "../../image/logo.png";
 import Image from "next/image";
 
 interface SidebarItem {
@@ -31,6 +31,7 @@ const sidebarItems: SidebarItem[] = [
   { icon: ShoppingCart, label: "Custom Orders", href: "/dashboard/custom_orders" },
   { icon: Briefcase, label: "Latest Work", href: "/dashboard/latest_work" },
   { icon: Users, label: "User Management", href: "/dashboard/user_management" },
+  { icon: Users, label: "Mixing Pro", href: "/dashboard/mixing_pro" },
 ];
 
 export function DashboardSidebar() {

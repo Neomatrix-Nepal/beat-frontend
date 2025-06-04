@@ -4,7 +4,7 @@ import { DashboardLayout } from "@/components/dashboard-layout"
 import { StatsGrid } from "@/components/stats-grid"
 import { ChartsSection } from "@/components/charts-section"
 import { LatestUploads } from "@/components/latest-uploads"
-import { DashboardHeader } from "@/components/header"
+import { DashboardHeader } from "@/components/shared/header"
 import AdminLayout from "./dashboard/layout"
 
 const salesData = [

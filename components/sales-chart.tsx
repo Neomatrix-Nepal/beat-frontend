@@ -19,12 +19,12 @@ const salesData = [
 
 export function SalesChart() {
   return (
-    <Card className="bg-[#1a1a2e] border-[#2d2d44]">
+    <Card className="bg-[#1a1a2e] border-[#2d2d44] w-full">
       <CardHeader>
         <CardTitle className="text-white">Sales Performance</CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="overflow-x-auto md:overflow-x-hidden">
+      <CardContent className="w-full">
+        <div className="w-full overflow-x-auto md:overflow-x-hidden">
           <ChartContainer
             config={{
               beats: {
@@ -36,12 +36,22 @@ export function SalesChart() {
                 color: "#6c5ce7",
               },
             }}
-            className="h-[300px]    "
+            className="w-full h-[300px]"
           >
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={salesData}>
-                <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: "#9ca3af", fontSize: 12 }} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fill: "#9ca3af", fontSize: 12 }} domain={[0, 200]} />
+                <XAxis
+                  dataKey="month"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: "#9ca3af", fontSize: 12 }}
+                />
+                <YAxis
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: "#9ca3af", fontSize: 12 }}
+                  domain={[0, 200]}
+                />
                 <ChartTooltip content={<ChartTooltipContent />} />
                 <Line
                   type="monotone"

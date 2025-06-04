@@ -8,7 +8,7 @@ import {
   ToastTitle,
   ToastDescription,
 } from "@/components/toast";
-import { useToast } from "@/components/use-toast";
+import { useToast } from "@/lib/use-toast";
 import { CheckCircle, RefreshCw, Trash2, Info, Pencil } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -38,10 +38,10 @@ export function Toaster() {
           variant={variant}
           {...props}
           className={cn(
-            "fixed left-1/2 top-1/2 z-[9999]   w-[320px] bg-zinc-900 p-6 -translate-x-1/2 -translate-y-1/2 transform rounded-2xl border border-white/10  flex justify-center items-center text-center shadow-xl shadow-white/10"
+            "fixed left-1/2 top-1/2 z-[9999]   w-[320px] bg-zinc-900   -translate-x-1/2 -translate-y-1/2 transform rounded-2xl border border-white/10  flex justify-center items-center text-center shadow-xl shadow-white/10"
           )}
         >
-          <div className="flex flex-col ml-4 items-center  justify-center gap-4">
+          <div className="flex flex-col ml-4 items-center w-full  justify-center gap-4">
             <div className="rounded-full bg-gradient-to-br from-purple-500 to-pink-500 p-3 shadow-md">
               {getIcon(variant)}
             </div>

@@ -106,15 +106,7 @@ export const DripsTable: React.FC<DripsTableProps> = ({
 
       {/* Mobile Cards */}
       <div className="lg:hidden space-y-4 p-4">
-        <div className="flex items-center gap-3 mb-4">
-          <input
-            type="checkbox"
-            checked={selectAll}
-            onChange={onSelectAll}
-            className="w-4 h-4 text-purple-600 bg-slate-700 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
-          />
-          <span className="text-slate-300 font-semibold">Select All</span>
-        </div>
+        
         
         {drips.map((drip,index) => (
           <div key={`${drip.id}-${index}`} className="bg-slate-700/50 rounded-lg p-4 border border-slate-600">

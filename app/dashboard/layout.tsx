@@ -1,7 +1,7 @@
 "use client";
 
-import { DashboardHeader } from "@/components/header";
-import { DashboardSidebar } from "@/components/sidebar";
+import { DashboardHeader } from "@/components/shared/header";
+import { DashboardSidebar } from "@/components/shared/sidebar";
  import { ReactNode } from "react";
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
