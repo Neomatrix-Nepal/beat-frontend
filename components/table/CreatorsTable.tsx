@@ -1,36 +1,28 @@
 import React from "react";
 import { Eye, Check, Trash } from "lucide-react";
 import { showDeleteToast, showUpdateToast } from "../../lib/util";
-import bin from "@/image/tablevector/bin.png";
-import check from "@/image/tablevector/check.png";
-import whitecheck from "@/image/tablevector/whitecheck.png";
-
-import { IoMdEye } from "react-icons/io";
-
 import Image from "next/image";
-export interface MixingProEntry {
+import bin from '@/image/tablevector/bin.png'
+import whitecheck from '@/image/tablevector/whitecheck.png'
+import { IoMdEye } from "react-icons/io";
+export interface CreatorEntry {
   id: string;
-  name: string;
-  link: string;
-  uploadDate: string;
-  status: "Pending" | "Sent";
+  name: string; // Creator's Name
+  style: string; // Creator Style
+  socialMediaUrl: string; // Social Media URL
+  demoBeat: string; // Demo Beat
   selected: boolean;
 }
 
-interface MixingProTableProps {
-  entries: MixingProEntry[];
+interface CreatorTableProps {
+  entries: CreatorEntry[];
   selectAll: boolean;
   onSelectAll: () => void;
   onSelectEntry: (id: string) => void;
   onDeleteEntry: (id: string) => void;
 }
 
-const statusStyles = {
-  Pending: "bg-yellow-700/20 text-yellow-400 border-yellow-700/30",
-  Sent: "bg-green-800/20 text-green-400 border-green-800/30",
-};
-
-export const MixingProTable: React.FC<MixingProTableProps> = ({
+export const CreatorTable: React.FC<CreatorTableProps> = ({
   entries,
   selectAll,
   onSelectAll,
@@ -44,11 +36,18 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
         <table className="w-full text-sm">
           <thead className="bg-[#1A2233] text-[#E4E4E7] border-b border-[#2C3A4F]">
             <tr>
-              <th className="p-4 w-10"></th>
-              <th className="text-left p-4">Name</th>
-              <th className="text-left p-4">Uploaded Link</th>
-              <th className="text-left p-4">Upload Date</th>
-              <th className=" p-4 text-center">Status</th>
+              <th className="p-4 w-10">
+                <input
+                  type="checkbox"
+                  checked={selectAll}
+                  onChange={onSelectAll}
+                  className="w-4 h-4 text-purple-600 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
+                />
+              </th>
+              <th className="text-left p-4">Creator's Name</th>
+              <th className="text-left p-4">Creator Style</th>
+              <th className="text-left p-4">Social Media URL</th>
+              <th className="text-center p-4">Demo Beat</th>
               <th className="text-left p-4">Actions</th>
             </tr>
           </thead>
@@ -69,61 +68,51 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
                   />
                 </td>
                 <td className="p-4 text-white font-medium">{entry.name}</td>
+                <td className="p-4 text-blue-400">{entry.style}</td>
                 <td className="p-4 text-blue-400 underline">
-                  <a
-                    href={entry.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {entry.link}
+                  <a href={entry.socialMediaUrl} target="_blank" rel="noopener noreferrer">
+                    Open Link
                   </a>
                 </td>
-                <td className="p-4 text-slate-400">{entry.uploadDate}</td>
-                <td className="p-4     text-center">
-                  <div
-                    className={`   py-2 rounded-sm text-md  font-medium border ${
-                      statusStyles[entry.status]
-                    }`}
-                  >
-                    {entry.status}
-                  </div>
+                <td className="p-4 text-center text-blue-400 underline">
+                  <a href={entry.demoBeat} target="_blank" rel="noopener noreferrer">
+                    Open Link
+                  </a>
                 </td>
                 <td className="p-4">
                   <div className="flex items-center gap-2">
-                    <button className="p-2   bg-foreground hover:bg-green-500/20 rounded-lg transition-colors">
-                      <IoMdEye size={16} />
-                    </button>
-
-                    <button
-                      onClick={() => {
-                        showUpdateToast(
-                          "Item Updated successfully!",
-                          "Updated"
-                        );
-                      }}
-                      className="p-2 bg-foreground hover:bg-purple-500/20 rounded-lg transition-colors"
-                    >
-                      <Image
-                        src={whitecheck}
-                        alt="check"
-                        width={14}
-                        height={14}
-                        className=" m-0.5 my-1"
-                      />
-                    </button>
-
-                    <button
-                      onClick={() => {
-                        //onDeleteBeat(beat.id);
-                        showDeleteToast(
-                          "Item deleted successfully!",
-                          "Deleted"
-                        );
-                      }}
-                      className="p-2 text-red-400 bg-foreground hover:bg-red-500/20 rounded-lg transition-colors"
-                    >
-                      <Image src={bin} alt="Delete" width={16} height={16} />
-                    </button>
+               
+                  
+                                      <button
+                                        onClick={() => {
+                                          showUpdateToast(
+                                            "Item Updated successfully!",
+                                            "Updated"
+                                          );
+                                        }}
+                                        className="p-2 bg-foreground hover:bg-purple-500/20 rounded-lg transition-colors"
+                                      >
+                                        <Image
+                                          src={whitecheck}
+                                          alt="check"
+                                          width={14}
+                                          height={14}
+                                          className=" m-0.5 my-1"
+                                        />
+                                      </button>
+                  
+                                      <button
+                                        onClick={() => {
+                                          //onDeleteBeat(beat.id);
+                                          showDeleteToast(
+                                            "Item deleted successfully!",
+                                            "Deleted"
+                                          );
+                                        }}
+                                        className="p-2 text-red-400 bg-foreground hover:bg-red-500/20 rounded-lg transition-colors"
+                                      >
+                                        <Image src={bin} alt="Delete" width={16} height={16} />
+                                      </button>
                   </div>
                 </td>
               </tr>
@@ -149,34 +138,35 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
                 />
                 <div>
                   <h3 className="text-white font-medium">{entry.name}</h3>
-                  <a
-                    href={entry.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-400 underline text-sm"
-                  >
-                    View Link
-                  </a>
+                  <p className="text-blue-400 text-sm">{entry.style}</p>
                 </div>
               </div>
-              <span
-                className={`px-3 py-1 rounded-md text-xs font-medium border ${
-                  statusStyles[entry.status]
-                }`}
-              >
-                {entry.status}
-              </span>
             </div>
-
+            <div className="flex flex-col gap-2 mt-2">
+              <a
+                href={entry.socialMediaUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 underline text-sm"
+              >
+                Social Media URL: Open Link
+              </a>
+              <a
+                href={entry.demoBeat}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 underline text-sm"
+              >
+                Demo Beat: Open Link
+              </a>
+            </div>
             <div className="flex items-center justify-between mt-2">
-              <span className="text-slate-400 text-sm">{entry.uploadDate}</span>
-
               <div className="flex items-center gap-2">
                 <button
                   className="p-2 rounded-lg text-white hover:bg-slate-600/30 transition-colors"
                   title="View"
                 >
-                  <IoMdEye size={16} />
+                  <Eye size={16} />
                 </button>
                 <button
                   onClick={() => showUpdateToast("Marked as sent", "Updated")}

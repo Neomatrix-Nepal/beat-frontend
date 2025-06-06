@@ -28,10 +28,10 @@ const sidebarItems: SidebarItem[] = [
   { icon: ShoppingCart, label: "Customer Orders", href: "/dashboard/custom_orders" },
   { icon: Music, label: "Beats Manager", href: "/dashboard/beats_manager" },
   { icon: Users, label: "Mixing Pro", href: "/dashboard/mixing_pro" },
-  { icon: Users, label: "Custom Beat", href: "/dashboard/mixing_pro" },
+  { icon: Users, label: "Custom Beat", href: "/dashboard/custom_beats" },
   { icon: Droplets, label: "Drips Manager", href: "/dashboard/drips_manager" },
   { icon: Calendar, label: "Studio Bookings", href: "/dashboard/studio_bookings" },
-  { icon: Users, label: "Creators", href: "/dashboard/user_management" },
+  { icon: Users, label: "Creators", href: "/dashboard/creators" },
   { icon: Briefcase, label: "Latest Work", href: "/dashboard/latest_work" },
 ];
 

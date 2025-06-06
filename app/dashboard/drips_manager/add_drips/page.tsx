@@ -18,13 +18,13 @@ const DripForm = () => {
 
           <div className="flex-1 flex flex-col gap-4">
             {/* Upload Button */}
-            <div className="mt-2 bg-gradient-to-r flex items-center justify-center gap-3 from-purple-500 to-pink-500 text-white p-4 rounded-lg max-w-md cursor-pointer">
+            <div className="mt-2 bg-gradient-to-r flex items-center justify-center gap-3 from-purple-500 to-pink-500 text-white p-3 rounded-lg max-w-md cursor-pointer">
               <FaUpload size={24} />
               <span className="font-michroma text-lg">Change Picture</span>
             </div>
 
             {/* Delete Button */}
-            <div className="mt-2 bg-gradient-to-r flex items-center justify-center gap-3 from-purple-500 to-pink-500 text-white p-4 rounded-lg max-w-md cursor-pointer">
+            <div className="mt-2 bg-gradient-to-r flex items-center justify-center gap-3 from-purple-500 to-pink-500 text-white p-3 rounded-lg max-w-md cursor-pointer">
               <MdDelete size={24} />
               <span className="font-michroma text-lg">Delete</span>
             </div>

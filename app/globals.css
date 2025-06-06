@@ -123,14 +123,7 @@
   }
 }
 /* styles/globals.css */
-body {
-  cursor: url('../image/cursor-default.png') 1 1, auto;
-}
-
-a:hover, button:hover, .hover-target:hover {
-  cursor: url('../image/cursor-hover.png') 1 1, pointer;
-}
-
+ 
 .gradient-bg-horizontal {
   background: var(--gradient-purple-pink);
 }

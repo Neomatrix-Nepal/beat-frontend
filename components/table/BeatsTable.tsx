@@ -1,8 +1,12 @@
+
 import React from "react";
 import { Play, Trash } from "lucide-react";
 import { toast } from "@/lib/use-toast";
 import { showDeleteToast, showUpdateToast } from "../../lib/util";
-
+import play from "@/image/tablevector/play.png";
+import bin from "@/image/tablevector/bin.png";
+import edit from "@/image/tablevector/edit.png";
+import Image from "next/image";
 interface Beat {
   id: string;
   title: string;
@@ -38,15 +42,12 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
   return (
     <div className="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden font-michroma">
       {/* Desktop Table */}
-      
+
       <div className="hidden lg:block overflow-x-auto">
-        
         <table className="w-full">
           <thead className="bg-slate-700/50 border-b border-slate-600">
             <tr>
-              <th className="text-left p-4 w-12">
-               
-              </th>
+              <th className="text-left p-4 w-12"></th>
               <th className="text-left p-4 text-slate-300 font-semibold">
                 Title
               </th>
@@ -99,43 +100,22 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
                 <td className="p-4 text-slate-400">{beat.uploadDate}</td>
                 <td className="p-4">
                   <div className="flex items-center gap-2">
-                    <button className="p-2 text-green-400 hover:bg-green-500/20 rounded-lg transition-colors">
-                      <Play size={16} />
+                    <button className="p-2   bg-foreground hover:bg-green-500/20 rounded-lg transition-colors">
+                      <Image src={play} alt="Play" width={16} height={16} />
                     </button>
+
                     <button
-                     onClick={() => {
-                    
+                      onClick={() => {
                         showUpdateToast(
                           "Item Updated successfully!",
                           "Updated"
                         );
                       }}
-                    className="p-2 text-purple-400 hover:bg-purple-500/20 rounded-lg transition-colors">
-                      
-                      
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="m18.5 2.5 a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
+                      className="p-2 text-purple-400 bg-foreground hover:bg-purple-500/20 rounded-lg transition-colors"
+                    >
+                      <Image src={edit} alt="Edit" width={16} height={16} />
                     </button>
+
                     <button
                       onClick={() => {
                         onDeleteBeat(beat.id);
@@ -144,9 +124,9 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
                           "Deleted"
                         );
                       }}
-                      className="p-2 text-red-400 hover:bg-red-500/20 rounded-lg transition-colors"
+                      className="p-2 text-red-400 bg-foreground hover:bg-red-500/20 rounded-lg transition-colors"
                     >
-                      <Trash size={16} />
+                      <Image src={bin} alt="Delete" width={16} height={16} />
                     </button>
                   </div>
                 </td>
@@ -158,8 +138,6 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
 
       {/* Mobile Cards */}
       <div className="lg:hidden space-y-4 p-4">
-        
-
         {beats.map((beat) => (
           <div
             key={beat.id}
@@ -197,33 +175,14 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
               </div>
 
               <div className="flex items-center gap-2">
-                <button className="p-2 text-green-400 hover:bg-green-500/20 rounded-lg transition-colors">
-                  <Play size={16} />
+                <button className="p-2 text-red-400 hover:bg-green-500/20 rounded-lg transition-colors">
+                  <Image src={play} alt="Play" width={16} height={16} />
                 </button>
+
                 <button className="p-2 text-purple-400 hover:bg-purple-500/20 rounded-lg transition-colors">
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="m18.5 2.5 a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+                  <Image src={edit} alt="Edit" width={16} height={16} />
                 </button>
+
                 <button
                   onClick={() => {
                     onDeleteBeat(beat.id);
@@ -231,7 +190,7 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
                   }}
                   className="p-2 text-red-400 hover:bg-red-500/20 rounded-lg transition-colors"
                 >
-                  <Trash size={16} />
+                  <Image src={bin} alt="Delete" width={16} height={16} />
                 </button>
               </div>
             </div>

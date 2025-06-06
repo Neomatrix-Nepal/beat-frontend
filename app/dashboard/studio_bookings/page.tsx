@@ -1,9 +1,18 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Calendar, XCircle } from "lucide-react";
 import Image from "next/image";
-import remove from '@/icons/Vector.png'
+import remove from '@/icons/Vector.png';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+
 const bookings = [
   {
     id: "BK-1001",
@@ -75,28 +84,41 @@ const bookings = [
     duration: "1hr",
     avatar: "/avatars/daniel.png",
   },
-   
 ];
 
 export default function ManageBookings() {
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+  const totalPages = Math.ceil(bookings.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentBookings = bookings.slice(startIndex, startIndex + itemsPerPage);
+
+  const goToPreviousPage = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+  };
+
+  const goToNextPage = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  };
+
   return (
-   <div className="min-h-screen bg-[#0b0e1c] p-6 font-michroma text-white">
-     <div className="flex flex-col md:flex-row justify-between">
-            <div>
-      <h1 className="text-2xl md:text-3xl mb-6">Manage Bookings</h1>
-</div>
-      <div className="flex  flex-col md:flex-row  gap-4 mb-4">
-        <Input
-          placeholder="Search by User"
-          className="bg-[#13172b] border border-[#2d324a] text-white placeholder:text-gray-400"
-        />
-        <Input
-          placeholder="mm/dd/yyyy"
-          className="bg-[#13172b] border border-[#2d324a] text-white placeholder:text-gray-400"
-        />
-        <Button className="bg-[#13172b] border border-[#2d324a] text-white px-4">Status</Button>
+    <div className="min-h-screen bg-[#0b0e1c] p-6 font-michroma text-white">
+      <div className="flex flex-col md:flex-row justify-between">
+        <div>
+          <h1 className="text-2xl md:text-3xl mb-6">Manage Bookings</h1>
+        </div>
+        <div className="flex flex-col md:flex-row gap-4 mb-4">
+          <Input
+            placeholder="Search by User"
+            className="bg-[#13172b] border border-[#2d324a] text-white placeholder:text-gray-400"
+          />
+          <Input
+            placeholder="mm/dd/yyyy"
+            className="bg-[#13172b] border border-[#2d324a] text-white placeholder:text-gray-400"
+          />
+          <Button className="bg-[#13172b] border border-[#2d324a] text-white px-4">Status</Button>
+        </div>
       </div>
-</div>
 
       {/* Desktop Table */}
       <div className="hidden lg:block overflow-auto rounded-lg bg-[#13172b]">
@@ -112,7 +134,7 @@ export default function ManageBookings() {
             </tr>
           </thead>
           <tbody>
-            {bookings.map((b, index) => (
+            {currentBookings.map((b, index) => (
               <tr key={`${b.id}-${index}`} className="border-t border-[#2d324a]">
                 <td className="px-4 py-3">{b.id}</td>
                 <td className="px-4 py-3 flex items-center gap-2">
@@ -143,7 +165,7 @@ export default function ManageBookings() {
 
       {/* Mobile Cards */}
       <div className="lg:hidden space-y-4">
-        {bookings.map((b, index) => (
+        {currentBookings.map((b, index) => (
           <div
             key={`${b.id}-mobile-${index}`}
             className="bg-[#13172b] rounded-lg p-4 border border-[#2d324a] flex flex-col gap-3"
@@ -184,6 +206,68 @@ export default function ManageBookings() {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Pagination */}
+      <div className="mt-6 w-full font-michroma text-white flex justify-end items-center">
+        <div className="flex">
+          <Pagination>
+            <PaginationContent className="flex items-center gap-2 p-2 rounded">
+              <PaginationItem>
+                <PaginationPrevious
+                  onClick={goToPreviousPage}
+                  className={
+                    currentPage === 1
+                      ? "bg-gray-600 opacity-50"
+                      : " border-2 border-white"
+                  }
+                />
+              </PaginationItem>
+
+              {currentPage > 1 && (
+                <PaginationItem>
+                  <button
+                    onClick={() => setCurrentPage(currentPage - 1)}
+                    className="border-2 border-white text-white px-3 py-1 rounded hover:bg-slate-700"
+                  >
+                    {currentPage - 1}
+                  </button>
+                </PaginationItem>
+              )}
+
+              <PaginationItem>
+                <button
+                  disabled
+                  className="bg-purple-700 text-white font-semibold px-3 py-1 rounded"
+                >
+                  {currentPage}
+                </button>
+              </PaginationItem>
+
+              {currentPage < totalPages && (
+                <PaginationItem>
+                  <button
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                    className="  text-white px-3 py-1 rounded border-2 border-white hover:bg-slate-700"
+                  >
+                    {currentPage + 1}
+                  </button>
+                </PaginationItem>
+              )}
+
+              <PaginationItem>
+                <PaginationNext
+                  onClick={goToNextPage}
+                  className={
+                    currentPage === totalPages
+                      ? "pointer-events-none bg-gray-600 opacity-50"
+                      : " border-2 border-white"
+                  }
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
       </div>
     </div>
   );
