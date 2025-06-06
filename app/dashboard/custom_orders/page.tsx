@@ -106,6 +106,7 @@ const CustomerOrdersPage = () => {
             onDeleteEntry={deleteEntry}
           />
 
+          
           <div className="mt-6 w-full font-michroma text-white flex justify-end items-center">
             <div className="flex">
               <Pagination>
