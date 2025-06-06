@@ -87,7 +87,7 @@ export const CustombeatsTable: React.FC<MixingProTableProps> = ({
                 </td>
                 <td className="p-4">
                   <div className="flex items-center gap-2">
-                    <button className="p-2   bg-foreground hover:bg-green-500/20 rounded-lg transition-colors">
+                    <button className="p-2  text-white  bg-foreground hover:bg-green-500/20 rounded-lg transition-colors">
                       <IoMdEye size={16} />
                     </button>
 

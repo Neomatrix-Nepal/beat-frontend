@@ -22,14 +22,14 @@ interface MixingProEntry {
   selected: boolean;
 }
 
-const MixingProPage = () => {
+const CustomBeatsPage = () => {
   const router = useRouter();
   const itemsPerPage = 10;
 
   const generateMockData = (count: number): MixingProEntry[] => {
     const names = [
       "Ravi Gupta", "Aman Gupta", "Rohil Mehra", "Teki Shrestha",
-      "Midnight Dreams", "Velvet Pulse", "Sunset Mirage", "Glass Waves"
+      "Midnight Dreams", "Velvet Pulse", "Sunset Mirage", "Glass Waves",
     ];
     const statuses: MixingProEntry["status"][] = ["Pending", "Sent"];
 
@@ -48,7 +48,10 @@ const MixingProPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const totalPages = Math.ceil(uploads.length / itemsPerPage);
-  const visibleUploads = uploads.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const visibleUploads = uploads.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   const toggleSelectAll = () => {
     const newVal = !selectAll;
@@ -75,92 +78,101 @@ const MixingProPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0F172A] p-6 font-michroma text-white">
-      <div className="max-w-7xl mx-auto space-y-6">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3 ml-4">
-            <input
-              type="checkbox"
-              checked={selectAll}
-              onChange={toggleSelectAll}
-              className="w-4 h-4 accent-purple-600 rounded"
-            />
-            <span className="text-sm">Select All</span>
+    <div className="min-h-screen bg-slate-900 flex">
+      <div className="flex-1 flex flex-col">
+        <div className="flex-1 p-6">
+          <div className="gap-2 pl-4 mb-2 h-16 p-4 flex items-center justify-between">
+            <div className="flex gap-2">
+              <input
+                type="checkbox"
+                checked={selectAll}
+                onChange={toggleSelectAll}
+                className="w-5 h-5 text-purple-600 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
+              />
+              <p className="text-white font-michroma">Select All</p>
+            </div>
+            <div className="flex gap-2">
+              <button className="flex items-center gap-2 px-5 py-3 text-sm font-semibold rounded-lg bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 transition-transform transform hover:scale-105">
+                <IoMdCheckmark size={20} />
+                Sent
+              </button>
+              <button className="flex items-center gap-2 px-5 py-3 text-sm font-semibold rounded-lg bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 transition-transform transform hover:scale-105">
+                <RiDeleteBin6Line size={20} />
+                Delete
+              </button>
+            </div>
           </div>
 
-          <div className="flex gap-2">
-            <button className="flex items-center gap-2 px-5 py-3 text-sm font-semibold rounded-lg bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 transition-transform transform hover:scale-105">
-              <IoMdCheckmark size={20} />
-              Sent
-            </button>
-            <button className="flex items-center gap-2 px-5 py-3 text-sm font-semibold rounded-lg bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 transition-transform transform hover:scale-105">
-              <RiDeleteBin6Line size={20} />
-              Delete
-            </button>
+          <CustombeatsTable
+            entries={visibleUploads}
+            selectAll={selectAll}
+            onSelectAll={toggleSelectAll}
+            onSelectEntry={toggleSelectEntry}
+            onDeleteEntry={deleteEntry}
+          />
+
+          <div className="mt-6 w-full font-michroma text-white flex justify-end items-center">
+            <Pagination>
+              <PaginationContent className="flex items-center gap-2 p-2 rounded">
+                <PaginationItem>
+                  <PaginationPrevious
+                    onClick={goToPreviousPage}
+                    className={
+                      currentPage === 1
+                        ? "bg-gray-600 opacity-50"
+                        : "border-2 border-white"
+                    }
+                  />
+                </PaginationItem>
+
+                {currentPage > 1 && (
+                  <PaginationItem>
+                    <button
+                      onClick={() => setCurrentPage(currentPage - 1)}
+                      className="border-2 border-white text-white px-3 py-1 rounded hover:bg-slate-700"
+                    >
+                      {currentPage - 1}
+                    </button>
+                  </PaginationItem>
+                )}
+
+                <PaginationItem>
+                  <button
+                    disabled
+                    className="bg-purple-700 text-white font-semibold px-3 py-1 rounded"
+                  >
+                    {currentPage}
+                  </button>
+                </PaginationItem>
+
+                {currentPage < totalPages && (
+                  <PaginationItem>
+                    <button
+                      onClick={() => setCurrentPage(currentPage + 1)}
+                      className="text-white px-3 py-1 rounded border-2 border-white hover:bg-slate-700"
+                    >
+                      {currentPage + 1}
+                    </button>
+                  </PaginationItem>
+                )}
+
+                <PaginationItem>
+                  <PaginationNext
+                    onClick={goToNextPage}
+                    className={
+                      currentPage === totalPages
+                        ? "pointer-events-none bg-gray-600 opacity-50"
+                        : "border-2 border-white"
+                    }
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
           </div>
-        </div>
-
-        <CustombeatsTable
-          entries={visibleUploads}
-          selectAll={selectAll}
-          onSelectAll={toggleSelectAll}
-          onSelectEntry={toggleSelectEntry}
-          onDeleteEntry={deleteEntry}
-        />
-
-        <div className="mt-6 w-full flex justify-end items-center font-michroma text-white">
-          <Pagination>
-            <PaginationContent className="flex items-center gap-2 p-2 rounded">
-              <PaginationItem>
-                <PaginationPrevious
-                  onClick={goToPreviousPage}
-                  className={currentPage === 1 ? "bg-gray-600 opacity-50" : "border-2 border-white"}
-                />
-              </PaginationItem>
-
-              {currentPage > 1 && (
-                <PaginationItem>
-                  <button
-                    onClick={() => setCurrentPage(currentPage - 1)}
-                    className="border-2 border-white text-white px-3 py-1 rounded hover:bg-slate-700"
-                  >
-                    {currentPage - 1}
-                  </button>
-                </PaginationItem>
-              )}
-
-              <PaginationItem>
-                <button
-                  disabled
-                  className="bg-purple-700 text-white font-semibold px-3 py-1 rounded"
-                >
-                  {currentPage}
-                </button>
-              </PaginationItem>
-
-              {currentPage < totalPages && (
-                <PaginationItem>
-                  <button
-                    onClick={() => setCurrentPage(currentPage + 1)}
-                    className="text-white px-3 py-1 rounded border-2 border-white hover:bg-slate-700"
-                  >
-                    {currentPage + 1}
-                  </button>
-                </PaginationItem>
-              )}
-
-              <PaginationItem>
-                <PaginationNext
-                  onClick={goToNextPage}
-                  className={currentPage === totalPages ? "pointer-events-none bg-gray-600 opacity-50" : "border-2 border-white"}
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
         </div>
       </div>
     </div>
   );
 };
 
-export default MixingProPage;
+export default CustomBeatsPage;
