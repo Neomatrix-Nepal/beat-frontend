@@ -23,26 +23,26 @@ interface Work {
 const LatestWorkManager = () => {
   const router = useRouter();
 
-  const generateWorks = (count: number): Work[] => {
-    const titles = [
-      "Modern UI/UX Design Workflow",
-      "Ultimate Dev Setup Guide 2025",
-      "Ultimate Beat Setup Guide 2025",
-      "Glass Waves Description",
-      "Midnight Dreams",
-      "Velvet Pulse",
-      "Sunset Mirage",
-    ];
-    const platforms: ("YouTube" | "Spotify")[] = ["YouTube", "Spotify"];
-    const descriptions = [
-      "A quick guide to building modern interfaces",
-      "Complete development environment setup",
-      "Professional audio production techniques",
-      "Creating visual effects with CSS",
-      "Dark theme design principles",
-      "Advanced animation workflows",
-      "Responsive design patterns",
-    ];
+ const generateWorks = (count: number): Work[] => {
+  const titles = [
+    "UI/UX Workflow",
+    "Dev Setup",
+    "Beat Setup",
+    "Glass Waves",
+    "Midnight",
+    "Velvet",
+    "Mirage",
+  ];
+  const platforms: ("YouTube" | "Spotify")[] = ["YouTube", "Spotify"];
+  const descriptions = [
+    "Modern UI guide",
+    "Dev environment",
+    "Audio tips",
+    "CSS effects",
+    "Dark design",
+    "Animations",
+    "Responsive",
+  ];
 
     return Array.from({ length: count }, (_, i) => ({
       id: (i + 1).toString(),
