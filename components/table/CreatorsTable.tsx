@@ -2,8 +2,8 @@ import React from "react";
 import { Eye, Check, Trash } from "lucide-react";
 import { showDeleteToast, showUpdateToast } from "../../lib/util";
 import Image from "next/image";
-import bin from '@/image/tablevector/bin.png'
-import whitecheck from '@/image/tablevector/whitecheck.png'
+import bin from "@/image/tablevector/bin.png";
+import whitecheck from "@/image/tablevector/whitecheck.png";
 import { IoMdEye } from "react-icons/io";
 export interface CreatorEntry {
   id: string;
@@ -70,49 +70,55 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
                 <td className="p-4 text-white font-medium">{entry.name}</td>
                 <td className="p-4 text-blue-400">{entry.style}</td>
                 <td className="p-4 text-blue-400 underline">
-                  <a href={entry.socialMediaUrl} target="_blank" rel="noopener noreferrer">
+                  <a
+                    href={entry.socialMediaUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     Open Link
                   </a>
                 </td>
                 <td className="p-4 text-center text-blue-400 underline">
-                  <a href={entry.demoBeat} target="_blank" rel="noopener noreferrer">
+                  <a
+                    href={entry.demoBeat}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     Open Link
                   </a>
                 </td>
                 <td className="p-4">
                   <div className="flex items-center gap-2">
-               
-                  
-                                      <button
-                                        onClick={() => {
-                                          showUpdateToast(
-                                            "Item Updated successfully!",
-                                            "Updated"
-                                          );
-                                        }}
-                                        className="p-2 bg-foreground hover:bg-purple-500/20 rounded-lg transition-colors"
-                                      >
-                                        <Image
-                                          src={whitecheck}
-                                          alt="check"
-                                          width={14}
-                                          height={14}
-                                          className=" m-0.5 my-1"
-                                        />
-                                      </button>
-                  
-                                      <button
-                                        onClick={() => {
-                                          //onDeleteBeat(beat.id);
-                                          showDeleteToast(
-                                            "Item deleted successfully!",
-                                            "Deleted"
-                                          );
-                                        }}
-                                        className="p-2 text-red-400 bg-foreground hover:bg-red-500/20 rounded-lg transition-colors"
-                                      >
-                                        <Image src={bin} alt="Delete" width={16} height={16} />
-                                      </button>
+                    <button
+                      onClick={() => {
+                        showUpdateToast(
+                          "Item Updated successfully!",
+                          "Updated"
+                        );
+                      }}
+                      className="p-2 bg-foreground hover:bg-purple-500/20 rounded-lg transition-colors"
+                    >
+                      <Image
+                        src={whitecheck}
+                        alt="check"
+                        width={14}
+                        height={14}
+                        className=" m-0.5 my-1"
+                      />
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        //onDeleteBeat(beat.id);
+                        showDeleteToast(
+                          "Item deleted successfully!",
+                          "Deleted"
+                        );
+                      }}
+                      className="p-2 text-red-400 bg-foreground hover:bg-red-500/20 rounded-lg transition-colors"
+                    >
+                      <Image src={bin} alt="Delete" width={16} height={16} />
+                    </button>
                   </div>
                 </td>
               </tr>

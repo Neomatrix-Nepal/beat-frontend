@@ -1,7 +1,7 @@
 import React from "react";
 import { Trash } from "lucide-react";
 import { showDeleteToast, showUpdateToast } from "../../lib/util";
- import bin from "@/image/tablevector/bin.png";
+import bin from "@/image/tablevector/bin.png";
 import edit from "@/image/tablevector/edit.png";
 import Image from "next/image";
 interface Work {
@@ -117,12 +117,12 @@ export const LatestWorkTable: React.FC<LatestWorkTableProps> = ({
                 </td>
                 <td className="p-4 text-white font-medium">{work.title}</td>
                 <td className="p-4 text-slate-400">{work.description}</td>
-                <td className="p-4 text-center flex justify-center">{getPlatformIcon(work.platform)}</td>
+                <td className="p-4 text-center flex justify-center">
+                  {getPlatformIcon(work.platform)}
+                </td>
                 <td className="p-4 text-slate-400">{work.uploadDate}</td>
                 <td className="p-4">
                   <div className="flex items-center gap-2">
-                  
-
                     <button
                       onClick={() => {
                         showUpdateToast(
@@ -137,7 +137,7 @@ export const LatestWorkTable: React.FC<LatestWorkTableProps> = ({
 
                     <button
                       onClick={() => {
-                       // onDeleteBeat();
+                        // onDeleteBeat();
                         showDeleteToast(
                           "Item deleted successfully!",
                           "Deleted"
@@ -157,8 +157,6 @@ export const LatestWorkTable: React.FC<LatestWorkTableProps> = ({
 
       {/* Mobile Cards */}
       <div className="lg:hidden space-y-4 p-4">
-         
-
         {works.map((work, index) => (
           <div
             key={`${work.id}-${index}`}

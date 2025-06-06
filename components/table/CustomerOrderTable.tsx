@@ -80,53 +80,57 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
                   />
                 </td>
                 <td className="p-4 text-white font-medium">{entry.id}</td>
-                <td className="p-4 text-white font-medium">{entry.customerName}</td>
+                <td className="p-4 text-white font-medium">
+                  {entry.customerName}
+                </td>
                 <td className="p-4 text-white">{entry.product}</td>
                 <td className="p-4 text-white">{entry.price}</td>
                 <td className="p-4 text-white">{entry.orderDate}</td>
                 <td className="p-4 text-center">
                   <div
-                    className={`py-2 rounded-sm text-md font-medium border ${statusStyles[entry.status]}`}
+                    className={`py-2 rounded-sm text-md font-medium border ${
+                      statusStyles[entry.status]
+                    }`}
                   >
                     {entry.status}
                   </div>
                 </td>
                 <td className="p-4">
                   <div className="flex items-center gap-2">
-                  <button className="p-2   bg-foreground hover:bg-green-500/20 rounded-lg transition-colors">
-                                       <IoMdEye size={16} />
-                                     </button>
-                 
-                                     <button
-                                       onClick={() => {
-                                         showUpdateToast(
-                                           "Item Updated successfully!",
-                                           "Updated"
-                                         );
-                                       }}
-                                       className="p-2 bg-foreground hover:bg-purple-500/20 rounded-lg transition-colors"
-                                     >
-                                       <Image
-                                         src={whitecheck}
-                                         alt="check"
-                                         width={14}
-                                         height={14}
-                                         className=" m-0.5 my-1"
-                                       />
-                                     </button>
-                 
-                                     <button
-                                       onClick={() => {
-                                         //onDeleteBeat(beat.id);
-                                         showDeleteToast(
-                                           "Item deleted successfully!",
-                                           "Deleted"
-                                         );
-                                       }}
-                                       className="p-2 text-red-400 bg-foreground hover:bg-red-500/20 rounded-lg transition-colors"
-                                     >
-                                       <Image src={bin} alt="Delete" width={16} height={16} />
-                                     </button>
+                    <button className="p-2  text-white  bg-foreground hover:bg-green-500/20 rounded-lg transition-colors">
+                      <IoMdEye size={16}  className="" />
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        showUpdateToast(
+                          "Item Updated successfully!",
+                          "Updated"
+                        );
+                      }}
+                      className="p-2 bg-foreground hover:bg-purple-500/20 rounded-lg transition-colors"
+                    >
+                      <Image
+                        src={whitecheck}
+                        alt="check"
+                        width={14}
+                        height={14}
+                        className=" m-0.5 my-1"
+                      />
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        //onDeleteBeat(beat.id);
+                        showDeleteToast(
+                          "Item deleted successfully!",
+                          "Deleted"
+                        );
+                      }}
+                      className="p-2 text-red-400 bg-foreground hover:bg-red-500/20 rounded-lg transition-colors"
+                    >
+                      <Image src={bin} alt="Delete" width={16} height={16} />
+                    </button>
                   </div>
                 </td>
               </tr>
@@ -152,19 +156,25 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
                 />
                 <div>
                   <h3 className="text-white font-medium">Id: {entry.id}</h3>
-                  <h3 className="text-white font-medium">{entry.customerName}</h3>
+                  <h3 className="text-white font-medium">
+                    {entry.customerName}
+                  </h3>
                   <p className="text-white text-sm">Product: {entry.product}</p>
                 </div>
               </div>
               <span
-                className={`px-3 py-1 rounded-md text-xs font-medium border ${statusStyles[entry.status]}`}
+                className={`px-3 py-1 rounded-md text-xs font-medium border ${
+                  statusStyles[entry.status]
+                }`}
               >
                 {entry.status}
               </span>
             </div>
             <div className="flex flex-col gap-2 mt-2">
               <p className="text-white text-sm">Price: {entry.price}</p>
-              <p className="text-white text-sm">Order Date: {entry.orderDate}</p>
+              <p className="text-white text-sm">
+                Order Date: {entry.orderDate}
+              </p>
             </div>
             <div className="flex items-center justify-between mt-2">
               <div className="flex items-center gap-2">

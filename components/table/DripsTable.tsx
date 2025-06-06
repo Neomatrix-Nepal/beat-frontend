@@ -1,7 +1,7 @@
-import React from 'react';
-import { Trash } from 'lucide-react';
+import React from "react";
+import { Trash } from "lucide-react";
 import { showDeleteToast, showUpdateToast } from "../../lib/util";
- import bin from "@/image/tablevector/bin.png";
+import bin from "@/image/tablevector/bin.png";
 import edit from "@/image/tablevector/edit.png";
 import Image from "next/image";
 interface Drip {
@@ -21,16 +21,15 @@ interface DripsTableProps {
   onDeleteDrip: (id: string) => void;
 }
 
- 
 export const DripsTable: React.FC<DripsTableProps> = ({
   drips,
   selectAll,
   onSelectAll,
   onSelectDrip,
-  onDeleteDrip
+  onDeleteDrip,
 }) => {
   function onDeleteBeat(id: any) {
-    throw new Error('Function not implemented.');
+    throw new Error("Function not implemented.");
   }
 
   return (
@@ -48,20 +47,30 @@ export const DripsTable: React.FC<DripsTableProps> = ({
                   className="w-4 h-4 text-purple-600 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
                 />
               </th>
-              <th className="text-left p-4 text-slate-300 font-semibold">Title</th>
+              <th className="text-left p-4 text-slate-300 font-semibold">
+                Title
+              </th>
               <th className="text-left p-4 text-slate-300 font-semibold">Id</th>
-              <th className="text-left p-4 text-slate-300 font-semibold">Price</th>
-              <th className="text-left p-4 text-slate-300 font-semibold">Size</th>
-              <th className="text-left p-4 text-slate-300 font-semibold">Upload Date</th>
-              <th className="text-left p-4 text-slate-300 font-semibold">Actions</th>
+              <th className="text-left p-4 text-slate-300 font-semibold">
+                Price
+              </th>
+              <th className="text-left p-4 text-slate-300 font-semibold">
+                Size
+              </th>
+              <th className="text-left p-4 text-slate-300 font-semibold">
+                Upload Date
+              </th>
+              <th className="text-left p-4 text-slate-300 font-semibold">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody>
             {drips.map((drip, index) => (
-              <tr 
+              <tr
                 key={`${drip.id}-${index}`}
                 className={`border-b border-slate-700/50 hover:bg-slate-700/30 transition-colors ${
-                  index % 2 === 0 ? 'bg-slate-800/30' : 'bg-slate-800/50'
+                  index % 2 === 0 ? "bg-slate-800/30" : "bg-slate-800/50"
                 }`}
               >
                 <td className="p-4">
@@ -76,15 +85,15 @@ export const DripsTable: React.FC<DripsTableProps> = ({
                 <td className="p-4 text-slate-300">{drip.id}</td>
                 <td className="p-4 text-white font-semibold">${drip.price}</td>
                 <td className="p-4">
-                  <span className={`px-3 py-1 rounded-full text-xs font-medium     || 'bg-gray-500/20 text-white border-gray-500/30'}`}>
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-medium     || 'bg-gray-500/20 text-white border-gray-500/30'}`}
+                  >
                     {drip.size}
                   </span>
                 </td>
                 <td className="p-4 text-slate-400">{drip.uploadDate}</td>
                 <td className="p-4">
                   <div className="flex items-center gap-2">
-                 
-
                     <button
                       onClick={() => {
                         showUpdateToast(
@@ -99,7 +108,7 @@ export const DripsTable: React.FC<DripsTableProps> = ({
 
                     <button
                       onClick={() => {
-                       // onDeleteBeat(beat.id);
+                        // onDeleteBeat(beat.id);
                         showDeleteToast(
                           "Item deleted successfully!",
                           "Deleted"
@@ -119,10 +128,11 @@ export const DripsTable: React.FC<DripsTableProps> = ({
 
       {/* Mobile Cards */}
       <div className="lg:hidden space-y-4 p-4">
-        
-        
-        {drips.map((drip,index) => (
-          <div key={`${drip.id}-${index}`} className="bg-slate-700/50 rounded-lg p-4 border border-slate-600">
+        {drips.map((drip, index) => (
+          <div
+            key={`${drip.id}-${index}`}
+            className="bg-slate-700/50 rounded-lg p-4 border border-slate-600"
+          >
             <div className="flex items-start justify-between mb-3">
               <div className="flex items-center gap-3">
                 <input
@@ -138,23 +148,45 @@ export const DripsTable: React.FC<DripsTableProps> = ({
               </div>
               <span className="text-white font-semibold">${drip.price}</span>
             </div>
-            
+
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <span className={`px-3 py-1 rounded-full text-xs font-medium     || 'bg-gray-500/20 text-white border-gray-500/30'}`}>
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-medium     || 'bg-gray-500/20 text-white border-gray-500/30'}`}
+                >
                   {drip.size}
                 </span>
-                <span className="text-slate-400 text-sm">{drip.uploadDate}</span>
+                <span className="text-slate-400 text-sm">
+                  {drip.uploadDate}
+                </span>
               </div>
-              
+
               <div className="flex items-center gap-2">
                 <button className="p-2 text-purple-400 hover:bg-purple-500/20 rounded-lg transition-colors">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="m18.5 2.5 a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="m18.5 2.5 a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
                   </svg>
                 </button>
-                <button 
+                <button
                   onClick={() => onDeleteDrip(drip.id)}
                   className="p-2 text-red-400 hover:bg-red-500/20 rounded-lg transition-colors"
                 >

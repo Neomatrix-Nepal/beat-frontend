@@ -2,8 +2,8 @@ import React from "react";
 import { Eye, Check, Trash } from "lucide-react";
 import { showDeleteToast, showUpdateToast } from "../../lib/util";
 import Image from "next/image";
-import bin from '@/image/tablevector/bin.png'
-import whitecheck from '@/image/tablevector/whitecheck.png'
+import bin from "@/image/tablevector/bin.png";
+import whitecheck from "@/image/tablevector/whitecheck.png";
 import { IoMdEye } from "react-icons/io";
 export interface MixingProEntry {
   id: string;
@@ -41,9 +41,7 @@ export const CustombeatsTable: React.FC<MixingProTableProps> = ({
         <table className="w-full text-sm">
           <thead className="bg-[#1A2233] text-[#E4E4E7] border-b border-[#2C3A4F]">
             <tr>
-              <th className="p-4 w-10">
-               
-              </th>
+              <th className="p-4 w-10"></th>
               <th className="text-left p-4">Name</th>
               <th className="text-left p-4">Refrence Link</th>
               <th className="text-left p-4">Upload Date</th>
@@ -69,14 +67,20 @@ export const CustombeatsTable: React.FC<MixingProTableProps> = ({
                 </td>
                 <td className="p-4 text-white font-medium">{entry.name}</td>
                 <td className="p-4 text-blue-400 underline">
-                  <a href={entry.link} target="_blank" rel="noopener noreferrer">
+                  <a
+                    href={entry.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     {entry.link}
                   </a>
                 </td>
                 <td className="p-4 text-slate-400">{entry.uploadDate}</td>
                 <td className="p-4     text-center">
                   <div
-                    className={`   py-2 rounded-sm text-md  font-medium border ${statusStyles[entry.status]}`}
+                    className={`   py-2 rounded-sm text-md  font-medium border ${
+                      statusStyles[entry.status]
+                    }`}
                   >
                     {entry.status}
                   </div>
@@ -84,39 +88,39 @@ export const CustombeatsTable: React.FC<MixingProTableProps> = ({
                 <td className="p-4">
                   <div className="flex items-center gap-2">
                     <button className="p-2   bg-foreground hover:bg-green-500/20 rounded-lg transition-colors">
-                                                      <IoMdEye size={16} />
-                                                    </button>
-                                
-                                                    <button
-                                                      onClick={() => {
-                                                        showUpdateToast(
-                                                          "Item Updated successfully!",
-                                                          "Updated"
-                                                        );
-                                                      }}
-                                                      className="p-2 bg-foreground hover:bg-purple-500/20 rounded-lg transition-colors"
-                                                    >
-                                                      <Image
-                                                        src={whitecheck}
-                                                        alt="check"
-                                                        width={14}
-                                                        height={14}
-                                                        className=" m-0.5 my-1"
-                                                      />
-                                                    </button>
-                                
-                                                    <button
-                                                      onClick={() => {
-                                                        //onDeleteBeat(beat.id);
-                                                        showDeleteToast(
-                                                          "Item deleted successfully!",
-                                                          "Deleted"
-                                                        );
-                                                      }}
-                                                      className="p-2 text-red-400 bg-foreground hover:bg-red-500/20 rounded-lg transition-colors"
-                                                    >
-                                                      <Image src={bin} alt="Delete" width={16} height={16} />
-                                                    </button>
+                      <IoMdEye size={16} />
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        showUpdateToast(
+                          "Item Updated successfully!",
+                          "Updated"
+                        );
+                      }}
+                      className="p-2 bg-foreground hover:bg-purple-500/20 rounded-lg transition-colors"
+                    >
+                      <Image
+                        src={whitecheck}
+                        alt="check"
+                        width={14}
+                        height={14}
+                        className=" m-0.5 my-1"
+                      />
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        //onDeleteBeat(beat.id);
+                        showDeleteToast(
+                          "Item deleted successfully!",
+                          "Deleted"
+                        );
+                      }}
+                      className="p-2 text-red-400 bg-foreground hover:bg-red-500/20 rounded-lg transition-colors"
+                    >
+                      <Image src={bin} alt="Delete" width={16} height={16} />
+                    </button>
                   </div>
                 </td>
               </tr>
@@ -127,11 +131,9 @@ export const CustombeatsTable: React.FC<MixingProTableProps> = ({
 
       {/* Mobile Cards */}
       <div className="lg:hidden space-y-4 p-4">
-         
-        
         {entries.map((entry, index) => (
-          <div 
-            key={entry.id} 
+          <div
+            key={entry.id}
             className="bg-[#1A1F2E] rounded-lg p-4 border border-[#2C3A4F]"
           >
             <div className="flex items-start justify-between mb-3">
@@ -144,9 +146,9 @@ export const CustombeatsTable: React.FC<MixingProTableProps> = ({
                 />
                 <div>
                   <h3 className="text-white font-medium">{entry.name}</h3>
-                  <a 
-                    href={entry.link} 
-                    target="_blank" 
+                  <a
+                    href={entry.link}
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-400 underline text-sm"
                   >
@@ -155,15 +157,17 @@ export const CustombeatsTable: React.FC<MixingProTableProps> = ({
                 </div>
               </div>
               <span
-                className={`px-3 py-1 rounded-md text-xs font-medium border ${statusStyles[entry.status]}`}
+                className={`px-3 py-1 rounded-md text-xs font-medium border ${
+                  statusStyles[entry.status]
+                }`}
               >
                 {entry.status}
               </span>
             </div>
-            
+
             <div className="flex items-center justify-between mt-2">
               <span className="text-slate-400 text-sm">{entry.uploadDate}</span>
-              
+
               <div className="flex items-center gap-2">
                 <button
                   className="p-2 rounded-lg text-white hover:bg-slate-600/30 transition-colors"
