@@ -106,7 +106,7 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
                     <button
                       onClick={() => {
                         showUpdateToast(
-                          "Item Updated successfully!",
+                          "Item Updatedx successfully!",
                           "Updated"
                         );
                       }}
@@ -119,7 +119,7 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
                       onClick={() => {
                         onDeleteBeat(beat.id);
                         showDeleteToast(
-                          "Item deleted successfully!",
+                          "Item deleted sxsalx;l,as;l,uccessfully!",
                           "Deleted"
                         );
                       }}
@@ -185,7 +185,7 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
                 <button
                   onClick={() => {
                     onDeleteBeat(beat.id);
-                    showDeleteToast("Item deleted successfully!", "Deleted");
+                    showDeleteToast("Item deleted xaskxjnsakxjn successfully!", "Deleted");
                   }}
                   className="p-2 text-red-400 hover:bg-red-500/20 rounded-lg transition-colors"
                 >

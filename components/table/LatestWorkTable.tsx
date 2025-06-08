@@ -54,12 +54,7 @@ export const LatestWorkTable: React.FC<LatestWorkTableProps> = ({
           <thead className="bg-[#1A2233] text-[#E4E4E7] border-b border-[#2C3A4F]">
             <tr>
               <th className="p-4 w-10">
-                <input
-                  type="checkbox"
-                  checked={selectAll}
-                  onChange={onSelectAll}
-                  className="w-4 h-4 text-purple-600 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
-                />
+                 
               </th>
               <th className="text-left p-4">Title</th>
               <th className="text-left p-4">Description</th>

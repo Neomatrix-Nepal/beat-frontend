@@ -1,4 +1,3 @@
-"use client";
 import React, { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { FaCheck } from "react-icons/fa";
@@ -16,7 +15,7 @@ type CustomerOrder = {
   address: string;
 };
 
-export default function CustomerOrderDetails() {
+export default function CustomerOrderDetails({ onClose }: { onClose: () => void }) {
   const [order, setOrder] = useState<CustomerOrder | null>(null);
 
   useEffect(() => {
@@ -47,7 +46,10 @@ export default function CustomerOrderDetails() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <h2 className="text-lg md:text-xl font-semibold">Order Delivery Details</h2>
-        <button className="text-xs text-[#74f9e0] px-3 py-1 rounded-full flex items-center gap-1">
+        <button
+          onClick={onClose}
+          className="text-xs text-[#74f9e0] px-3 py-1 rounded-full flex items-center gap-1"
+        >
           <X className="w-3 h-3" />
           Close
         </button>

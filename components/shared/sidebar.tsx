@@ -25,7 +25,7 @@ interface SidebarItem {
 
 const sidebarItems: SidebarItem[] = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/" },
-  { icon: ShoppingCart, label: "Customer Orders", href: "/dashboard/custom_orders" },
+  { icon: ShoppingCart, label: "Customer Orders", href: "/dashboard/customer_orders" },
   { icon: Music, label: "Beats Manager", href: "/dashboard/beats_manager" },
   { icon: Users, label: "Mixing Pro", href: "/dashboard/mixing_pro" },
   { icon: Users, label: "Custom Beat", href: "/dashboard/custom_beats" },

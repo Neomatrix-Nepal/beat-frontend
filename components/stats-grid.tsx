@@ -44,6 +44,27 @@ const statsData = [
     iconColor: "bg-[#00b894]",
     valueColor: "text-[#00b894]",
   },
+  {
+    title: "Total Drips Added",
+    value: "8",
+    icon: Download,
+    iconColor: "bg-[#74b9ff]",
+    valueColor: "text-[#74b9ff]",
+  },
+  {
+    title: "Drips Sold This Month",
+    value: "3",
+    icon: Tag,
+    iconColor: "bg-[#a29bfe]",
+    valueColor: "text-[#a29bfe]",
+  },
+  {
+    title: "Total Earnings",
+    value: "$50",
+    icon: DollarSign,
+    iconColor: "bg-[#00b894]",
+    valueColor: "text-[#00b894]",
+  },
 ]
 
 export function StatsGrid() {

@@ -22,14 +22,23 @@ interface MixingProEntry {
   selected: boolean;
 }
 
+const BUTTON_CLASSES =
+  "flex items-center gap-2 px-5 py-3 text-sm font-semibold rounded-lg bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 transition-transform transform hover:scale-105";
+
 const CustomBeatsPage = () => {
   const router = useRouter();
   const itemsPerPage = 10;
 
   const generateMockData = (count: number): MixingProEntry[] => {
     const names = [
-      "Ravi Gupta", "Aman Gupta", "Rohil Mehra", "Teki Shrestha",
-      "Midnight Dreams", "Velvet Pulse", "Sunset Mirage", "Glass Waves",
+      "Ravi Gupta",
+      "Aman Gupta",
+      "Rohil Mehra",
+      "Teki Shrestha",
+      "Midnight Dreams",
+      "Velvet Pulse",
+      "Sunset Mirage",
+      "Glass Waves",
     ];
     const statuses: MixingProEntry["status"][] = ["Pending", "Sent"];
 
@@ -47,6 +56,7 @@ const CustomBeatsPage = () => {
   const [selectAll, setSelectAll] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
+  const selectedCount = uploads.filter((entry) => entry.selected).length;
   const totalPages = Math.ceil(uploads.length / itemsPerPage);
   const visibleUploads = uploads.slice(
     (currentPage - 1) * itemsPerPage,
@@ -56,25 +66,31 @@ const CustomBeatsPage = () => {
   const toggleSelectAll = () => {
     const newVal = !selectAll;
     setSelectAll(newVal);
-    setUploads(uploads.map(entry => ({ ...entry, selected: newVal })));
+    setUploads(uploads.map((entry) => ({ ...entry, selected: newVal })));
   };
 
   const toggleSelectEntry = (id: string) => {
-    setUploads(uploads.map(entry =>
-      entry.id === id ? { ...entry, selected: !entry.selected } : entry
-    ));
+    setUploads(
+      uploads.map((entry) =>
+        entry.id === id ? { ...entry, selected: !entry.selected } : entry
+      )
+    );
   };
 
   const deleteEntry = (id: string) => {
-    setUploads(uploads.filter(entry => entry.id !== id));
+    setUploads(uploads.filter((entry) => entry.id !== id));
+  };
+
+  const deleteSelectedEntries = () => {
+    setUploads(uploads.filter((entry) => !entry.selected));
   };
 
   const goToPreviousPage = () => {
-    setCurrentPage(prev => Math.max(prev - 1, 1));
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
   };
 
   const goToNextPage = () => {
-    setCurrentPage(prev => Math.min(prev + 1, totalPages));
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   };
 
   return (
@@ -91,16 +107,19 @@ const CustomBeatsPage = () => {
               />
               <p className="text-white font-michroma">Select All</p>
             </div>
+                          {selectedCount >= 2 && (
+
             <div className="flex gap-2">
-              <button className="flex items-center gap-2 px-5 py-3 text-sm font-semibold rounded-lg bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 transition-transform transform hover:scale-105">
+              <button className={BUTTON_CLASSES}>
                 <IoMdCheckmark size={20} />
                 Sent
               </button>
-              <button className="flex items-center gap-2 px-5 py-3 text-sm font-semibold rounded-lg bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 transition-transform transform hover:scale-105">
-                <RiDeleteBin6Line size={20} />
-                Delete
-              </button>
-            </div>
+                <button onClick={deleteSelectedEntries} className={BUTTON_CLASSES}>
+                  <RiDeleteBin6Line size={20} />
+                  Delete
+                </button>
+             
+            </div> )}
           </div>
 
           <CustombeatsTable
@@ -111,67 +130,66 @@ const CustomBeatsPage = () => {
             onDeleteEntry={deleteEntry}
           />
 
-       
-                 <div className="mt-6 w-full font-michroma text-white flex justify-end items-center">
-                   <div className="flex">
-                     <Pagination>
-                       <PaginationContent className="flex items-center gap-2 p-2 rounded">
-                         <PaginationItem>
-                           <PaginationPrevious
-                             onClick={goToPreviousPage}
-                             className={
-                               currentPage === 1
-                                 ? "bg-gray-600 opacity-50"
-                                 : "border-2 border-white"
-                             }
-                           />
-                         </PaginationItem>
-       
-                         {currentPage > 1 && (
-                           <PaginationItem>
-                             <button
-                               onClick={() => setCurrentPage(currentPage - 1)}
-                               className="border-2 border-white text-white px-3 py-1 rounded hover:bg-slate-700"
-                             >
-                               {currentPage - 1}
-                             </button>
-                           </PaginationItem>
-                         )}
-       
-                         <PaginationItem>
-                           <button
-                             disabled
-                             className="bg-purple-700 text-white font-semibold px-3 py-1 rounded"
-                           >
-                             {currentPage}
-                           </button>
-                         </PaginationItem>
-       
-                         {currentPage < totalPages && (
-                           <PaginationItem>
-                             <button
-                               onClick={() => setCurrentPage(currentPage + 1)}
-                               className="text-white px-3 py-1 rounded border-2 border-white hover:bg-slate-700"
-                             >
-                               {currentPage + 1}
-                             </button>
-                           </PaginationItem>
-                         )}
-       
-                         <PaginationItem>
-                           <PaginationNext
-                             onClick={goToNextPage}
-                             className={
-                               currentPage === totalPages
-                                 ? "pointer-events-none bg-gray-600 opacity-50"
-                                 : "border-2 border-white"
-                             }
-                           />
-                         </PaginationItem>
-                       </PaginationContent>
-                     </Pagination>
-                   </div>
-                 </div>
+          <div className="mt-6 w-full font-michroma text-white flex justify-end items-center">
+            <div className="flex">
+              <Pagination>
+                <PaginationContent className="flex items-center gap-2 p-2 rounded">
+                  <PaginationItem>
+                    <PaginationPrevious
+                      onClick={goToPreviousPage}
+                      className={
+                        currentPage === 1
+                          ? "bg-gray-600 opacity-50"
+                          : "border-2 border-white"
+                      }
+                    />
+                  </PaginationItem>
+
+                  {currentPage > 1 && (
+                    <PaginationItem>
+                      <button
+                        onClick={() => setCurrentPage(currentPage - 1)}
+                        className="border-2 border-white text-white px-3 py-1 rounded hover:bg-slate-700"
+                      >
+                        {currentPage - 1}
+                      </button>
+                    </PaginationItem>
+                  )}
+
+                  <PaginationItem>
+                    <button
+                      disabled
+                      className="bg-purple-700 text-white font-semibold px-3 py-1 rounded"
+                    >
+                      {currentPage}
+                    </button>
+                  </PaginationItem>
+
+                  {currentPage < totalPages && (
+                    <PaginationItem>
+                      <button
+                        onClick={() => setCurrentPage(currentPage + 1)}
+                        className="text-white px-3 py-1 rounded border-2 border-white hover:bg-slate-700"
+                      >
+                        {currentPage + 1}
+                      </button>
+                    </PaginationItem>
+                  )}
+
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={goToNextPage}
+                      className={
+                        currentPage === totalPages
+                          ? "pointer-events-none bg-gray-600 opacity-50"
+                          : "border-2 border-white"
+                      }
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          </div>
         </div>
       </div>
     </div>

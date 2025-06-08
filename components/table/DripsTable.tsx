@@ -40,12 +40,7 @@ export const DripsTable: React.FC<DripsTableProps> = ({
           <thead className="bg-slate-700/50 border-b border-slate-600">
             <tr>
               <th className="text-left p-4 w-12">
-                <input
-                  type="checkbox"
-                  checked={selectAll}
-                  onChange={onSelectAll}
-                  className="w-4 h-4 text-purple-600 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
-                />
+                
               </th>
               <th className="text-left p-4 text-slate-300 font-semibold">
                 Title
@@ -86,7 +81,7 @@ export const DripsTable: React.FC<DripsTableProps> = ({
                 <td className="p-4 text-white font-semibold">${drip.price}</td>
                 <td className="p-4">
                   <span
-                    className={`px-3 py-1 rounded-full text-xs font-medium     || 'bg-gray-500/20 text-white border-gray-500/30'}`}
+                    className={`px-3 py-1 rounded-full  text-md font-medium     || 'bg-gray-500/20 text-white border-gray-500/30'}`}
                   >
                     {drip.size}
                   </span>

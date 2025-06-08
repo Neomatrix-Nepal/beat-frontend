@@ -1,4 +1,5 @@
-import React from "react";
+"use client"
+import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -6,25 +7,60 @@ import Image from "next/image";
 import { RiSave2Fill } from "react-icons/ri";
 import { MdDelete } from "react-icons/md";
 import { FaUpload } from "react-icons/fa6";
-
+import logo from '@/image/logo.png'
 const DripForm = () => {
+  const [coverImage, setCoverImage] = useState<string>("/sample.jpg");
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (typeof reader.result === "string") {
+          setCoverImage(reader.result);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+ 
   return (
     <div className="min-h-screen w-full flex bg-secondary items-center justify-center">
       <div className="w-full min-h-screen bg-foreground flex flex-col text-white space-y-8 lg:p-24 md:p-16 sm:p-16 p-4">
-        
         {/* Image Section */}
         <div className="flex items-center space-x-4">
-          <div className="relative bg-blue-600 w-32 h-32 rounded-md overflow-hidden" />
+          <div className="relative w-32 h-32 rounded-md overflow-hidden border border-gray-700">
+            <Image
+              src={logo}
+              alt="Drip Image"
+              fill
+              className="object-cover"
+            />
+          </div>
 
           <div className="flex-1 flex flex-col gap-4">
             {/* Upload Button */}
-            <div className="mt-2 bg-gradient-to-r flex items-center justify-center gap-3 from-purple-500 to-pink-500 text-white p-3 rounded-lg max-w-md cursor-pointer">
+            <label
+              htmlFor="cover-upload"
+              className="mt-2 bg-gradient-to-r flex items-center justify-center gap-3 from-purple-500 to-pink-500 text-white p-3 rounded-lg max-w-md cursor-pointer"
+            >
               <FaUpload size={24} />
               <span className="font-michroma text-lg">Change Picture</span>
-            </div>
+            </label>
+            <input
+              type="file"
+              id="cover-upload"
+              className="hidden"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
 
             {/* Delete Button */}
-            <div className="mt-2 bg-gradient-to-r flex items-center justify-center gap-3 from-purple-500 to-pink-500 text-white p-3 rounded-lg max-w-md cursor-pointer">
+            <div
+             
+              className="mt-2 bg-gradient-to-r flex items-center justify-center gap-3 from-purple-500 to-pink-500 text-white p-3 rounded-lg max-w-md cursor-pointer"
+            >
               <MdDelete size={24} />
               <span className="font-michroma text-lg">Delete</span>
             </div>

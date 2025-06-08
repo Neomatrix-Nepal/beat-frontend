@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { IoMdCheckmark } from "react-icons/io";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { RiArrowDropDownLine } from "react-icons/ri";
+
 import {
   Pagination,
   PaginationContent,
@@ -21,14 +23,29 @@ const CustomerOrdersPage = () => {
 
   const generateMockOrders = (count: number): CustomerOrderEntry[] => {
     const customerNames = [
-      "Ravi Gupta", "Aman Gupta", "Rohil Mehra", "Teki Shrestha",
-      "Midnight Dreams", "Velvet Pulse", "Sunset Mirage", "Glass Waves",
+      "Ravi Gupta",
+      "Aman Gupta",
+      "Rohil Mehra",
+      "Teki Shrestha",
+      "Midnight Dreams",
+      "Velvet Pulse",
+      "Sunset Mirage",
+      "Glass Waves",
     ];
     const products = [
-      "Midnight Dream", "Dark Vibes", "Real Fantasy", "Realistic Coach",
-      "Midday Vibes", "Sunny Vibes", "Winter Beat",
+      "Midnight Dream",
+      "Dark Vibes",
+      "Real Fantasy",
+      "Realistic Coach",
+      "Midday Vibes",
+      "Sunny Vibes",
+      "Winter Beat",
     ];
-    const statuses: CustomerOrderEntry["status"][] = ["Paid", "Pending", "Failed"];
+    const statuses: CustomerOrderEntry["status"][] = [
+      "Paid",
+      "Pending",
+      "Failed",
+    ];
     return Array.from({ length: count }, (_, i) => ({
       id: `${112 + i}`,
       customerName: customerNames[i % customerNames.length],
@@ -40,28 +57,35 @@ const CustomerOrdersPage = () => {
     }));
   };
 
-  const [orders, setOrders] = useState<CustomerOrderEntry[]>(generateMockOrders(50));
+  const [orders, setOrders] = useState<CustomerOrderEntry[]>(
+    generateMockOrders(50)
+  );
   const [selectAll, setSelectAll] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
   const totalPages = Math.ceil(orders.length / itemsPerPage);
-  const visibleOrders = orders.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const visibleOrders = orders.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   const toggleSelectAll = () => {
     const newVal = !selectAll;
     setSelectAll(newVal);
-    setOrders(orders.map(entry => ({ ...entry, selected: newVal })));
+    setOrders(orders.map((entry) => ({ ...entry, selected: newVal })));
   };
 
   const toggleSelectEntry = (id: string) => {
-    setOrders(orders.map(entry =>
-      entry.id === id ? { ...entry, selected: !entry.selected } : entry
-    ));
+    setOrders(
+      orders.map((entry) =>
+        entry.id === id ? { ...entry, selected: !entry.selected } : entry
+      )
+    );
   };
 
   const deleteEntry = (id: string) => {
-    setOrders(orders.filter(entry => entry.id !== id));
+    setOrders(orders.filter((entry) => entry.id !== id));
   };
 
   const goToPreviousPage = () => {
@@ -71,6 +95,8 @@ const CustomerOrdersPage = () => {
   const goToNextPage = () => {
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   };
+
+  const selectedCount = orders.filter((entry) => entry.selected).length;
 
   return (
     <div className="min-h-screen bg-slate-900 flex">
@@ -86,16 +112,42 @@ const CustomerOrdersPage = () => {
               />
               <p className="text-white font-michroma">Select All</p>
             </div>
-            <div className="flex gap-2">
-                      <button className="flex items-center gap-2 px-5 py-3 text-sm font-semibold rounded-lg bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 transition-transform transform hover:scale-105">
-                        <IoMdCheckmark size={20} />
-                        Sent
-                      </button>
-                      <button className="flex items-center gap-2 px-5 py-3 text-sm font-semibold rounded-lg bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 transition-transform transform hover:scale-105">
-                        <RiDeleteBin6Line size={20} />
-                        Delete
-                      </button>
-                    </div>
+            <div className="flex font-michroma gap-2">
+              {selectedCount > 1 && (
+                <button
+                  className="flex items-center gap-2 text-white px-5 py-3 text-sm font-semibold rounded-lg bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 transition-transform transform hover:scale-105"
+                  onClick={() =>
+                    setOrders(orders.filter((order) => !order.selected))
+                  }
+                >
+                  <RiDeleteBin6Line />
+                  Delete
+                </button>
+              )}
+
+              <div className="relative inline-block">
+                <select className="pl-10 pr-4 py-3 text-sm font-semibold rounded-lg bg-purple-700 text-white hover:bg-purple-800 transition-transform transform hover:scale-105 appearance-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50">
+                  <option value="beats">Beats</option>
+                  <option value="drips">Drips</option>
+                </select>
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                  <svg
+                    className="w-5 h-5 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M19 9l-7 7-7-7"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
           </div>
 
           <CustomerOrderTable
@@ -106,7 +158,6 @@ const CustomerOrdersPage = () => {
             onDeleteEntry={deleteEntry}
           />
 
-          
           <div className="mt-6 w-full font-michroma text-white flex justify-end items-center">
             <div className="flex">
               <Pagination>
