@@ -39,7 +39,7 @@ export default function CustomerOrderDetails({ onClose }: { onClose: () => void 
     loadOrderDetails();
   }, []);
 
-  if (!order) return <div className="text-white">Loading...</div>;
+  if (!order) return null;
 
   return (
     <div className="bg-[#0f0f10] text-white p-6 font-michroma rounded-xl shadow-xl max-w-4xl mx-auto space-y-6 border border-[#333]">

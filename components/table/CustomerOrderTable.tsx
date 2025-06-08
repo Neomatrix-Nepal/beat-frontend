@@ -186,7 +186,7 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
         ))}
       </div>
 
-      {/* Popup rendered once per component */}
+     
       <PopupWrapper isOpen={isPopupOpen} >
         <CustomerOrderDetails onClose={handleClosePopup}/>
       </PopupWrapper>
