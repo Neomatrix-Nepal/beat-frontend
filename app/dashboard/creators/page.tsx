@@ -38,7 +38,9 @@ const CreatorsPage = () => {
     }));
   };
 
-  const [creators, setCreators] = useState<CreatorEntry[]>(generateMockCreators(50));
+  const [creators, setCreators] = useState<CreatorEntry[]>(
+    generateMockCreators(50)
+  );
   const [selectAll, setSelectAll] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -52,28 +54,30 @@ const CreatorsPage = () => {
   const toggleSelectAll = () => {
     const newVal = !selectAll;
     setSelectAll(newVal);
-    setCreators(creators.map(entry => ({ ...entry, selected: newVal })));
+    setCreators(creators.map((entry) => ({ ...entry, selected: newVal })));
   };
 
   const toggleSelectEntry = (id: string) => {
-    setCreators(creators.map(entry =>
-      entry.id === id ? { ...entry, selected: !entry.selected } : entry
-    ));
+    setCreators(
+      creators.map((entry) =>
+        entry.id === id ? { ...entry, selected: !entry.selected } : entry
+      )
+    );
   };
 
   const deleteEntry = (id: string) => {
-    setCreators(creators.filter(entry => entry.id !== id));
+    setCreators(creators.filter((entry) => entry.id !== id));
   };
 
   const goToPreviousPage = () => {
-    setCurrentPage(prev => Math.max(prev - 1, 1));
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
   };
 
   const goToNextPage = () => {
-    setCurrentPage(prev => Math.min(prev + 1, totalPages));
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   };
 
-  const selectedCount = creators.filter(c => c.selected).length;
+  const selectedCount = creators.filter((c) => c.selected).length;
 
   return (
     <div className="min-h-screen bg-slate-900 flex">
@@ -92,8 +96,7 @@ const CreatorsPage = () => {
 
             {selectedCount >= 2 && (
               <div className="flex gap-2">
-                 
-                <button className="flex items-center gap-2 px-5 py-3 text-sm font-semibold rounded-lg bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 transition-transform transform hover:scale-105">
+                <button className="flex items-center font-michroma gap-2 text-white px-5 py-3 text-sm font-semibold rounded-lg bg-custom transition-transform transform hover:scale-105">
                   <RiDeleteBin6Line size={20} />
                   Delete
                 </button>

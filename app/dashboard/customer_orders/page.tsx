@@ -115,7 +115,7 @@ const CustomerOrdersPage = () => {
             <div className="flex font-michroma gap-2">
               {selectedCount > 1 && (
                 <button
-                  className="flex items-center gap-2 text-white px-5 py-3 text-sm font-semibold rounded-lg bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 transition-transform transform hover:scale-105"
+                  className="flex items-center gap-2 font-michroma text-white px-5 py-3 text-sm font-semibold rounded-lg bg-custom transition-transform transform hover:scale-105"
                   onClick={() =>
                     setOrders(orders.filter((order) => !order.selected))
                   }

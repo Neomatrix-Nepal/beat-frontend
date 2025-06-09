@@ -23,8 +23,7 @@ interface MixingProEntry {
 }
 
 const BUTTON_CLASSES =
-  "flex items-center gap-2 px-5 py-3 text-sm font-semibold rounded-lg bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 transition-transform transform hover:scale-105";
-
+"flex items-center gap-2 text-white px-5 py-3 font-michroma text-sm font-semibold rounded-lg bg-custom transition-transform transform hover:scale-105"
 const MixingProPage = () => {
   const router = useRouter();
 
@@ -101,7 +100,7 @@ const MixingProPage = () => {
       <div className="flex-1 flex flex-col">
         <div className="flex-1 p-6">
           {/* Header Controls */}
-          <div className="gap-2 pl-4 mb-2 h-16 p-4 flex items-center justify-between">
+          <div className="gap-2 pl-4 mb-2 h-16 p-4  flex items-center justify-between">
             <div className="flex gap-2 items-center">
               <input
                 type="checkbox"

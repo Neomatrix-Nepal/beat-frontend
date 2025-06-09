@@ -23,8 +23,7 @@ interface MixingProEntry {
 }
 
 const BUTTON_CLASSES =
-  "flex items-center gap-2 px-5 py-3 text-sm font-semibold rounded-lg bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 transition-transform transform hover:scale-105";
-
+ "flex items-center gap-2 text-white font-michroma px-5 py-3 text-sm font-semibold rounded-lg bg-custom transition-transform transform hover:scale-105"
 const CustomBeatsPage = () => {
   const router = useRouter();
   const itemsPerPage = 10;

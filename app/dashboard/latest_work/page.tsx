@@ -117,7 +117,7 @@ const LatestWorkManager = () => {
             {selectedCount > 1 && (
               <button
                 onClick={handleBatchDelete}
-                className="flex items-center gap-2 text-white px-4 py-2 text-sm sm:text-base font-semibold rounded-lg bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 transition-transform transform hover:scale-105"
+                className="flex items-center gap-2 font-michroma text-white px-5 py-3 text-sm font-semibold rounded-lg bg-custom transition-transform transform hover:scale-105"
               >
                 <RiDeleteBin6Line size={20} />
                 Delete
