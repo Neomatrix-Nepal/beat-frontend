@@ -113,63 +113,65 @@ const CreatorsPage = () => {
           />
 
           <div className="mt-6 w-full font-michroma text-white flex justify-end items-center">
-            <Pagination>
-              <PaginationContent className="flex items-center gap-2 p-2 rounded">
-                <PaginationItem>
-                  <PaginationPrevious
-                    onClick={goToPreviousPage}
-                    className={
-                      currentPage === 1
-                        ? "bg-gray-600 opacity-50"
-                        : "border-2 border-white"
-                    }
-                  />
-                </PaginationItem>
-
-                {currentPage > 1 && (
-                  <PaginationItem>
-                    <button
-                      onClick={() => setCurrentPage(currentPage - 1)}
-                      className="border-2 border-white text-white px-3 py-1 rounded hover:bg-slate-700"
-                    >
-                      {currentPage - 1}
-                    </button>
-                  </PaginationItem>
-                )}
-
-                <PaginationItem>
-                  <button
-                    disabled
-                    className="bg-purple-700 text-white font-semibold px-3 py-1 rounded"
-                  >
-                    {currentPage}
-                  </button>
-                </PaginationItem>
-
-                {currentPage < totalPages && (
-                  <PaginationItem>
-                    <button
-                      onClick={() => setCurrentPage(currentPage + 1)}
-                      className="text-white px-3 py-1 rounded border-2 border-white hover:bg-slate-700"
-                    >
-                      {currentPage + 1}
-                    </button>
-                  </PaginationItem>
-                )}
-
-                <PaginationItem>
-                  <PaginationNext
-                    onClick={goToNextPage}
-                    className={
-                      currentPage === totalPages
-                        ? "pointer-events-none bg-gray-600 opacity-50"
-                        : "border-2 border-white"
-                    }
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          </div>
+                      <div className="flex">
+                        <Pagination>
+                          <PaginationContent className="flex items-center gap-2 p-2 rounded">
+                            <PaginationItem>
+                              <PaginationPrevious
+                                onClick={goToPreviousPage}
+                                className={
+                                  currentPage === 1
+                                    ? "bg-gray-600 opacity-50"
+                                    : "border-2 border-white"
+                                }
+                              />
+                            </PaginationItem>
+          
+                            {currentPage > 1 && (
+                              <PaginationItem>
+                                <button
+                                  onClick={() => setCurrentPage(currentPage - 1)}
+                                  className="border-2 border-white text-white px-3 py-1 rounded hover:bg-slate-700"
+                                >
+                                  {currentPage - 1}
+                                </button>
+                              </PaginationItem>
+                            )}
+          
+                            <PaginationItem>
+                              <button
+                                disabled
+                                className="bg-purple-700 text-white font-semibold px-3 py-1 rounded"
+                              >
+                                {currentPage}
+                              </button>
+                            </PaginationItem>
+          
+                            {currentPage < totalPages && (
+                              <PaginationItem>
+                                <button
+                                  onClick={() => setCurrentPage(currentPage + 1)}
+                                  className="text-white px-3 py-1 rounded border-2 border-white hover:bg-slate-700"
+                                >
+                                  {currentPage + 1}
+                                </button>
+                              </PaginationItem>
+                            )}
+          
+                            <PaginationItem>
+                              <PaginationNext
+                                onClick={goToNextPage}
+                                className={
+                                  currentPage === totalPages
+                                    ? "pointer-events-none bg-gray-600 opacity-50"
+                                    : "border-2 border-white"
+                                }
+                              />
+                            </PaginationItem>
+                          </PaginationContent>
+                        </Pagination>
+                      </div>
+                    </div>
         </div>
       </div>
     </div>
