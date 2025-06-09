@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Eye, Check, Trash } from "lucide-react";
 import { showDeleteToast, showUpdateToast } from "../../lib/util";
 import bin from "@/image/tablevector/bin.png";
@@ -8,6 +8,9 @@ import whitecheck from "@/image/tablevector/whitecheck.png";
 import { IoMdEye } from "react-icons/io";
 
 import Image from "next/image";
+import PopupWrapper from "../shared/PopupWrapper";
+import CustomerOrderDetails from "../dialog/customerOrderDialog";
+import MixingProSubmissionDetails from "../dialog/mixingProDialog";
 export interface MixingProEntry {
   id: string;
   name: string;
@@ -30,6 +33,15 @@ const statusStyles = {
   Sent: "bg-green-800/20 text-green-400 border-green-800/30",
 };
 
+export interface CustomerOrderEntry {
+  id: string;
+  customerName: string;
+  product: string;
+  price: string;
+  orderDate: string;
+  status: "Paid" | "Pending" | "Failed";
+  selected: boolean;
+}
 export const MixingProTable: React.FC<MixingProTableProps> = ({
   entries,
   selectAll,
@@ -37,6 +49,18 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
   onSelectEntry,
   onDeleteEntry,
 }) => {
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [selectedEntry, setSelectedEntry] = useState<CustomerOrderEntry | null>(null);
+  
+    const handleViewClick = () => {
+      //setSelectedEntry(entry);
+      setIsPopupOpen(true);
+    };
+  
+    const handleClosePopup = () => {
+      setIsPopupOpen(false);
+      setSelectedEntry(null);
+    };
   return (
     <div className="bg-[#101828] rounded-xl border border-[#1D2939] overflow-hidden font-michroma">
       {/* Desktop Table */}
@@ -90,7 +114,11 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
                 </td>
                 <td className="p-4">
                   <div className="flex items-center gap-2">
-                    <button className="p-2  text-white  bg-foreground hover:bg-green-500/20 rounded-lg transition-colors">
+                    <button 
+                    onClick={() => handleViewClick()}
+
+                                          className="p-2
+                      text-white  bg-foreground hover:bg-green-500/20 rounded-lg transition-colors">
                       <IoMdEye size={16} />
                     </button>
 
@@ -200,6 +228,9 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
           </div>
         ))}
       </div>
+      <PopupWrapper isOpen={isPopupOpen} >
+        <MixingProSubmissionDetails onClose={handleClosePopup}/>
+      </PopupWrapper>
     </div>
   );
 };

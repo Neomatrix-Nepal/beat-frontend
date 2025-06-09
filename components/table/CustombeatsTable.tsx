@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { Eye, Check, Trash } from "lucide-react";
 import { showDeleteToast, showUpdateToast } from "../../lib/util";
 import Image from "next/image";
 import bin from "@/image/tablevector/bin.png";
 import whitecheck from "@/image/tablevector/whitecheck.png";
 import { IoMdEye } from "react-icons/io";
+import PopupWrapper from "../shared/PopupWrapper";
+import MixingProSubmissionDetails from "../dialog/mixingProDialog";
+import BeatsDialogDetails from "../dialog/beatsDialog";
 export interface MixingProEntry {
   id: string;
   name: string;
@@ -34,6 +37,18 @@ export const CustombeatsTable: React.FC<MixingProTableProps> = ({
   onSelectEntry,
   onDeleteEntry,
 }) => {
+   const [isPopupOpen, setIsPopupOpen] = useState(false);
+      const [selectedEntry, setSelectedEntry] = useState<MixingProEntry | null>(null);
+    
+      const handleViewClick = () => {
+        //setSelectedEntry(entry);
+        setIsPopupOpen(true);
+      };
+    
+      const handleClosePopup = () => {
+        setIsPopupOpen(false);
+        setSelectedEntry(null);
+      };
   return (
     <div className="bg-[#101828] rounded-xl border border-[#1D2939] overflow-hidden font-michroma">
       {/* Desktop Table */}
@@ -87,7 +102,10 @@ export const CustombeatsTable: React.FC<MixingProTableProps> = ({
                 </td>
                 <td className="p-4">
                   <div className="flex items-center gap-2">
-                    <button className="p-2  text-white  bg-foreground hover:bg-green-500/20 rounded-lg transition-colors">
+                    <button
+                                        onClick={() => handleViewClick()}
+
+                    className="p-2  text-white  bg-foreground hover:bg-green-500/20 rounded-lg transition-colors">
                       <IoMdEye size={16} />
                     </button>
 
@@ -197,6 +215,9 @@ export const CustombeatsTable: React.FC<MixingProTableProps> = ({
           </div>
         ))}
       </div>
+        <PopupWrapper isOpen={isPopupOpen} >
+        <BeatsDialogDetails onClose={handleClosePopup}/>
+      </PopupWrapper>
     </div>
   );
 };
