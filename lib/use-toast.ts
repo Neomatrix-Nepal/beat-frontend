@@ -10,6 +10,7 @@ type ToasterToast = ToastProps & {
   id: string;
   title?: React.ReactNode;
   description?: React.ReactNode;
+  product?: React.ReactNode;
   action?: ToastActionElement;
   variant?: "create" | "update" | "delete" | "info";
 };

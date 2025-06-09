@@ -91,10 +91,7 @@ export const DripsTable: React.FC<DripsTableProps> = ({
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => {
-                        showUpdateToast(
-                          "Item Updated successfully!",
-                          "Updated"
-                        );
+                       showUpdateToast("xxx", "yyy","zzz")
                       }}
                       className="p-2 text-purple-400 bg-foreground hover:bg-purple-500/20 rounded-lg transition-colors"
                     >
@@ -104,10 +101,7 @@ export const DripsTable: React.FC<DripsTableProps> = ({
                     <button
                       onClick={() => {
                         // onDeleteBeat(beat.id);
-                        showDeleteToast(
-                          "Item deleted successfully!",
-                          "Deleted"
-                        );
+                         showDeleteToast("yyy", "xxx","zzz");
                       }}
                       className="p-2 text-red-400 bg-foreground hover:bg-red-500/20 rounded-lg transition-colors"
                     >

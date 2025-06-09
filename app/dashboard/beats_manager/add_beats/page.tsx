@@ -72,7 +72,7 @@ const BeatForm = () => {
             {/* Upload Button */}
             <label
               htmlFor="cover-upload"
-              className="mt-2 bg-gradient-to-r flex items-center justify-center gap-3 from-purple-500 to-pink-500 text-white p-3 rounded-lg max-w-md cursor-pointer"
+              className="mt-2  flex items-center justify-center gap-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white p-3 rounded-lg max-w-md cursor-pointer"
             >
               <FaUpload size={24} />
               <span className="font-michroma text-lg">Change beat</span>

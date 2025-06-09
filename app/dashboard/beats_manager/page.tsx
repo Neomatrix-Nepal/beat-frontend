@@ -125,7 +125,7 @@ const DripManager = () => {
 
             <button
               onClick={() => router.push("/dashboard/beats_manager/add_beats")}
-              className="bg-gradient-to-r w-40 from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-6 py-4 rounded-lg flex items-center gap-2 transition-all duration-200 transform hover:scale-105"
+              className=" bg-custom  w-40  bg-custom  text-white px-6 py-4 rounded-lg flex items-center gap-2 transition-all duration-200 transform hover:scale-105"
             >
               <Upload size={24} />
               Upload

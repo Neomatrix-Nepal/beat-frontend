@@ -122,12 +122,11 @@
     @apply bg-background text-foreground;
   }
 }
-/* styles/globals.css */
  
-.gradient-bg-horizontal {
-  background: var(--gradient-purple-pink);
+ 
+
+
+
+.bg-custom {
+  @apply bg-gradient-to-r from-purple-500 to-pink-500;
 }
-
-
-
-

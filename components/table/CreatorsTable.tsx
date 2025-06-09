@@ -86,10 +86,7 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => {
-                        showUpdateToast(
-                          "Item Updated successfully!",
-                          "Updated"
-                        );
+                       showUpdateToast("xxx", "yyy","zzz")
                       }}
                       className="p-2 bg-foreground hover:bg-purple-500/20 rounded-lg transition-colors"
                     >
@@ -105,10 +102,7 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
                     <button
                       onClick={() => {
                         //onDeleteBeat(beat.id);
-                        showDeleteToast(
-                          "Item deleted successfully!",
-                          "Deleted"
-                        );
+                         showDeleteToast("yyy", "xxx","zzz");
                       }}
                       className="p-2 text-red-400 bg-foreground hover:bg-red-500/20 rounded-lg transition-colors"
                     >
@@ -170,7 +164,7 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
                   <Eye size={16} />
                 </button>
                 <button
-                  onClick={() => showUpdateToast("Marked as sent", "Updated")}
+                  onClick={() =>showUpdateToast("xxx", "yyy","zzz")}
                   className="p-2 rounded-lg text-green-400 hover:bg-green-600/20 transition-colors"
                   title="Mark Sent"
                 >
@@ -179,8 +173,7 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
                 <button
                   onClick={() => {
                     onDeleteEntry(entry.id);
-                    showDeleteToast("Item deleted", "Deleted");
-                  }}
+  showDeleteToast("yyy", "xxx","zzz");                  }}
                   className="p-2 rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                   title="Delete"
                 >

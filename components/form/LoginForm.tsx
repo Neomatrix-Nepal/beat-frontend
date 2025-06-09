@@ -11,8 +11,7 @@ const LoginForm = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Login attempt:', { email, password });
-    // Handle login logic here
-  };
+   };
 
   return (
     <div className=" bg-primary border border-gray-700/50 rounded-2xl p-8 shadow-2xl">

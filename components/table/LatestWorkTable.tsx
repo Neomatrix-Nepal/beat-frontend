@@ -58,8 +58,8 @@ export const LatestWorkTable: React.FC<LatestWorkTableProps> = ({
               </th>
               <th className="text-left p-4">Title</th>
               <th className="text-left p-4">Description</th>
-              <th className="text-left p-4">Platform</th>
-              <th className="text-left p-4">Date</th>
+              <th className="text-center p-4">Platform</th>
+              <th className=" text-center p-4">Date</th>
               <th className="text-left p-4">Action</th>
             </tr>
           </thead>
@@ -82,11 +82,11 @@ export const LatestWorkTable: React.FC<LatestWorkTableProps> = ({
                 <td className="p-4 text-white font-medium">{work.title}</td>
                 <td className="p-4 text-white">{work.description.slice(0, 50)}...</td>
                 <td className="p-4 text-center flex justify-center">{getPlatformIcon(work.platform)}</td>
-                <td className="p-4 text-white">{work.uploadDate}</td>
+                <td className="p-4 text-white text-center">{work.uploadDate}</td>
                 <td className="p-4">
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={() => showUpdateToast("Updated!", "Updated")}
+                      onClick={() => showUpdateToast("xxx", "yyy","zzz")}
                       className="p-2 bg-foreground hover:bg-purple-500/20 rounded-lg transition-colors"
                     >
                       <Image src={edit} alt="Edit" width={14} height={14} className="m-0.5 my-1" />
@@ -94,8 +94,7 @@ export const LatestWorkTable: React.FC<LatestWorkTableProps> = ({
                     <button
                       onClick={() => {
                         onDeleteWork(work.id);
-                        showDeleteToast("Deleted!", "Deleted");
-                      }}
+  showDeleteToast("yyy", "xxx","zzz");                      }}
                       className="p-2 text-red-400 bg-foreground hover:bg-red-500/20 rounded-lg transition-colors"
                     >
                       <Image src={bin} alt="Delete" width={14} height={14} className="m-0.5 my-1" />
@@ -136,7 +135,7 @@ export const LatestWorkTable: React.FC<LatestWorkTableProps> = ({
             <div className="flex items-center justify-between mt-2">
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => showUpdateToast("Updated!", "Updated")}
+                  onClick={() =>showUpdateToast("xxx", "yyy","zzz")}
                   className="p-2 rounded-lg text-white hover:bg-purple-600/20 transition-colors"
                   title="Edit"
                 >
@@ -148,8 +147,7 @@ export const LatestWorkTable: React.FC<LatestWorkTableProps> = ({
                 <button
                   onClick={() => {
                     onDeleteWork(work.id);
-                    showDeleteToast("Deleted!", "Deleted");
-                  }}
+  showDeleteToast("yyy", "xxx","zzz");                  }}
                   className="p-2 rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                   title="Delete"
                 >

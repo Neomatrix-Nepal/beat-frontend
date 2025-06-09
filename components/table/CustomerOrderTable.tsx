@@ -106,7 +106,7 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
                       <IoMdEye size={16} />
                     </button>
                     <button
-                      onClick={() => showUpdateToast("Item Updated successfully!", "Updated")}
+                      onClick={() => showUpdateToast("xxx", "yyy","zzz")}
                       className="p-2 bg-foreground hover:bg-purple-500/20 rounded-lg transition-colors"
                     >
                       <Image src={whitecheck} alt="check" width={14} height={14} className="m-0.5 my-1" />
@@ -114,7 +114,7 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
                     <button
                       onClick={() => {
                         onDeleteEntry(entry.id);
-                        showDeleteToast("Item deleted successfully!", "Deleted");
+                    showDeleteToast("yyy", "xxx","zzz");
                       }}
                       className="p-2 text-red-400 bg-foreground hover:bg-red-500/20 rounded-lg transition-colors"
                     >
@@ -164,7 +164,7 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
                   <Eye size={16} />
                 </button>
                 <button
-                  onClick={() => showUpdateToast("Marked as sent", "Updated")}
+                  onClick={() => showUpdateToast("xxx", "yyy","zzz")}
                   className="p-2 rounded-lg text-green-400 hover:bg-green-600/20 transition-colors"
                   title="Mark Sent"
                 >
@@ -173,7 +173,7 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
                 <button
                   onClick={() => {
                     onDeleteEntry(entry.id);
-                    showDeleteToast("Item deleted", "Deleted");
+                    showDeleteToast("yyy", "xxx","zzz");
                   }}
                   className="p-2 rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                   title="Delete"

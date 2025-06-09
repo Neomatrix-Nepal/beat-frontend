@@ -127,7 +127,7 @@ const LatestWorkManager = () => {
 
           <button
             onClick={() => router.push("/dashboard/latest_work/add_work")}
-            className="bg-gradient-to-r w-full sm:w-40 from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-4 py-3 rounded-lg flex items-center justify-center gap-2 transition-transform duration-200 transform hover:scale-105"
+            className=" w-full sm:w-40 bg-custom text-white px-4 py-3 rounded-lg flex items-center justify-center gap-2 transition-transform duration-200 transform hover:scale-105"
           >
             <Upload size={20} />
             <span className="whitespace-nowrap text-sm sm:text-base">Upload</span>

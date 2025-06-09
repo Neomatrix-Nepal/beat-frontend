@@ -124,10 +124,7 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
 
                     <button
                       onClick={() => {
-                        showUpdateToast(
-                          "Item Updated successfully!",
-                          "Updated"
-                        );
+ 
                       }}
                       className="p-2 bg-foreground hover:bg-purple-500/20 rounded-lg transition-colors"
                     >
@@ -142,11 +139,7 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
 
                     <button
                       onClick={() => {
-                        //onDeleteBeat(beat.id);
-                        showDeleteToast(
-                          "Item deleted successfully!",
-                          "Deleted"
-                        );
+   
                       }}
                       className="p-2 text-red-400 bg-foreground hover:bg-red-500/20 rounded-lg transition-colors"
                     >
@@ -207,8 +200,7 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
                   <IoMdEye size={16} />
                 </button>
                 <button
-                  onClick={() => showUpdateToast("Marked as sent", "Updated")}
-                  className="p-2 rounded-lg text-green-400 hover:bg-green-600/20 transition-colors"
+                   className="p-2 rounded-lg text-green-400 hover:bg-green-600/20 transition-colors"
                   title="Mark Sent"
                 >
                   <Check size={16} />
@@ -216,8 +208,7 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
                 <button
                   onClick={() => {
                     onDeleteEntry(entry.id);
-                    showDeleteToast("Item deleted", "Deleted");
-                  }}
+                   }}
                   className="p-2 rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                   title="Delete"
                 >
