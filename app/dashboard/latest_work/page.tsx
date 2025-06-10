@@ -205,7 +205,7 @@ const LatestWorkManager = () => {
                        </PaginationContent>
                      </Pagination>
                    </div>
-                 </div>
+                 </div> 
       </div>
     </div>
   );

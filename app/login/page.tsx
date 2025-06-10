@@ -1,15 +1,15 @@
 import LoginForm from "@/components/form/LoginForm";
+import Image from "next/image";
+import logo from "@/image/loginLogo.png";
 
- 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-foreground flex items-center justify-center p-4">
+    <div className="min-h-screen bg-foreground flex  justify-center items-center flex-col p-4">
+     <h1 className="absolute top-[20vh] text-4xl md:text-5xl flex justify-center items-center font-bold text-white tracking-wide">
+  <Image src={logo} alt="logo" />
+</h1>
+
       <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 tracking-wide">
-            Logo
-          </h1>
-        </div>
         <LoginForm />
       </div>
     </div>
