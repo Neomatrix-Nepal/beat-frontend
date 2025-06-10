@@ -5,7 +5,7 @@ import logo from "@/image/loginLogo.png";
 const Index = () => {
   return (
     <div className="min-h-screen bg-foreground flex  justify-center items-center flex-col p-4">
-     <h1 className="absolute top-[20vh] text-4xl md:text-5xl flex justify-center items-center font-bold text-white tracking-wide">
+     <h1 className=" -translate-y-[10vh] text-4xl md:text-5xl flex justify-center items-center font-bold text-white tracking-wide">
   <Image src={logo} alt="logo" />
 </h1>
 
