@@ -26,7 +26,9 @@ const [email, setEmail] = useState('');
     setIsLoading(false);
 
     if (result.success && result.accessToken && result.user) {
-      setAccessToken(result.accessToken)
+      
+
+  document.cookie = `userRole=${result.user.roles[0]}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Strict`;      setAccessToken(result.accessToken)
       setUser(result.user);
       router.push(result.redirect || '/dashboard');
     } else {

@@ -6,8 +6,16 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const isProtectedPath = pathname.startsWith('/') && !pathname.startsWith('/login') && !pathname.startsWith('/public');
-
-  if (isProtectedPath && !refreshToken) {
+const role = request.cookies.get('userRole')?.value; 
+ 
+ if (
+  isProtectedPath && 
+  (
+    !refreshToken ||    // no refresh token
+    !role ||            // no role cookie
+    role !== 'admin'    // role is not admin
+  )
+)  {
     const url = request.nextUrl.clone();
     url.pathname = '/login';
     url.search = `?redirect=${encodeURIComponent(pathname)}`;
