@@ -18,7 +18,7 @@ const processQueue = (error: any, token: string | null = null) => {
 
  const api = axios.create({
   baseURL: 'http://localhost:8000',
-  withCredentials: true, // Ensure cookies are sent with requests
+  withCredentials: true,  
 });
 
 api.interceptors.request.use((config) => {
@@ -51,7 +51,7 @@ api.interceptors.response.use(
 
       try {
         const response = await axios.get('http://localhost:8000/auth/refresh-tokens', {
-          withCredentials: true, // Send refreshToken cookie
+          withCredentials: true,  
         });
 
         const { accessToken, refreshToken } = response.data.tokens;

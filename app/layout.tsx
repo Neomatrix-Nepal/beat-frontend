@@ -38,12 +38,12 @@ export default function RootLayout({
   const { accessToken } = useAuthStore();
   const router = useRouter();
 
-  useEffect(() => {
-    console.log(accessToken)
-    if (!accessToken) {
-      router.push('/login');
-    }
-  }, [accessToken, router])
+  // useEffect(() => {
+  //   console.log(accessToken)
+  //   if (!accessToken) {
+  //     router.push('/login');
+  //   }
+  // }, [accessToken, router])
   return (
     <html lang="en">
       <body
