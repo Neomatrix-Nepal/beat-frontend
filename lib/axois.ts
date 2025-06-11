@@ -1,86 +1,89 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-const apiUrl: string | undefined = process.env.NEXT_PUBLIC_API_URL;
+// lib/axios.ts
+import axios from 'axios';
+import { useAuthStore } from '@/store/authStore';
 
-const api: AxiosInstance = axios.create({
-   baseURL: apiUrl,
-});
-
-// Add token to requests
-api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  const token = localStorage.getItem('accessToken');
-  if (token && config.headers) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
-
-// Handle token refresh
 let isRefreshing = false;
-let failedQueue: { resolve: (value?: unknown) => void; reject: (reason?: unknown) => void }[] = [];
+let failedQueue: any[] = [];
 
-const processQueue = (error: unknown, token: string | null = null) => {
+const processQueue = (error: any, token: string | null = null) => {
   failedQueue.forEach(prom => {
-    if (error) prom.reject(error);
-    else prom.resolve(token);
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
   });
   failedQueue = [];
 };
 
+export const api = axios.create({
+  baseURL: 'http://localhost:8000',
+});
+
+api.interceptors.request.use((config) => {
+  const token = useAuthStore.getState().accessToken;
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
+
 api.interceptors.response.use(
-  (response: AxiosResponse) => response,
-  async (error: AxiosError) => {
-    const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean };
-
-    if ((error.response?.status === 401 || error.response?.status === 403) && !originalRequest._retry) {
+  (res) => res,
+  async (err) => {
+    const originalRequest = err.config;
+    if (err.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-
       if (isRefreshing) {
-        return new Promise((resolve, reject) => {
+return new Promise<string>((resolve, reject) => {
           failedQueue.push({ resolve, reject });
-        }).then((token) => {
-          if (originalRequest.headers && typeof token === 'string') {
+        })
+          .then((token: string) => {
             originalRequest.headers.Authorization = `Bearer ${token}`;
-          }
-          return api(originalRequest);
-        });
+            return api(originalRequest);
+          })
+          .catch((err) => Promise.reject(err));
       }
 
       isRefreshing = true;
-      const refreshToken = localStorage.getItem('refreshToken');
-
-      if (!refreshToken) {
-        redirectToLogin();
-        return Promise.reject(error);
-      }
+      const refreshToken = getRefreshTokenFromCookie(); // see below
 
       try {
-        const response = await axios.post(`${apiUrl}/users/token/refresh/`, { refresh: refreshToken });
-        const newAccessToken = response.data.access;
+        const response = await axios.get(
+          `http://localhost:8000/auth/refresh-tokens?refresh-token=${refreshToken}`
+        );
 
-        localStorage.setItem('accessToken', newAccessToken);
-        api.defaults.headers.common.Authorization = `Bearer ${newAccessToken}`;
+        const newAccessToken = response.data.tokens.accessToken;
+        const newRefreshToken = response.data.tokens.refreshToken;
+
+        useAuthStore.getState().setAccessToken(newAccessToken);
+        setRefreshTokenInCookie(newRefreshToken); // see below
+
         processQueue(null, newAccessToken);
 
-        if (originalRequest.headers) {
-          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-        }
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return api(originalRequest);
-      } catch (refreshError) {
-        processQueue(refreshError, null);
-        redirectToLogin();
-        return Promise.reject(refreshError);
+      } catch (err) {
+        processQueue(err, null);
+        useAuthStore.getState().clearAuth();
+        return Promise.reject(err);
       } finally {
         isRefreshing = false;
       }
     }
-
-    return Promise.reject(error);
+    return Promise.reject(err);
   }
 );
 
-function redirectToLogin() {
-  localStorage.clear();
-  window.location.href = '/login';
+// helpers for cookie (simple example)
+function getRefreshTokenFromCookie(): string | null {
+  if (typeof document !== 'undefined') {
+    const match = document.cookie.match(/refreshToken=([^;]+)/);
+    return match?.[1] ?? null;
+  }
+  return null;
 }
 
-export default api;
+function setRefreshTokenInCookie(token: string) {
+  if (typeof document !== 'undefined') {
+    document.cookie = `refreshToken=${token}; path=/; HttpOnly; Secure`;
+  }
+}
