@@ -1,7 +1,7 @@
 // app/actions/form-actions.ts
 'use server';
 
-import {api} from '@/hooks/useApi'; // Adjust path to your Axios instance
+import api from '@/hooks/useApi'; // Adjust path to your Axios instance
 import { cookies } from 'next/headers';
 
 interface LoginData {

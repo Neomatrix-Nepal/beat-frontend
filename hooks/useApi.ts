@@ -16,7 +16,7 @@ const processQueue = (error: any, token: string | null = null) => {
   failedQueue = [];
 };
 
-export const api = axios.create({
+ const api = axios.create({
   baseURL: 'http://localhost:8000',
   withCredentials: true, // Ensure cookies are sent with requests
 });
@@ -79,3 +79,6 @@ api.interceptors.response.use(
     return Promise.reject(err);
   }
 );
+
+
+export default api;
