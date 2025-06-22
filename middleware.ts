@@ -13,7 +13,7 @@ const role = request.cookies.get('userRole')?.value;
   (
     !refreshToken ||    // no refresh token
     !role ||            // no role cookie
-    role !== 'admin'    // role is not admin
+    role !== 'customer'    // role is not admin
   )
 )  {
     const url = request.nextUrl.clone();

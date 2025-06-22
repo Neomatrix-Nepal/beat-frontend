@@ -1,24 +1,18 @@
+// components/table/DripsTable.tsx
 import React from "react";
 import { Trash } from "lucide-react";
 import { showDeleteToast, showUpdateToast } from "../../lib/util";
 import bin from "@/image/tablevector/bin.png";
 import edit from "@/image/tablevector/edit.png";
 import Image from "next/image";
-interface Drip {
-  id: string;
-  title: string;
-  price: number;
-  size: string;
-  uploadDate: string;
-  selected: boolean;
-}
+import { Drip } from "@/types/drip";
 
 interface DripsTableProps {
   drips: Drip[];
   selectAll: boolean;
   onSelectAll: () => void;
-  onSelectDrip: (id: string) => void;
-  onDeleteDrip: (id: string) => void;
+  onSelectDrip: (id: number) => void;
+  onDeleteDrip: (id: number) => void;
 }
 
 export const DripsTable: React.FC<DripsTableProps> = ({
@@ -28,10 +22,6 @@ export const DripsTable: React.FC<DripsTableProps> = ({
   onSelectDrip,
   onDeleteDrip,
 }) => {
-  function onDeleteBeat(id: any) {
-    throw new Error("Function not implemented.");
-  }
-
   return (
     <div className="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden font-michroma">
       {/* Desktop Table */}
@@ -40,12 +30,17 @@ export const DripsTable: React.FC<DripsTableProps> = ({
           <thead className="bg-slate-700/50 border-b border-slate-600">
             <tr>
               <th className="text-left p-4 w-12">
-                
+                <input
+                  type="checkbox"
+                  checked={selectAll}
+                  onChange={onSelectAll}
+                  className="w-4 h-4 text-purple-600 bg-slate-700 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
+                />
               </th>
               <th className="text-left p-4 text-slate-300 font-semibold">
-                Title
+                Name
               </th>
-              <th className="text-left p-4 text-slate-300 font-semibold">Id</th>
+              <th className="text-left p-4 text-slate-300 font-semibold">ID</th>
               <th className="text-left p-4 text-slate-300 font-semibold">
                 Price
               </th>
@@ -53,7 +48,7 @@ export const DripsTable: React.FC<DripsTableProps> = ({
                 Size
               </th>
               <th className="text-left p-4 text-slate-300 font-semibold">
-                Upload Date
+                Uploaded At
               </th>
               <th className="text-left p-4 text-slate-300 font-semibold">
                 Actions
@@ -71,37 +66,36 @@ export const DripsTable: React.FC<DripsTableProps> = ({
                 <td className="p-4">
                   <input
                     type="checkbox"
-                    checked={drip.selected}
+                    checked={drip.selected || false}
                     onChange={() => onSelectDrip(drip.id)}
                     className="w-4 h-4 text-purple-600 bg-slate-700 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
                   />
                 </td>
-                <td className="p-4 text-white font-medium">{drip.title}</td>
+                <td className="p-4 text-white font-medium">{drip.name}</td>
                 <td className="p-4 text-slate-300">{drip.id}</td>
                 <td className="p-4 text-white font-semibold">${drip.price}</td>
                 <td className="p-4">
-                  <span
-                    className={`px-3 py-1 rounded-full  text-md font-medium     || 'bg-gray-500/20 text-white border-gray-500/30'}`}
-                  >
+                  <span className="px-3 py-1 rounded-full text-md font-medium bg-gray-500/20 text-white border-gray-500/30">
                     {drip.size}
                   </span>
                 </td>
-                <td className="p-4 text-slate-400">{drip.uploadDate}</td>
+                <td className="p-4 text-slate-400">
+                  {new Date(drip.created_at).toLocaleDateString()}
+                </td>
                 <td className="p-4">
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={() => {
-                       showUpdateToast("xxx", "yyy","zzz")
-                      }}
+                      onClick={() =>
+                        showUpdateToast("Product", drip.name, "updated")
+                      }
                       className="p-2 text-purple-400 bg-foreground hover:bg-purple-500/20 rounded-lg transition-colors"
                     >
                       <Image src={edit} alt="Edit" width={16} height={16} />
                     </button>
-
                     <button
                       onClick={() => {
-                        // onDeleteBeat(beat.id);
-                         showDeleteToast("yyy", "xxx","zzz");
+                        onDeleteDrip(drip.id);
+  showDeleteToast("Drip sucessfully deleted", "Deleted", "show all");
                       }}
                       className="p-2 text-red-400 bg-foreground hover:bg-red-500/20 rounded-lg transition-colors"
                     >
@@ -126,32 +120,33 @@ export const DripsTable: React.FC<DripsTableProps> = ({
               <div className="flex items-center gap-3">
                 <input
                   type="checkbox"
-                  checked={drip.selected}
+                  checked={drip.selected || false}
                   onChange={() => onSelectDrip(drip.id)}
                   className="w-4 h-4 text-purple-600 bg-slate-700 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
                 />
                 <div>
-                  <h3 className="text-white font-medium">{drip.title}</h3>
+                  <h3 className="text-white font-medium">{drip.name}</h3>
                   <p className="text-slate-400 text-sm">{drip.id}</p>
                 </div>
               </div>
               <span className="text-white font-semibold">${drip.price}</span>
             </div>
-
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <span
-                  className={`px-3 py-1 rounded-full text-xs font-medium     || 'bg-gray-500/20 text-white border-gray-500/30'}`}
-                >
+                <span className="px-3 py-1 rounded-full text-xs font-medium bg-gray-500/20 text-white border-gray-500/30">
                   {drip.size}
                 </span>
                 <span className="text-slate-400 text-sm">
-                  {drip.uploadDate}
+                  {new Date(drip.created_at).toLocaleDateString()}
                 </span>
               </div>
-
               <div className="flex items-center gap-2">
-                <button className="p-2 text-purple-400 hover:bg-purple-500/20 rounded-lg transition-colors">
+                <button
+                  onClick={() =>
+                    showUpdateToast("Product", drip.name, "updated")
+                  }
+                  className="p-2 text-purple-400 hover:bg-purple-500/20 rounded-lg transition-colors"
+                >
                   <svg
                     width="16"
                     height="16"
@@ -176,7 +171,11 @@ export const DripsTable: React.FC<DripsTableProps> = ({
                   </svg>
                 </button>
                 <button
-                  onClick={() => onDeleteDrip(drip.id)}
+                 onClick={() => {
+  onDeleteDrip(drip.id);
+  showDeleteToast("Drip sucessfully deleted", "Deleted", "show all");
+}}
+
                   className="p-2 text-red-400 hover:bg-red-500/20 rounded-lg transition-colors"
                 >
                   <Trash size={16} />

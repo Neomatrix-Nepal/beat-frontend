@@ -1,22 +1,26 @@
 import React, { useState } from "react";
 import { Eye, Check, Trash } from "lucide-react";
-import { showDeleteToast, showUpdateToast } from "../../lib/util";
-import bin from "@/image/tablevector/bin.png";
-import check from "@/image/tablevector/check.png";
-import whitecheck from "@/image/tablevector/whitecheck.png";
-
 import { IoMdEye } from "react-icons/io";
-
 import Image from "next/image";
 import PopupWrapper from "../shared/PopupWrapper";
-import CustomerOrderDetails from "../dialog/customerOrderDialog";
 import MixingProSubmissionDetails from "../dialog/mixingProDialog";
-export interface MixingProEntry {
-  id: string;
+import bin from "@/image/tablevector/bin.png";
+import whitecheck from "@/image/tablevector/whitecheck.png";
+import { showDeleteToast } from "@/lib/util";
+
+interface MixingProEntry {
+  id: number;
+  email: string;
   name: string;
-  link: string;
-  uploadDate: string;
-  status: "Pending" | "Sent";
+  musicGenre: string;
+  musicStyle: string;
+  description: string;
+  referenceTrack: string;
+  additionalInstructions: string;
+  status: "pending" | "sent";
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
   selected: boolean;
 }
 
@@ -24,43 +28,39 @@ interface MixingProTableProps {
   entries: MixingProEntry[];
   selectAll: boolean;
   onSelectAll: () => void;
-  onSelectEntry: (id: string) => void;
-  onDeleteEntry: (id: string) => void;
+  onSelectEntry: (id: number) => void;
+  onDeleteEntry: (id: number) => void;
+  onMarkAsSent: (id: number) => void;
 }
 
 const statusStyles = {
-  Pending: "bg-yellow-700/20 text-yellow-400 border-yellow-700/30",
-  Sent: "bg-green-800/20 text-green-400 border-green-800/30",
+  pending: "bg-yellow-700/20 text-yellow-400 border-yellow-700/30",
+  sent: "bg-green-800/20 text-green-400 border-green-800/30",
 };
 
-export interface CustomerOrderEntry {
-  id: string;
-  customerName: string;
-  product: string;
-  price: string;
-  orderDate: string;
-  status: "Paid" | "Pending" | "Failed";
-  selected: boolean;
-}
 export const MixingProTable: React.FC<MixingProTableProps> = ({
   entries,
   selectAll,
   onSelectAll,
   onSelectEntry,
   onDeleteEntry,
+  onMarkAsSent,
 }) => {
-    const [isPopupOpen, setIsPopupOpen] = useState(false);
-    const [selectedEntry, setSelectedEntry] = useState<CustomerOrderEntry | null>(null);
-  
-    const handleViewClick = () => {
-      //setSelectedEntry(entry);
-      setIsPopupOpen(true);
-    };
-  
-    const handleClosePopup = () => {
-      setIsPopupOpen(false);
-      setSelectedEntry(null);
-    };
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [selectedEntry, setSelectedEntry] = useState<MixingProEntry | null>(
+    null
+  );
+
+  const handleViewClick = (entry: MixingProEntry) => {
+    setSelectedEntry(entry);
+    setIsPopupOpen(true);
+  };
+
+  const handleClosePopup = () => {
+    setIsPopupOpen(false);
+    setSelectedEntry(null);
+  };
+
   return (
     <div className="bg-[#101828] rounded-xl border border-[#1D2939] overflow-hidden font-michroma">
       {/* Desktop Table */}
@@ -68,11 +68,19 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
         <table className="w-full text-sm">
           <thead className="bg-[#1A2233] text-[#E4E4E7] border-b border-[#2C3A4F]">
             <tr>
-              <th className="p-4 w-10"></th>
+              <th className="p-4 w-10">
+                <input
+                  type="checkbox"
+                  checked={selectAll}
+                  onChange={onSelectAll}
+                  className="w-4 h-4 text-purple-600 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
+                />
+              </th>
               <th className="text-left p-4">Name</th>
-              <th className="text-left p-4">Uploaded Link</th>
+              <th className="text-left p-4">Email</th>
+              <th className="text-left p-4">Music Genre</th>
               <th className="text-left p-4">Upload Date</th>
-              <th className=" p-4 text-center">Status</th>
+              <th className="text-center p-4">Status</th>
               <th className="text-left p-4">Actions</th>
             </tr>
           </thead>
@@ -93,39 +101,31 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
                   />
                 </td>
                 <td className="p-4 text-white font-medium">{entry.name}</td>
-                <td className="p-4 text-blue-400 underline">
-                  <a
-                    href={entry.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {entry.link}
-                  </a>
+                <td className="p-4 text-white">{entry.email}</td>
+                <td className="p-4 text-white">{entry.musicGenre}</td>
+                <td className="p-4 text-slate-400">
+                  {new Date(entry.createdAt).toLocaleDateString()}
                 </td>
-                <td className="p-4 text-slate-400">{entry.uploadDate}</td>
-                <td className="p-4     text-center">
+                <td className="p-4 text-center">
                   <div
-                    className={`   py-2 rounded-sm text-md  font-medium border ${
+                    className={`py-2 rounded-sm text-md font-medium border ${
                       statusStyles[entry.status]
                     }`}
                   >
-                    {entry.status}
+                    {entry.status.charAt(0).toUpperCase() +
+                      entry.status.slice(1)}
                   </div>
                 </td>
                 <td className="p-4">
                   <div className="flex items-center gap-2">
-                    <button 
-                    onClick={() => handleViewClick()}
-
-                                          className="p-2
-                      text-white  bg-foreground hover:bg-green-500/20 rounded-lg transition-colors">
+                    <button
+                      onClick={() => handleViewClick(entry)}
+                      className="p-2 text-white bg-foreground hover:bg-green-500/20 rounded-lg transition-colors"
+                    >
                       <IoMdEye size={16} />
                     </button>
-
                     <button
-                      onClick={() => {
- 
-                      }}
+                      onClick={() => onMarkAsSent(entry.id)}
                       className="p-2 bg-foreground hover:bg-purple-500/20 rounded-lg transition-colors"
                     >
                       <Image
@@ -133,13 +133,17 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
                         alt="check"
                         width={14}
                         height={14}
-                        className=" m-0.5 my-1"
+                        className="m-0.5 my-1"
                       />
                     </button>
-
                     <button
                       onClick={() => {
-   
+                        onDeleteEntry(entry.id);
+                        showDeleteToast(
+                          "order sucessfully deleted",
+                          "Deleted",
+                          "show all"
+                        );
                       }}
                       className="p-2 text-red-400 bg-foreground hover:bg-red-500/20 rounded-lg transition-colors"
                     >
@@ -155,7 +159,7 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
 
       {/* Mobile Cards */}
       <div className="lg:hidden space-y-4 p-4">
-        {entries.map((entry, index) => (
+        {entries.map((entry) => (
           <div
             key={entry.id}
             className="bg-[#1A1F2E] rounded-lg p-4 border border-[#2C3A4F]"
@@ -170,14 +174,8 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
                 />
                 <div>
                   <h3 className="text-white font-medium">{entry.name}</h3>
-                  <a
-                    href={entry.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-400 underline text-sm"
-                  >
-                    View Link
-                  </a>
+                  <p className="text-white text-sm">{entry.email}</p>
+                  <p className="text-white text-sm">{entry.musicGenre}</p>
                 </div>
               </div>
               <span
@@ -185,30 +183,31 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
                   statusStyles[entry.status]
                 }`}
               >
-                {entry.status}
+                {entry.status.charAt(0).toUpperCase() + entry.status.slice(1)}
               </span>
             </div>
 
             <div className="flex items-center justify-between mt-2">
-              <span className="text-slate-400 text-sm">{entry.uploadDate}</span>
-
+              <span className="text-slate-400 text-sm">
+                {new Date(entry.createdAt).toLocaleDateString()}
+              </span>
               <div className="flex items-center gap-2">
                 <button
+                  onClick={() => handleViewClick(entry)}
                   className="p-2 rounded-lg text-white hover:bg-slate-600/30 transition-colors"
                   title="View"
                 >
                   <IoMdEye size={16} />
                 </button>
                 <button
-                   className="p-2 rounded-lg text-green-400 hover:bg-green-600/20 transition-colors"
+                  onClick={() => onMarkAsSent(entry.id)}
+                  className="p-2 rounded-lg text-green-400 hover:bg-green-600/20 transition-colors"
                   title="Mark Sent"
                 >
                   <Check size={16} />
                 </button>
                 <button
-                  onClick={() => {
-                    onDeleteEntry(entry.id);
-                   }}
+                  onClick={() => onDeleteEntry(entry.id)}
                   className="p-2 rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                   title="Delete"
                 >
@@ -219,8 +218,12 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
           </div>
         ))}
       </div>
-      <PopupWrapper isOpen={isPopupOpen} >
-        <MixingProSubmissionDetails onClose={handleClosePopup}/>
+
+      <PopupWrapper isOpen={isPopupOpen}>
+        <MixingProSubmissionDetails
+          entry={selectedEntry}
+          onClose={handleClosePopup}
+        />
       </PopupWrapper>
     </div>
   );

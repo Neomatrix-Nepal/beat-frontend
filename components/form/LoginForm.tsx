@@ -28,9 +28,9 @@ const [email, setEmail] = useState('');
     if (result.success && result.accessToken && result.user) {
       
 
-  document.cookie = `userRole=${result.user.roles[0]}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Strict`;      setAccessToken(result.accessToken)
+  document.cookie = `userRole=${result.user.roles}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Strict`;      setAccessToken(result.accessToken)
       setUser(result.user);
-      router.push(result.redirect || '/dashboard');
+      router.push(result.redirect || '/');
     } else {
       setError(result.error || 'Login failed');
     }
