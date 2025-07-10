@@ -15,8 +15,8 @@ interface MixingProEntry {
   id: number;
   email: string;
   name: string;
-  musicGenre: string;
-  musicStyle: string;
+  musicGenre: string | null;
+  musicStyle: string | null;
   description: string;
   referenceTrack: string;
   additionalInstructions: string;
@@ -25,12 +25,17 @@ interface MixingProEntry {
   updatedAt: string;
   deletedAt: string | null;
   selected: boolean;
+  packages: {
+    id: number;
+    name: string;
+    price: string;
+  }[];
 }
 
 interface MixingProSubmissionDetailsProps {
   entry: MixingProEntry | null;
   onClose: () => void;
-  onMarkAsCompleted?: (id: number) => void; // Optional callback for marking as completed
+  onMarkAsCompleted?: (id: number) => void;
 }
 
 export default function MixingProSubmissionDetails({
@@ -41,11 +46,11 @@ export default function MixingProSubmissionDetails({
   if (!entry) return null;
 
   // Fallbacks for fields not present in backend data
-  const avatar = "https://i.pravatar.cc/150?img=1"; // Placeholder avatar
-  const basePrice = 0; // Default base price if not provided
-  const packages = []; // Empty packages array since not provided in backend
+  const avatar = "https://i.pravatar.cc/150?img=1";
+  const basePrice = 149.99; // Default base price from image
 
-  const total = (basePrice).toFixed(2); // Total is just basePrice since no packages
+   const packageTotal = entry.packages.reduce((sum, pkg) => sum + parseFloat(pkg.price || "0"), 0);
+  const total = (basePrice + packageTotal).toFixed(2);
 
   const handleMarkAsCompleted = () => {
     if (onMarkAsCompleted && entry.status !== "sent") {
@@ -82,8 +87,8 @@ export default function MixingProSubmissionDetails({
               <p className="text-sm text-gray-300">{entry.email}</p>
             </div>
           </div>
-          <InfoRow icon={headset.src} label="Music Genre" value={entry.musicGenre} />
-          <InfoRow icon={editor.src} label="Preferred Mixing Style" value={entry.musicStyle} />
+          <InfoRow icon={headset.src} label="Music Genre" value={entry.musicGenre || "N/A"} />
+          <InfoRow icon={editor.src} label="Preferred Mixing Style" value={entry.musicStyle || "N/A"} />
           <InfoRow icon={mic.src} label="Music Needs" value={entry.description} />
           <InfoRow
             icon={link.src}
@@ -98,29 +103,29 @@ export default function MixingProSubmissionDetails({
         </div>
 
         {/* Package Info Panel */}
-        {/* <div className="bg-[#1d2733] p-6 rounded-lg space-y-2">
+        <div className="bg-[#1d2733] p-6 rounded-lg space-y-2">
           <h3 className="text-center text-[#00e08f] text-lg mb-4">Mixing Package</h3>
           <InfoRow label="Base Package" value={`$${basePrice.toFixed(2)}`} />
-          {packages.length > 0 ? (
-            <ul className="space-y-2 text-sm text-gray-300">
-              {packages.map((pkg, index) => (
-                <li className="flex justify-between" key={index}>
-                  <div className="flex items-center gap-2">
-                    <FaCheckCircle className="text-green-400" />
-                    <span>{pkg.name}</span>
-                  </div>
-                  <span>{pkg.price}</span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-sm text-gray-300">No additional packages selected.</p>
-          )}
+          <ul className="space-y-2 text-sm text-gray-300">
+            {entry.packages.map((pkg, index) => (
+              <li className="flex justify-between" key={index}>
+                <div className="flex items-center gap-2">
+                  <FaCheckCircle className="text-green-400" />
+                  <span>{pkg.name}</span>
+                </div>
+                <span>{pkg.price}</span>
+              </li>
+            ))}
+            <li className="flex justify-between">
+              <div className="flex items-center gap-2">
+                </div>
+             </li>
+          </ul>
           <div className="mt-4 border-t border-gray-600 pt-3 flex justify-between font-semibold text-white">
             <span>Total:</span>
             <span>${total}</span>
           </div>
-        </div> */}
+        </div>
       </div>
 
       {/* Action Button */}

@@ -99,27 +99,16 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
                 <td className="p-4 text-slate-400">{beat.uploadDate}</td>
                 <td className="p-4">
                   <div className="flex items-center gap-2">
-                    <button className="p-2   bg-foreground hover:bg-green-500/20 rounded-lg transition-colors">
-                      <Image src={play} alt="Play" width={16} height={16} />
-                    </button>
-
-                    <button
-                      onClick={() => {
-                       showUpdateToast("xxx", "yyy","zzz")
-                      }}
-                      className="p-2 text-purple-400 bg-foreground hover:bg-purple-500/20 rounded-lg transition-colors"
-                    >
-                      <Image src={edit} alt="Edit" width={16} height={16} />
-                    </button>
+                     
 
                     <button
                       onClick={() => {
                         onDeleteBeat(beat.id);
                          showDeleteToast("yyy", "xxx","zzz");
                       }}
-                      className="p-2 text-red-400 bg-foreground hover:bg-red-500/20 rounded-lg transition-colors"
+                      className="p-2 text-white bg-red-600 hover:text-red-600 hover:bg-white border-2  border-white hover:border-red-600 rounded-lg transition-colors"
                     >
-                      <Image src={bin} alt="Delete" width={16} height={16} />
+                       Delete
                     </button>
                   </div>
                 </td>

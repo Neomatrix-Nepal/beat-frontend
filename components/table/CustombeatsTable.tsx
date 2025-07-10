@@ -1,54 +1,47 @@
 import React, { useState } from "react";
-import { Eye, Check, Trash } from "lucide-react";
-import { showDeleteToast, showUpdateToast } from "../../lib/util";
+import { IoMdEye } from "react-icons/io";
 import Image from "next/image";
 import bin from "@/image/tablevector/bin.png";
 import whitecheck from "@/image/tablevector/whitecheck.png";
-import { IoMdEye } from "react-icons/io";
+import { showDeleteToast, showUpdateToast } from "../../lib/util";
 import PopupWrapper from "../shared/PopupWrapper";
-import MixingProSubmissionDetails from "../dialog/mixingProDialog";
 import BeatsDialogDetails from "../dialog/beatsDialog";
-export interface MixingProEntry {
-  id: string;
-  name: string;
-  link: string;
-  uploadDate: string;
-  status: "Pending" | "Sent";
-  selected: boolean;
-}
+import { CustomBeat, updateCustomBeatStatus } from "@/app/actions/customs-beats-actions";
+ 
 
-interface MixingProTableProps {
-  entries: MixingProEntry[];
+interface CustombeatsTableProps {
+  entries: CustomBeat[];
   selectAll: boolean;
   onSelectAll: () => void;
-  onSelectEntry: (id: string) => void;
+  onSelectEntry: (id: number) => void;
   onDeleteEntry: (id: string) => void;
 }
 
 const statusStyles = {
-  Pending: "bg-yellow-700/20 text-yellow-400 border-yellow-700/30",
-  Sent: "bg-green-800/20 text-green-400 border-green-800/30",
+  pending: "bg-yellow-700/20 text-yellow-400 border-yellow-700/30",
+  sent: "bg-green-800/20 text-green-400 border-green-800/30",
 };
 
-export const CustombeatsTable: React.FC<MixingProTableProps> = ({
+export const CustombeatsTable: React.FC<CustombeatsTableProps> = ({
   entries,
   selectAll,
   onSelectAll,
   onSelectEntry,
   onDeleteEntry,
 }) => {
-   const [isPopupOpen, setIsPopupOpen] = useState(false);
-      const [selectedEntry, setSelectedEntry] = useState<MixingProEntry | null>(null);
-    
-      const handleViewClick = () => {
-        //setSelectedEntry(entry);
-        setIsPopupOpen(true);
-      };
-    
-      const handleClosePopup = () => {
-        setIsPopupOpen(false);
-        setSelectedEntry(null);
-      };
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [selectedEntry, setSelectedEntry] = useState<CustomBeat | null>(null);
+
+  const handleViewClick = (entry: CustomBeat) => {
+    setSelectedEntry(entry);
+    setIsPopupOpen(true);
+  };
+
+  const handleClosePopup = () => {
+    setIsPopupOpen(false);
+    setSelectedEntry(null);
+  };
+
   return (
     <div className="bg-[#101828] rounded-xl border border-[#1D2939] overflow-hidden font-michroma">
       {/* Desktop Table */}
@@ -58,9 +51,9 @@ export const CustombeatsTable: React.FC<MixingProTableProps> = ({
             <tr>
               <th className="p-4 w-10"></th>
               <th className="text-left p-4">Name</th>
-              <th className="text-left p-4">Refrence Link</th>
+              <th className="text-left p-4">Reference Track</th>
               <th className="text-left p-4">Upload Date</th>
-              <th className=" p-4 text-center">Status</th>
+              <th className="p-4 text-center">Status</th>
               <th className="text-left p-4">Actions</th>
             </tr>
           </thead>
@@ -75,7 +68,7 @@ export const CustombeatsTable: React.FC<MixingProTableProps> = ({
                 <td className="p-4">
                   <input
                     type="checkbox"
-                    checked={entry.selected}
+                    checked={entry.id}
                     onChange={() => onSelectEntry(entry.id)}
                     className="w-4 h-4 text-purple-600 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
                   />
@@ -83,17 +76,19 @@ export const CustombeatsTable: React.FC<MixingProTableProps> = ({
                 <td className="p-4 text-white font-medium">{entry.name}</td>
                 <td className="p-4 text-blue-400 underline">
                   <a
-                    href={entry.link}
+                    href={entry.referenceTrack}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    {entry.link}
+                    {entry.referenceTrack}
                   </a>
                 </td>
-                <td className="p-4 text-slate-400">{entry.uploadDate}</td>
-                <td className="p-4     text-center">
+                <td className="p-4 text-slate-400">
+                  {new Date(entry.createdAt).toLocaleDateString()}
+                </td>
+                <td className="p-4 text-center">
                   <div
-                    className={`   py-2 rounded-sm text-md  font-medium border ${
+                    className={`py-2 rounded-sm text-md font-medium border ${
                       statusStyles[entry.status]
                     }`}
                   >
@@ -103,15 +98,18 @@ export const CustombeatsTable: React.FC<MixingProTableProps> = ({
                 <td className="p-4">
                   <div className="flex items-center gap-2">
                     <button
-                                        onClick={() => handleViewClick()}
-
-                    className="p-2  text-white  bg-foreground hover:bg-green-500/20 rounded-lg transition-colors">
+                      onClick={() => handleViewClick(entry)}
+                      className="p-2 text-white bg-foreground hover:bg-green-500/20 rounded-lg transition-colors"
+                    >
                       <IoMdEye size={16} />
                     </button>
-
                     <button
                       onClick={() => {
-                       showUpdateToast("xxx", "yyy","zzz")
+                        updateCustomBeatStatus(entry.id, 'sent', (success) => {
+                          if (success) {
+                            showUpdateToast("Custom beat", "status updated", "success");
+                          }
+                        });
                       }}
                       className="p-2 bg-foreground hover:bg-purple-500/20 rounded-lg transition-colors"
                     >
@@ -120,14 +118,13 @@ export const CustombeatsTable: React.FC<MixingProTableProps> = ({
                         alt="check"
                         width={14}
                         height={14}
-                        className=" m-0.5 my-1"
+                        className="m-0.5 my-1"
                       />
                     </button>
-
                     <button
                       onClick={() => {
-                        //onDeleteBeat(beat.id);
-                        showDeleteToast("yyy", "xxx","zzz");
+                        onDeleteEntry(entry.id.toString());
+                        showDeleteToast("Custom beat", "deleted", "success");
                       }}
                       className="p-2 text-red-400 bg-foreground hover:bg-red-500/20 rounded-lg transition-colors"
                     >
@@ -159,7 +156,7 @@ export const CustombeatsTable: React.FC<MixingProTableProps> = ({
                 <div>
                   <h3 className="text-white font-medium">{entry.name}</h3>
                   <a
-                    href={entry.link}
+                    href={entry.referenceTrack}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-400 underline text-sm"
@@ -178,38 +175,51 @@ export const CustombeatsTable: React.FC<MixingProTableProps> = ({
             </div>
 
             <div className="flex items-center justify-between mt-2">
-              <span className="text-slate-400 text-sm">{entry.uploadDate}</span>
+              <span className="text-slate-400 text-sm">
+                {new Date(entry.createdAt).toLocaleDateString()}
+              </span>
 
               <div className="flex items-center gap-2">
                 <button
+                  onClick={() => handleViewClick(entry)}
                   className="p-2 rounded-lg text-white hover:bg-slate-600/30 transition-colors"
                   title="View"
                 >
-                  <Eye size={16} />
-                </button>
-                <button
-                  onClick={() =>showUpdateToast("xxx", "yyy","zzz")}
-                  className="p-2 rounded-lg text-green-400 hover:bg-green-600/20 transition-colors"
-                  title="Mark Sent"
-                >
-                  <Check size={16} />
+                  <IoMdEye size={16} />
                 </button>
                 <button
                   onClick={() => {
-                    onDeleteEntry(entry.id);
-  showDeleteToast("yyy", "xxx","zzz");                  }}
+                    updateCustomBeatStatus(entry.id, 'sent', (success) => {
+                      if (success) {
+                        showUpdateToast("Custom beat", "status updated", "success");
+                      }
+                    });
+                  }}
+                  className="p-2 rounded-lg text-green-400 hover:bg-green-600/20 transition-colors"
+                  title="Mark Sent"
+                >
+                  <Image src={whitecheck} alt="Check" width={16} height={16} />
+                </button>
+                <button
+                  onClick={() => {
+                    onDeleteEntry(entry.id.toString());
+                    showDeleteToast("Custom beat", "deleted", "success");
+                  }}
                   className="p-2 rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                   title="Delete"
                 >
-                  <Trash size={16} />
+                  <Image src={bin} alt="Delete" width={16} height={16} />
                 </button>
               </div>
             </div>
           </div>
         ))}
       </div>
-        <PopupWrapper isOpen={isPopupOpen} >
-        <BeatsDialogDetails onClose={handleClosePopup}/>
+      <PopupWrapper isOpen={isPopupOpen}>
+        <BeatsDialogDetails 
+          onClose={handleClosePopup}
+          beat={selectedEntry}
+        />
       </PopupWrapper>
     </div>
   );

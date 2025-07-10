@@ -1,72 +1,32 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { X } from "lucide-react";
-import { FaCheckCircle } from "react-icons/fa";
-import Image from "next/image";
 
+import { X } from "lucide-react";
+import Image from "next/image";
+import React from "react";
+import { FaCheckCircle } from "react-icons/fa";
+ 
+import { CustomBeat, updateCustomBeatStatus } from "@/app/actions/customs-beats-actions";
+import bpm from "@/image/verctor/bpm.png";
 import chat from "@/image/verctor/chat.png";
-import mic from "@/image/verctor/mic.png";
 import editor from "@/image/verctor/editor.png";
 import headset from "@/image/verctor/headset.png";
+import key from "@/image/verctor/key.png";
 import link from "@/image/verctor/link.png";
 import music from "@/image/verctor/music.png";
-import bpm from "@/image/verctor/bpm.png";
-import key from "@/image/verctor/key.png";
 
-type BeatSubmission = {
-  id: number;
-  name: string;
-  email: string;
-  avatar: string;
-  genre: string;
-  style: string;
-  needs: string;
-  fileLink: string;
-  instructions: string;
-  basePrice: number;
-  packages: {
-    name: string;
-    price: string;
-    included: boolean;
-  }[];
-};
+interface BeatsDialogDetailsProps {
+  onClose: () => void;
+  beat: CustomBeat | null;
+}
 
-export default function BeatsDialogDetails({ onClose }: { onClose: () => void }) {
-  const [submission, setSubmission] = useState<BeatSubmission | null>(null);
+export default function BeatsDialogDetails({ onClose, beat }: BeatsDialogDetailsProps) {
+  if (!beat) return null;
 
-  useEffect(() => {
-    const loadSubmissionData = async () => {
-      const result: BeatSubmission = {
-        id: 1,
-        name: "Ravi Shrestha",
-        email: "ravi@email.com",
-        avatar: "https://i.pravatar.cc/150?img=1",
-        genre: "Hip-Hop",
-        style: "Exciting",
-        needs: "140 BPM",
-        fileLink: "#",
-        instructions: "Add some echo in the second verse.",
-        basePrice: 199.99,
-        packages: [
-          { name: "Book a Studio Time", price: "$50", included: true },
-          { name: "Mixing Pro", price: "$149.99", included: true },
-          { name: "Extra Option", price: "TBD", included: false },
-        ],
-      };
-
-      setTimeout(() => setSubmission(result), 500);
-    };
-
-    loadSubmissionData();
-  }, []);
-
-  if (!submission) return null;
-
-  const totalPrice = submission.packages
+  const totalPrice = beat.packages
     .reduce((sum, pkg) => {
-      const num = parseFloat(pkg.price.replace("$", ""));
+      const num = parseFloat(pkg.price);
       return sum + (isNaN(num) ? 0 : num);
-    }, submission.basePrice)
+    }, 0)
     .toFixed(2);
 
   return (
@@ -92,44 +52,42 @@ export default function BeatsDialogDetails({ onClose }: { onClose: () => void })
         <div className="bg-[#1d2733] p-6 rounded-lg space-y-2">
           <h3 className="text-center text-[#00e08f] text-lg mb-4">Submission Information</h3>
           <div className="flex items-center gap-4 mb-4">
-            <img src={submission.avatar} alt="avatar" className="w-12 h-12 rounded-full" />
+            <div className="w-12 h-12 rounded-full bg-gray-500 flex items-center justify-center">
+              <span className="text-xl">{beat.name[0]}</span>
+            </div>
             <div>
-              <p className="text-md font-semibold text-[#ff5f5f]">{submission.name}</p>
-              <p className="text-xs text-gray-300">{submission.email}</p>
+              <p className="text-md font-semibold text-[#ff5f5f]">{beat.name}</p>
+              <p className="text-xs text-gray-300">{beat.email}</p>
             </div>
           </div>
-          <InfoRow icon={headset.src} label="Music Genre" value={submission.genre} />
-          <InfoRow icon={editor.src} label="Mood" value={submission.style} />
-          <InfoRow icon={bpm.src} label="BPM" value="140 BPM" />
-          <InfoRow icon={key.src} label="Song Key" value="C Minor" />
-          <InfoRow icon={music.src} label="Instruments" value="Piano, Drums, Guitar" />
+          <InfoRow icon={headset.src} label="Music Genre" value={beat.musicGenre || "Not specified"} />
+          <InfoRow icon={editor.src} label="Mood" value={beat.mood || "Not specified"} />
+          <InfoRow icon={bpm.src} label="BPM" value={beat.bpm.toString()} />
+          <InfoRow icon={key.src} label="Song Key" value={beat.songKey} />
+          <InfoRow icon={music.src} label="Instruments" value={beat.instruments.join(", ")} />
           <InfoRow
             icon={link.src}
             label="Reference Track"
             value={
-              <a href={submission.fileLink} className="text-[#74f9e0] underline">
+              <a href={beat.referenceTrack} className="text-[#74f9e0] underline">
                 Open File
               </a>
             }
           />
-          <InfoRow icon={chat.src} label="Additional Instructions" value={submission.instructions} />
+          <InfoRow icon={chat.src} label="Additional Instructions" value={beat.additionalInstructions} />
         </div>
 
         {/* Package Info Panel */}
         <div className="bg-[#1d2733] p-6 rounded-lg space-y-2">
           <h3 className="text-center text-[#00e08f] text-lg mb-4">Beat Package</h3>
-          <InfoRow
-            label="Base Package"
-            value={`$${submission.basePrice.toFixed(2)}`}
-          />
           <ul className="space-y-2 text-sm text-gray-300">
-            {submission.packages.map((pkg, index) => (
+            {beat.packages.map((pkg, index) => (
               <li className="flex justify-between items-center" key={index}>
                 <div className="flex items-center gap-2">
-                  {pkg.included && <FaCheckCircle className="text-[#74f9e0]" />}
+                  <FaCheckCircle className="text-[#74f9e0]" />
                   <span>{pkg.name}</span>
                 </div>
-                <span>{pkg.price}</span>
+                <span>${pkg.price}</span>
               </li>
             ))}
           </ul>
@@ -142,7 +100,16 @@ export default function BeatsDialogDetails({ onClose }: { onClose: () => void })
 
       {/* Action Button */}
       <div>
-        <button className="bg-[#00e08f] hover:bg-[#00c97e] text-black px-5 py-2 rounded-md font-semibold text-sm flex items-center gap-2">
+        <button 
+          onClick={() => {
+            updateCustomBeatStatus(beat.id, 'sent', (success) => {
+              if (success) {
+                onClose();
+              }
+            });
+          }}
+          className="bg-[#00e08f] hover:bg-[#00c97e] text-black px-5 py-2 rounded-md font-semibold text-sm flex items-center gap-2"
+        >
           <FaCheckCircle className="text-sm" />
           Mark as Completed
         </button>

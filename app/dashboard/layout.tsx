@@ -6,11 +6,11 @@ import { ReactNode } from "react";
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="flex min-h-screen">
-      <div className="sticky top-0 z-50 max-h-screen">
+    <div className="flex  ">
+      <div className="sticky  top-0 z-50  ">
         <DashboardSidebar />
       </div>
-      <div className="w-full">
+      <div className="w-full ">
         <DashboardHeader />
         <main className="w-full">{children}</main>
       </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { IoMdCheckmark } from "react-icons/io";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -12,52 +12,36 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { CustombeatsTable } from "@/components/table/CustombeatsTable";
-
-interface MixingProEntry {
-  id: string;
-  name: string;
-  link: string;
-  uploadDate: string;
-  status: "Pending" | "Sent";
-  selected: boolean;
-}
-
+import { CustomBeat, deleteCustomBeat, deleteMultipleCustomBeats, fetchCustomBeats } from "@/app/actions/customs-beats-actions";
+ 
 const BUTTON_CLASSES =
- "flex items-center gap-2 text-white font-michroma px-5 py-3 text-sm font-semibold rounded-lg bg-custom transition-transform transform hover:scale-105"
+  "flex items-center gap-2 text-white font-michroma px-5 py-3 text-sm font-semibold rounded-lg bg-custom transition-transform transform hover:scale-105";
+
 const CustomBeatsPage = () => {
   const router = useRouter();
   const itemsPerPage = 10;
-
-  const generateMockData = (count: number): MixingProEntry[] => {
-    const names = [
-      "Ravi Gupta",
-      "Aman Gupta",
-      "Rohil Mehra",
-      "Teki Shrestha",
-      "Midnight Dreams",
-      "Velvet Pulse",
-      "Sunset Mirage",
-      "Glass Waves",
-    ];
-    const statuses: MixingProEntry["status"][] = ["Pending", "Sent"];
-
-    return Array.from({ length: count }, (_, i) => ({
-      id: `${i + 1}`,
-      name: names[i % names.length],
-      link: "https://drive.gc",
-      uploadDate: `2024-05-${String(19 + (i % 10)).padStart(2, "0")}`,
-      status: statuses[i % statuses.length],
-      selected: false,
-    }));
-  };
-
-  const [uploads, setUploads] = useState<MixingProEntry[]>(generateMockData(50));
+  const [beats, setBeats] = useState<CustomBeat[]>([]);
   const [selectAll, setSelectAll] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const selectedCount = uploads.filter((entry) => entry.selected).length;
-  const totalPages = Math.ceil(uploads.length / itemsPerPage);
-  const visibleUploads = uploads.slice(
+  const fetchBeatsCallback = useCallback((response: any) => {
+    setBeats(response.data.map((beat: CustomBeat) => ({
+      ...beat,
+      selected: false
+    })));
+    setTotalPages(response.meta.totalPages);
+  }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
+    fetchCustomBeats(currentPage, itemsPerPage, fetchBeatsCallback)
+      .finally(() => setIsLoading(false));
+  }, [currentPage, fetchBeatsCallback]);
+
+  const selectedCount = beats.filter((entry) => entry.selected).length;
+  const visibleBeats = beats.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
@@ -65,23 +49,28 @@ const CustomBeatsPage = () => {
   const toggleSelectAll = () => {
     const newVal = !selectAll;
     setSelectAll(newVal);
-    setUploads(uploads.map((entry) => ({ ...entry, selected: newVal })));
+    setBeats(beats.map((entry) => ({ ...entry, selected: newVal })));
   };
 
-  const toggleSelectEntry = (id: string) => {
-    setUploads(
-      uploads.map((entry) =>
+  const toggleSelectEntry = (id: number) => {
+    setBeats(
+      beats.map((entry) =>
         entry.id === id ? { ...entry, selected: !entry.selected } : entry
       )
     );
   };
 
-  const deleteEntry = (id: string) => {
-    setUploads(uploads.filter((entry) => entry.id !== id));
-  };
-
   const deleteSelectedEntries = () => {
-    setUploads(uploads.filter((entry) => !entry.selected));
+    const selectedIds = beats
+      .filter((entry) => entry.selected)
+      .map((entry) => entry.id);
+    
+    deleteMultipleCustomBeats(selectedIds, (success) => {
+      if (success) {
+        fetchCustomBeats(currentPage, itemsPerPage, fetchBeatsCallback);
+        setSelectAll(false);
+      }
+    });
   };
 
   const goToPreviousPage = () => {
@@ -106,28 +95,35 @@ const CustomBeatsPage = () => {
               />
               <p className="text-white font-michroma">Select All</p>
             </div>
-                          {selectedCount >= 2 && (
-
-            <div className="flex gap-2">
-              <button className={BUTTON_CLASSES}>
-                <IoMdCheckmark size={20} />
-                Sent
-              </button>
+            {selectedCount >= 2 && (
+              <div className="flex gap-2">
+                <button className={BUTTON_CLASSES}>
+                  <IoMdCheckmark size={20} />
+                  Sent
+                </button>
                 <button onClick={deleteSelectedEntries} className={BUTTON_CLASSES}>
                   <RiDeleteBin6Line size={20} />
                   Delete
                 </button>
-             
-            </div> )}
+              </div>
+            )}
           </div>
 
-          <CustombeatsTable
-            entries={visibleUploads}
-            selectAll={selectAll}
-            onSelectAll={toggleSelectAll}
-            onSelectEntry={toggleSelectEntry}
-            onDeleteEntry={deleteEntry}
-          />
+          {isLoading ? (
+            <div className="text-white font-michroma text-center">Loading...</div>
+          ) : (
+            <CustombeatsTable
+              entries={visibleBeats}
+              selectAll={selectAll}
+              onSelectAll={toggleSelectAll}
+              onSelectEntry={toggleSelectEntry}
+              onDeleteEntry={(id: string) => {
+                deleteCustomBeat(Number(id), () => {
+                  fetchCustomBeats(currentPage, itemsPerPage, fetchBeatsCallback);
+                });
+              }}
+            />
+          )}
 
           <div className="mt-6 w-full font-michroma text-white flex justify-end items-center">
             <div className="flex">

@@ -1,10 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { useRouter } from "next/navigation";
-import { IoMdCheckmark } from "react-icons/io";
-import { RiDeleteBin6Line } from "react-icons/ri";
-import { Upload } from "lucide-react";
+import { MixingProTable } from "@/components/table/MixingProTable";
 import {
   Pagination,
   PaginationContent,
@@ -12,8 +8,10 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { MixingProTable } from "@/components/table/MixingProTable";
 import api from "@/hooks/useApi";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { RiDeleteBin6Line } from "react-icons/ri";
 
 interface MixingProEntry {
   id: number;
@@ -42,7 +40,7 @@ const MixingProPage = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const itemsPerPage = 2;
+  const itemsPerPage = 10;
 
   // Fetch mixing orders from API
   const fetchMixingOrders = useCallback(async (page: number) => {
@@ -171,15 +169,7 @@ const MixingProPage = () => {
                 </button>
               )}
             </div>
-            <div className="flex gap-2">
-              <button
-                onClick={() => router.push("/dashboard/mixing_pro/add_mixing")}
-                className="w-40 bg-custom text-white px-6 py-4 rounded-lg flex items-center gap-2 transition-all duration-200 transform hover:scale-105"
-              >
-                <Upload size={24} />
-                Upload
-              </button>
-            </div>
+            
           </div>
 
           {/* Table Display */}

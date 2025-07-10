@@ -69,18 +69,12 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
           <thead className="bg-[#1A2233] text-[#E4E4E7] border-b border-[#2C3A4F]">
             <tr>
               <th className="p-4 w-10">
-                <input
-                  type="checkbox"
-                  checked={selectAll}
-                  onChange={onSelectAll}
-                  className="w-4 h-4 text-purple-600 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
-                />
+             
               </th>
               <th className="text-left p-4">Name</th>
-              <th className="text-left p-4">Email</th>
-              <th className="text-left p-4">Music Genre</th>
-              <th className="text-left p-4">Upload Date</th>
-              <th className="text-center p-4">Status</th>
+              <th className=" pr-32 p-4">Uploaded Link</th>
+              <th className="text-left p-4">Uploaded Date</th>
+               <th className="text-center p-4">Status</th>
               <th className="text-left p-4">Actions</th>
             </tr>
           </thead>
@@ -101,9 +95,23 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
                   />
                 </td>
                 <td className="p-4 text-white font-medium">{entry.name}</td>
-                <td className="p-4 text-white">{entry.email}</td>
-                <td className="p-4 text-white">{entry.musicGenre}</td>
-                <td className="p-4 text-slate-400">
+                <td className="p-4   text-blue-400 "> 
+                  
+                  
+                   <a
+                    href={entry.referenceTrack}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {entry.referenceTrack}
+                
+                  
+                  
+                  
+                  
+                  
+                  </a></td>
+                 <td className="p-4 text-slate-400">
                   {new Date(entry.createdAt).toLocaleDateString()}
                 </td>
                 <td className="p-4 text-center">

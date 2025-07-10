@@ -1,25 +1,24 @@
 import React from "react";
 import { Eye, Check, Trash } from "lucide-react";
-import { showDeleteToast, showUpdateToast } from "../../lib/util";
 import Image from "next/image";
 import bin from "@/image/tablevector/bin.png";
 import whitecheck from "@/image/tablevector/whitecheck.png";
-import { IoMdEye } from "react-icons/io";
-export interface CreatorEntry {
-  id: string;
-  name: string; // Creator's Name
-  style: string; // Creator Style
-  socialMediaUrl: string; // Social Media URL
-  demoBeat: string; // Demo Beat
+import { CreatorEntry } from "@/app/actions/creator-actions";
+
+export interface FrontendCreatorEntry extends CreatorEntry {
+  name: string;
+  style: string;
+  socialMediaUrl: string;
   selected: boolean;
 }
 
 interface CreatorTableProps {
-  entries: CreatorEntry[];
+  entries: FrontendCreatorEntry[];
   selectAll: boolean;
   onSelectAll: () => void;
   onSelectEntry: (id: string) => void;
   onDeleteEntry: (id: string) => void;
+  onApproveEntry: (id: string) => void;
 }
 
 export const CreatorTable: React.FC<CreatorTableProps> = ({
@@ -28,6 +27,7 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
   onSelectAll,
   onSelectEntry,
   onDeleteEntry,
+  onApproveEntry,
 }) => {
   return (
     <div className="bg-[#101828] rounded-xl border border-[#1D2939] overflow-hidden font-michroma">
@@ -37,10 +37,15 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
           <thead className="bg-[#1A2233] text-[#E4E4E7] border-b border-[#2C3A4F]">
             <tr>
               <th className="p-4 w-10">
-                
+                <input
+                  type="checkbox"
+                  checked={selectAll}
+                  onChange={onSelectAll}
+                  className="w-4 h-4 text-purple-600 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
+                />
               </th>
               <th className="text-left p-4">Creator's Name</th>
-              <th className="text-left p-4">Creator Style</th>
+              <th className="text-left p-4">Producer Style</th>
               <th className="text-left p-4">Social Media URL</th>
               <th className="text-center p-4">Demo Beat</th>
               <th className="text-left p-4">Actions</th>
@@ -63,8 +68,8 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
                   />
                 </td>
                 <td className="p-4 text-white font-medium">{entry.name}</td>
-                <td className="p-4 text-blue-400">{entry.style}</td>
-                <td className="p-4 text-blue-400 underline">
+                <td className="p-4 pl-16 text-blue-400">{entry.style}</td>
+                <td className="p-4 pl-12 text-blue-400 underline">
                   <a
                     href={entry.socialMediaUrl}
                     target="_blank"
@@ -85,26 +90,22 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
                 <td className="p-4">
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={() => {
-                       showUpdateToast("xxx", "yyy","zzz")
-                      }}
+                      onClick={() => onApproveEntry(entry.id)}
                       className="p-2 bg-foreground hover:bg-purple-500/20 rounded-lg transition-colors"
+                      title="Approve"
                     >
                       <Image
                         src={whitecheck}
-                        alt="check"
+                        alt="Approve"
                         width={14}
                         height={14}
-                        className=" m-0.5 my-1"
+                        className="m-0.5 my-1"
                       />
                     </button>
-
                     <button
-                      onClick={() => {
-                        //onDeleteBeat(beat.id);
-                         showDeleteToast("yyy", "xxx","zzz");
-                      }}
+                      onClick={() => onDeleteEntry(entry.id)}
                       className="p-2 text-red-400 bg-foreground hover:bg-red-500/20 rounded-lg transition-colors"
+                      title="Delete"
                     >
                       <Image src={bin} alt="Delete" width={16} height={16} />
                     </button>
@@ -164,16 +165,14 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
                   <Eye size={16} />
                 </button>
                 <button
-                  onClick={() =>showUpdateToast("xxx", "yyy","zzz")}
+                  onClick={() => onApproveEntry(entry.id)}
                   className="p-2 rounded-lg text-green-400 hover:bg-green-600/20 transition-colors"
-                  title="Mark Sent"
+                  title="Approve"
                 >
                   <Check size={16} />
                 </button>
                 <button
-                  onClick={() => {
-                    onDeleteEntry(entry.id);
-  showDeleteToast("yyy", "xxx","zzz");                  }}
+                  onClick={() => onDeleteEntry(entry.id)}
                   className="p-2 rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                   title="Delete"
                 >

@@ -10,7 +10,7 @@ export default function Dashboard() {
   return (
     <AdminLayout>
    
-    <div className="p-6  bg-[#252525] space-y-6">
+    <div className="p-6    bg-[#252525] space-y-6">
       <StatsGrid />
       <ChartsSection />
       <LatestUploads />

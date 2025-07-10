@@ -2,10 +2,16 @@
 
 import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useAuthStore } from "@/store/authStore";
+import { logoutAction } from "@/app/actions/form-actions";
+import { useState } from "react";
 
 export function DashboardHeader() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { clearAuth } = useAuthStore();
+  const [isLoading, setIsLoading] = useState(false);
 
   // Extract last segment after last "/"
   const segment = pathname === '/' 
@@ -17,6 +23,26 @@ export function DashboardHeader() {
     .replace(/_/g, ' ')
     .replace(/\b\w/g, char => char.toUpperCase());
 
+  const handleLogout = async () => {
+    setIsLoading(true);
+    try {
+      const result = await logoutAction();
+      
+      if (result.success) {
+        // Clear Zustand store
+        clearAuth();
+        // Redirect to login page
+        router.push('/');
+      } else {
+        console.error('Logout failed:', result.error);
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <header className="relative p-4 bg-primary flex items-center justify-between">
       {/* Centered Title */}
@@ -26,9 +52,14 @@ export function DashboardHeader() {
 
       {/* Logout Button Right-Aligned */}
       <div className="ml-auto">
-        <Button variant="ghost" className="text-gray-300 hover:text-white">
+        <Button 
+          variant="ghost" 
+          className=" text-white hover:text-black hover:bg-white"
+          onClick={handleLogout}
+          disabled={isLoading}
+        >
           <LogOut className="w-4 h-4 mr-2" />
-          Logout
+          {isLoading ? 'Logging out...' : 'Logout'}
         </Button>
       </div>
     </header>

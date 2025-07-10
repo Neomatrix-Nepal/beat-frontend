@@ -11,9 +11,10 @@ const processQueue = (error: any, token: string | null = null) => {
   });
   failedQueue = [];
 };
+const baseURL = process.env.NEXT_PUBLIC_API_URL;
 
 const api = axios.create({
-  baseURL: 'http://localhost:8000',
+  baseURL,
   withCredentials: true, 
 });
 
@@ -47,7 +48,7 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const response = await axios.get('http://localhost:8000/auth/refresh-tokens', {
+        const response = await axios.get(`${baseURL}/auth/refresh-tokens`, {
           withCredentials: true,
         });
 

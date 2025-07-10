@@ -43,7 +43,32 @@ export async function loginAction(formData: LoginData) {
   }
 }
 
-export async function logoutAction() {
-  (await cookies()).delete('refreshToken');
-  return { success: true };
+ export async function logoutAction() {
+  try {
+    // Clear refresh token cookie
+    (await cookies()).set('refreshToken', '', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 0, // Immediately expire the cookie
+      path: '/',
+    });
+
+    // Clear user role cookie
+    (await cookies()).set('userRole', '', {
+      sameSite: 'strict',
+      maxAge: 0,
+      path: '/',
+    });
+
+    return {
+      success: true,
+      redirect: '/login',
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: 'Logout failed',
+    };
+  }
 }
