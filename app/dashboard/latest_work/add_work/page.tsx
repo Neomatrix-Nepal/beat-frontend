@@ -10,14 +10,9 @@ import { MdDelete } from "react-icons/md";
 import { FaUpload } from "react-icons/fa6";
 import logo from "@/image/logo.png";
 import { createLatestWork } from "@/app/actions/work-action";
-import { FaImage } from "react-icons/fa";
+ import { Platform } from "../update_work/page";
 
-export enum Platform {
-  YOUTUBE = "youtube",
-  SPOTIFY = "spotify",
-  VIMEO = "vimeo",
-  BEHANCE = "behance",
-}
+ 
 
 export interface FormData {
   title: string;
