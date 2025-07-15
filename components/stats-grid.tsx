@@ -17,7 +17,7 @@ const statsData = [
     valueColor: "text-[#fd79a8]",
   },
   {
-    title: "Total Earnings",
+    title: "Total Beats Earnings",
     value: "$250",
     icon: DollarSign,
     iconColor: "bg-[#fdcb6e]",
@@ -38,7 +38,7 @@ const statsData = [
     valueColor: "text-[#a29bfe]",
   },
   {
-    title: "Total Earnings",
+    title: "Total Drips Earnings",
     value: "$50",
     icon: DollarSign,
     iconColor: "bg-[#00b894]",
@@ -59,7 +59,7 @@ const statsData = [
     valueColor: "text-[#a29bfe]",
   },
   {
-    title: "Total Earnings",
+    title: "Total Booking Earnings",
     value: "$50",
     icon: DollarSign,
     iconColor: "bg-[#00b894]",
