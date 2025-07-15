@@ -1,5 +1,6 @@
 "use client";
 
+import { MixingProEntry } from "@/components/dialog/mixingProDialog";
 import { MixingProTable } from "@/components/table/MixingProTable";
 import {
   Pagination,
@@ -13,21 +14,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
-interface MixingProEntry {
-  id: number;
-  email: string;
-  name: string;
-  musicGenre: string;
-  musicStyle: string;
-  description: string;
-  referenceTrack: string;
-  additionalInstructions: string;
-  status: "pending" | "sent";
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-  selected: boolean;
-}
+ 
 
 const BUTTON_CLASSES =
   "flex items-center gap-2 text-white px-5 py-3 font-michroma text-sm font-semibold rounded-lg bg-custom transition-transform transform hover:scale-105";

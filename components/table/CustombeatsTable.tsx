@@ -68,7 +68,8 @@ export const CustombeatsTable: React.FC<CustombeatsTableProps> = ({
                 <td className="p-4">
                   <input
                     type="checkbox"
-                    checked={entry.id}
+                    checked={entry.selected}
+
                     onChange={() => onSelectEntry(entry.id)}
                     className="w-4 h-4 text-purple-600 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
                   />

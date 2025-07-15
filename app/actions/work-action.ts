@@ -1,6 +1,6 @@
 import api from '@/hooks/useApi';
-import { Platform } from '../dashboard/latest_work/add_work/page';
-
+import { Platform } from '@/types/latest-work';
+ 
 interface Image {
   id: number;
   product_id: number | null;

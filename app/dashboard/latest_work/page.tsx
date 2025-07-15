@@ -13,8 +13,8 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { fetchLatestWorks, deleteLatestWork, deleteMultipleLatestWorks } from "@/app/actions/work-action"; // Import new functions
-import { Platform } from "../latest_work/add_work/page";
-import { showDeleteToast } from "@/lib/util"; // Import toast utility
+ import { showDeleteToast } from "@/lib/util"; // Import toast utility
+import { Platform } from "@/types/latest-work";
 
 interface Image {
   id: number;

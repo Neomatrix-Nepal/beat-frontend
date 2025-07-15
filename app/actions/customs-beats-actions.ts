@@ -1,7 +1,7 @@
 import api from '@/hooks/useApi';
 
 export interface CustomBeat {
-  selected: unknown;
+  selected: boolean;
   id: number;
   email: string;
   name: string;

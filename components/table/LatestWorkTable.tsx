@@ -4,8 +4,8 @@ import { showDeleteToast, showUpdateToast } from "@/lib/util";
 import bin from "@/image/tablevector/bin.png";
 import edit from "@/image/tablevector/edit.png";
 import Image from "next/image";
-import { Platform } from "@/app/dashboard/latest_work/add_work/page";
-
+import { Platform } from "@/types/latest-work";
+ 
 interface Image {
   id: number;
   product_id: number | null;

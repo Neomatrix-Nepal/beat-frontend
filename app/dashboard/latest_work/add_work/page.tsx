@@ -10,8 +10,8 @@ import { MdDelete } from "react-icons/md";
 import { FaUpload } from "react-icons/fa6";
 import logo from "@/image/logo.png";
 import { createLatestWork } from "@/app/actions/work-action";
- import { Platform } from "../update_work/page";
-
+import { Platform } from "@/types/latest-work";
+ 
  
 
 export interface FormData {

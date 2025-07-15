@@ -11,7 +11,7 @@ import link from "@/image/verctor/link.png";
 import icon from "@/image/verctor/hamburger.png";
 import Image from "next/image";
 
-interface MixingProEntry {
+export interface MixingProEntry {
   id: number;
   email: string;
   name: string;

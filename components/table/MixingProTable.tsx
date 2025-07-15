@@ -3,27 +3,12 @@ import { Eye, Check, Trash } from "lucide-react";
 import { IoMdEye } from "react-icons/io";
 import Image from "next/image";
 import PopupWrapper from "../shared/PopupWrapper";
-import MixingProSubmissionDetails from "../dialog/mixingProDialog";
+import MixingProSubmissionDetails, { MixingProEntry } from "../dialog/mixingProDialog";
 import bin from "@/image/tablevector/bin.png";
 import whitecheck from "@/image/tablevector/whitecheck.png";
 import { showDeleteToast } from "@/lib/util";
 
-interface MixingProEntry {
-  id: number;
-  email: string;
-  name: string;
-  musicGenre: string;
-  musicStyle: string;
-  description: string;
-  referenceTrack: string;
-  additionalInstructions: string;
-  status: "pending" | "sent";
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-  selected: boolean;
-}
-
+ 
 interface MixingProTableProps {
   entries: MixingProEntry[];
   selectAll: boolean;
