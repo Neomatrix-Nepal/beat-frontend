@@ -2,12 +2,8 @@
 'use server';
 
 import api from '@/hooks/useApi'; // Adjust path to your Axios instance
+ import { LoginData } from '@/types/auth';
 import { cookies } from 'next/headers';
-
-interface LoginData {
-  email: string;
-  password: string;
-}
 
 export async function loginAction(formData: LoginData) {
   try {

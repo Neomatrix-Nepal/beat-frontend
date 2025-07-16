@@ -1,26 +1,10 @@
 "use client";
 import Image from "next/image";
 import cat from "@/image/cat.png";
-import { NewsRoomProps } from "@/app/dashboard/blog/page"; // Update path accordingly
+import { NewsRoomProps, Propsdata } from "@/types";
+ 
 
-interface Props {
-  news: NewsRoomProps;
-  index: number;
-  editingId: number | null;
-  editableTitle: string;
-  editableDate: string;
-  editableContent: string;
-  editableImage: string;
-  onEditClick: (index: number, news: NewsRoomProps) => void;
-  onCancelEdit: () => void;
-  onSaveEdit: (index: number) => void;
-  onDelete: (index: number) => void;
-  onImageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onTitleChange: (val: string) => void;
-  onDateChange: (val: string) => void;
-  onContentChange: (val: string) => void;
-}
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export default function NewsCard({
   news,
@@ -37,8 +21,8 @@ export default function NewsCard({
   onImageChange,
   onTitleChange,
   onDateChange,
-  onContentChange
-}: Props) {
+  onContentChange,
+}: Propsdata) {
   const isEditing = editingId === index;
 
   return (
@@ -46,7 +30,9 @@ export default function NewsCard({
       {isEditing ? (
         <>
           <div className="mb-4">
-            <label className="block text-sm font-bold text-white mb-1">Title</label>
+            <label className="block text-sm font-bold text-white mb-1">
+              Title
+            </label>
             <input
               type="text"
               value={editableTitle}
@@ -56,7 +42,9 @@ export default function NewsCard({
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-bold text-white mb-1">Date</label>
+            <label className="block text-sm font-bold text-white mb-1">
+              Datesalxalmsxaksm
+            </label>
             <input
               type="date"
               value={editableDate}
@@ -66,26 +54,27 @@ export default function NewsCard({
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-bold text-white mb-1">Image</label>
+            <label className="block text-sm font-bold text-white mb-1">
+              Image
+            </label>
             <label
               htmlFor={`edit-image-upload-${index}`}
               className="  border-dashed border-white border-2 rounded-lg h-40 flex flex-col items-center justify-center cursor-pointer transition-colors text-gray-400"
             >
               {editableImage ? (
                 <Image
-                src={`${baseUrl}/${news.img}`} // Use base URL and normalize path
+                  src={`${baseUrl}/${news.img}`} // Use base URL and normalize path
                   alt="Preview"
                   width={200}
                   height={150}
                   className="max-h-full max-w-full object-contain"
                 />
- 
-
-
               ) : (
                 <>
                   <span className="mb-2">Click to upload or drag and drop</span>
-                  <span className="text-xs text-white">PNG, JPG, GIF up to 5MB</span>
+                  <span className="text-xs text-white">
+                    PNG, JPG, GIF up to 5MB
+                  </span>
                 </>
               )}
               <input
@@ -99,7 +88,9 @@ export default function NewsCard({
           </div>
 
           <div className="mb-4 ">
-            <label className="block text-sm font-bold text-white mb-1">Content</label>
+            <label className="block text-sm font-bold text-white mb-1">
+              Content
+            </label>
             <textarea
               value={editableContent}
               onChange={(e) => onContentChange(e.target.value)}
@@ -133,7 +124,6 @@ export default function NewsCard({
                 height={250}
                 className="rounded-lg object-cover w-full h-full"
               />
-               
             </div>
             <div className="text-white text-sm mb-2">{news.date}</div>
             <h3 className="font-bold text-white text-lg mb-2">{news.title}</h3>
@@ -166,19 +156,15 @@ export default function NewsCard({
             </div>
             <div className="flex-1">
               <div className="flex justify-between items-start">
-                <h3 className="font-bold text-white">{news.title}</h3>
+                <h3 className="font-bold text-4xl  capitalize text-white">{news.title}</h3>
                 <div className="text-white text-sm">{news.date}</div>
               </div>
-              
 
+              <div
+                className="[&>p]:text-lg [&>p]:text-white [&>p>i]:italic [&>p]:mb-6 [&>h1]:text-4xl [&>h1]:font-extrabold [&>h1]:white [&>h1]:mb-6 [&>h2]:text-3xl [&>h2]:font-bold [&>h2]:text-gray-800 [&>h2]:mb-5 [&>h3]:text-2xl [&>h3]:font-semibold [&>h3]:text-gray-800 [&>h3]:mb-4 [&>h4]:text-xl [&>h4]:font-semibold [&>h4]:text-white [&>h4]:mb-4 [&>img]:w-full [&>img]:rounded-lg [&>img]:my-6"
+                dangerouslySetInnerHTML={{ __html: news.des.split(" ").slice(0, 20).join(" ") }}
+              />
 
-
-  <div
-              className="[&>p]:text-lg [&>p]:text-white [&>p>i]:italic [&>p]:mb-6 [&>h1]:text-4xl [&>h1]:font-extrabold [&>h1]:white [&>h1]:mb-6 [&>h2]:text-3xl [&>h2]:font-bold [&>h2]:text-gray-800 [&>h2]:mb-5 [&>h3]:text-2xl [&>h3]:font-semibold [&>h3]:text-gray-800 [&>h3]:mb-4 [&>h4]:text-xl [&>h4]:font-semibold [&>h4]:text-white [&>h4]:mb-4 [&>img]:w-full [&>img]:rounded-lg [&>img]:my-6"
-              dangerouslySetInnerHTML={{ __html: news.des }}
-            />
-           
-              
               <div className="flex space-x-2 justify-start w-40 mt-4">
                 <button
                   onClick={() => onEditClick(index, news)}

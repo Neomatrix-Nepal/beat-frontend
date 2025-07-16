@@ -2,7 +2,8 @@
 import { useEffect, useState } from "react";
 import Head from "next/head";
 import Image from "next/image";
-import { fetchBlogs, Blog } from "@/app/actions/blog-actions";
+import { fetchBlogs } from "@/app/actions/blog-actions";
+import { Blog } from "@/types";
 
 interface FetchBlogsResponse {
   data: Blog[];

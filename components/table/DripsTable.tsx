@@ -95,7 +95,11 @@ export const DripsTable: React.FC<DripsTableProps> = ({
                     <button
                       onClick={() => {
                         onDeleteDrip(drip.id);
-  showDeleteToast("Drip sucessfully deleted", "Deleted", "show all");
+                        showDeleteToast(
+                          "Drip sucessfully deleted",
+                          "Deleted",
+                          "show all"
+                        );
                       }}
                       className="p-2 text-red-400 bg-foreground hover:bg-red-500/20 rounded-lg transition-colors"
                     >
@@ -171,11 +175,14 @@ export const DripsTable: React.FC<DripsTableProps> = ({
                   </svg>
                 </button>
                 <button
-                 onClick={() => {
-  onDeleteDrip(drip.id);
-  showDeleteToast("Drip sucessfully deleted", "Deleted", "show all");
-}}
-
+                  onClick={() => {
+                    onDeleteDrip(drip.id);
+                    showDeleteToast(
+                      "Drip sucessfully deleted",
+                      "Deleted",
+                      "show all"
+                    );
+                  }}
                   className="p-2 text-red-400 hover:bg-red-500/20 rounded-lg transition-colors"
                 >
                   <Trash size={16} />

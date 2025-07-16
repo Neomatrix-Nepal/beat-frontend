@@ -3,8 +3,8 @@ import { Eye, Check, Trash } from "lucide-react";
 import Image from "next/image";
 import bin from "@/image/tablevector/bin.png";
 import whitecheck from "@/image/tablevector/whitecheck.png";
-import { CreatorEntry } from "@/app/actions/creator-actions";
-
+import { CreatorEntry } from "@/types";
+ 
 export interface FrontendCreatorEntry extends CreatorEntry {
   name: string;
   style: string;

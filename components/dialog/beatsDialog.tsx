@@ -5,7 +5,7 @@ import Image from "next/image";
 import React from "react";
 import { FaCheckCircle } from "react-icons/fa";
  
-import { CustomBeat, updateCustomBeatStatus } from "@/app/actions/customs-beats-actions";
+import {   updateCustomBeatStatus } from "@/app/actions/customs-beats-actions";
 import bpm from "@/image/verctor/bpm.png";
 import chat from "@/image/verctor/chat.png";
 import editor from "@/image/verctor/editor.png";
@@ -13,6 +13,7 @@ import headset from "@/image/verctor/headset.png";
 import key from "@/image/verctor/key.png";
 import link from "@/image/verctor/link.png";
 import music from "@/image/verctor/music.png";
+import { CustomBeat } from "@/types";
 
 interface BeatsDialogDetailsProps {
   onClose: () => void;

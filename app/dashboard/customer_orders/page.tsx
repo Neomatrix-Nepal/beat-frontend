@@ -14,9 +14,10 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import {
-  CustomerOrderEntry,
+ 
   CustomerOrderTable,
 } from "@/components/table/CustomerOrderTable";
+import { CustomerOrderEntry } from "@/types";
 
 const CustomerOrdersPage = () => {
   const router = useRouter();

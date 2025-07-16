@@ -7,18 +7,11 @@ import PopupWrapper from "@/components/shared/PopupWrapper";
 import { IoMdEye } from "react-icons/io";
 import Image from "next/image";
 import CustomerOrderDetails from "../dialog/customerOrderDialog";
+import { CustomerOrderEntry } from "@/types";
 
  
 
-export interface CustomerOrderEntry {
-  id: string;
-  customerName: string;
-  product: string;
-  price: string;
-  orderDate: string;
-  status: "Paid" | "Pending" | "Failed";
-  selected: boolean;
-}
+
 
 interface CustomerOrderTableProps {
   entries: CustomerOrderEntry[];

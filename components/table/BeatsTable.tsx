@@ -6,23 +6,8 @@ import play from "@/image/tablevector/play.png";
 import bin from "@/image/tablevector/bin.png";
 import edit from "@/image/tablevector/edit.png";
 import Image from "next/image";
-interface Beat {
-  id: string;
-  title: string;
-  genre: string;
-  price: number;
-  producer: string;
-  uploadDate: string;
-  selected: boolean;
-}
+import { BeatsTableProps } from "@/types";
 
-interface BeatsTableProps {
-  beats: Beat[];
-  selectAll: boolean;
-  onSelectAll: () => void;
-  onSelectBeat: (id: string) => void;
-  onDeleteBeat: (id: string) => void;
-}
 
 const genreColors: Record<string, string> = {
   Trap: "bg-orange-500/20 text-orange-400 border-orange-500/30",

@@ -2,15 +2,10 @@
 import NewsCard from "@/components/NewsCard";
 import Link from "next/link";
 import { useState, useEffect } from "react";
- import { updateBlog,fetchBlogs, Blog, deleteBlog } from "@/app/actions/blog-actions";
+ import { updateBlog,fetchBlogs,   deleteBlog } from "@/app/actions/blog-actions";
+import { Blog } from "@/types";
 
-export interface NewsRoomProps {
-  img: string;
-  img1: string;
-  date: string;
-  title: string;
-  des: string;
-}
+
 
 export default function NewsManagement() {
   const [blogs, setBlogs] = useState<Blog[]>([]);
@@ -114,8 +109,8 @@ export default function NewsManagement() {
   }
 
   return (
-    <div className="w-full bg-[#0f172b] p-6 flex items-center justify-center">
-      <div className="bg-[#0f172b] rounded-xl shadow-sm p-4 md:p-6 w-full mx-auto">
+    <div className="w-full min-h-screen bg-[#0f172b] p-6 flex  justify-center">
+      <div className=" rounded-xl shadow-sm p-4 md:p-6 w-full mx-auto">
         <div className="space-y-6 mb-8 md:mb-10">
           <div className="flex justify-between items-center">
             <h2 className="text-lg md:text-xl font-medium text-white">Existing News</h2>
@@ -132,8 +127,7 @@ export default function NewsManagement() {
                 key={blog.id}
                 news={{
                   img: blog.thumbnailUrl,
-                  img1: "/img/default.png", // Replace with a default or dynamic secondary image if available
-                  date: blog.date,
+                   date: blog.date,
                   title: blog.title,
                   des: blog.content,
                 }}

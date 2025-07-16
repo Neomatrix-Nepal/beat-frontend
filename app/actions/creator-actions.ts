@@ -1,29 +1,8 @@
 import api from '@/hooks/useApi';
+import { CreatorEntry, FetchCreatorsResponse } from '@/types/creator';
 
-export interface CreatorEntry {
-  id: string;
-  producername: string;
-  paymentMethod: string;
-  demoBeat: string;
-  stripeFullName: string | null;
-  stripeCardLast4: string | null;
-  stripeAccountId: string | null;
-  paypalEmailOrRef: string | null;
-  sociamediaurl: string;
-  producerStyle: string;
-  created_at: string;
-  updated_at: string;
-}
 
-export interface FetchCreatorsResponse {
-  data: CreatorEntry[];
-  meta: {
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-  };
-}
+
 
 export const fetchCreators = async (page: number = 1, limit: number = 10): Promise<FetchCreatorsResponse> => {
   try {
@@ -71,9 +50,11 @@ export const deleteMultipleCreators = async (ids: string[]) => {
   }
 };
 
-export const approveCreator = async (id: string, role: string) => {
+export const approveCreator = async (userId: number) => {
   try {
-    const response = await api.patch(`/producer-request/change-user-role`, { id, role });
+    const response = await api.patch(`/producer-request/change-user-role`, {
+      userId: Number(userId), // Assuming ID is a number on backend
+    });
     return {
       success: true,
       data: response.data,

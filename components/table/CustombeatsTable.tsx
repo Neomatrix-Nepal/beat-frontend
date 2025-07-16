@@ -6,7 +6,8 @@ import whitecheck from "@/image/tablevector/whitecheck.png";
 import { showDeleteToast, showUpdateToast } from "../../lib/util";
 import PopupWrapper from "../shared/PopupWrapper";
 import BeatsDialogDetails from "../dialog/beatsDialog";
-import { CustomBeat, updateCustomBeatStatus } from "@/app/actions/customs-beats-actions";
+import {   updateCustomBeatStatus } from "@/app/actions/customs-beats-actions";
+import { CustomBeat } from "@/types";
  
 
 interface CustombeatsTableProps {

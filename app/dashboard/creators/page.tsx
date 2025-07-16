@@ -1,9 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
-import { IoMdCheckmark } from "react-icons/io";
-import { RiDeleteBin6Line } from "react-icons/ri";
+import { approveCreator, deleteCreator, deleteMultipleCreators, fetchCreators } from "@/app/actions/creator-actions";
+import { CreatorTable } from "@/components/table/CreatorsTable";
 import {
   Pagination,
   PaginationContent,
@@ -11,9 +9,11 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { CreatorTable  } from "@/components/table/CreatorsTable";
-import { fetchCreators, deleteMultipleCreators, deleteCreator, approveCreator, CreatorEntry, FetchCreatorsResponse } from "@/app/actions/creator-actions";
 import { showDeleteToast, showUpdateToast } from "@/lib/util";
+import { CreatorEntry, FetchCreatorsResponse } from "@/types/creator";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+import { RiDeleteBin6Line } from "react-icons/ri";
 
 interface FrontendCreatorEntry extends CreatorEntry {
   name: string;
@@ -108,19 +108,21 @@ const CreatorsPage = () => {
     }
   }, [creators, currentPage, fetchData]);
 
-  const handleApproveCreator = useCallback(async (id: string) => {
-    try {
-      const result = await approveCreator(id, 'producer');
-      if (result.success) {
-        showUpdateToast('Success', 'Creator approved successfully', 'success');
-        fetchData(currentPage);
-      } else {
-        showUpdateToast('Error', result.error || 'Failed to approve creator', 'error');
-      }
-    } catch (error) {
-      showUpdateToast('Error', 'Failed to approve creator', 'error');
+const handleApproveCreator = useCallback(async (id: string) => {
+  try {
+   let userid=Number(id)
+    const result = await approveCreator(userid); // now sending only id
+    if (result.success) {
+      showUpdateToast('Success', 'Creator approved successfully', 'success');
+      fetchData(currentPage);
+    } else {
+      showUpdateToast('Error', result.error || 'Failed to approve creator', 'error');
     }
-  }, [currentPage, fetchData]);
+  } catch (error) {
+    showUpdateToast('Error', 'Failed to approve creator', 'error');
+  }
+}, [currentPage, fetchData]);
+
 
   const goToPreviousPage = useCallback(() => {
     setCurrentPage(prev => Math.max(prev - 1, 1));

@@ -133,3 +133,8 @@
 .bg-button {
   @apply bg-gradient-to-r from-purple-500 to-pink-500;
 }
+ .custom-quill .ql-toolbar button:hover,
+.custom-quill .ql-toolbar .ql-picker-label:hover  {
+  color: #000000 !important; /* Tailwind sky-400 */
+}
+

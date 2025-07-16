@@ -85,7 +85,7 @@ export const LatestWorkTable: React.FC<LatestWorkTableProps> = ({
               </th>
             
               <th className="text-left p-4">Title</th>
-              <th className="text-left pl-20">Description</th>
+              <th className="text-left   pl-20">Description</th>
               <th className="text-center p-4">Platform</th>
               <th className="text-center p-4">Uploades Date</th>
               <th className="text-left p-4">Actions</th>
@@ -109,7 +109,7 @@ export const LatestWorkTable: React.FC<LatestWorkTableProps> = ({
                 </td>
             
                 <td className="p-4 text-white font-medium">{work.title}</td>
-                <td className="p-4 text-white">{work.description.slice(0, 50)}...</td>
+                <td className="p-4   text-center text-white">{work.description.slice(0,10)}...</td>
                 <td className="p-4 text-center flex justify-center">{getPlatformIcon(work.platform)}</td>
                 <td className="p-4 text-white text-center">{work.uploadDate}</td>
                 <td className="p-4">

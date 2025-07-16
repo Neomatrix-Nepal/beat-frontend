@@ -12,7 +12,8 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { CustombeatsTable } from "@/components/table/CustombeatsTable";
-import { CustomBeat, deleteCustomBeat, deleteMultipleCustomBeats, fetchCustomBeats } from "@/app/actions/customs-beats-actions";
+import {deleteCustomBeat, deleteMultipleCustomBeats, fetchCustomBeats } from "@/app/actions/customs-beats-actions";
+import { CustomBeat } from "@/types/custom-beats";
  
 const BUTTON_CLASSES =
   "flex items-center gap-2 text-white font-michroma px-5 py-3 text-sm font-semibold rounded-lg bg-custom transition-transform transform hover:scale-105";

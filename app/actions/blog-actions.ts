@@ -1,29 +1,7 @@
 import api from '@/hooks/useApi';
+import { BlogFormData, FetchBlogsResponse } from '@/types';
 
-export interface BlogFormData {
-  title: string;
-  date: string;
-  content: string;
-}
-
-export interface Blog {
-  id: number;
-  title: string;
-  date: string;
-  content: string;
-  thumbnailUrl: string;
-}
-
-interface FetchBlogsResponse {
-  data: Blog[];
-  meta: {
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-  };
-}
-
+ 
 export const createBlog = async (formData: BlogFormData, imageFile: File | null) => {
   try {
     const formDataToSend = new FormData();

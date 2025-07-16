@@ -3,8 +3,9 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { createBlog, BlogFormData } from "@/app/actions/blog-actions";
+import { createBlog } from "@/app/actions/blog-actions";
 import "react-quill-new/dist/quill.snow.css";
+import { BlogFormData } from "@/types";
 
 // Dynamically import ReactQuill to avoid SSR issues
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
@@ -79,12 +80,8 @@ export default function NewNews() {
             </Link>
           </div>
 
-          {error && (
-            <div className="text-red-500 mb-4">{error}</div>
-          )}
-          {success && (
-            <div className="text-green-500 mb-4">{success}</div>
-          )}
+          {error && <div className="text-red-500 mb-4">{error}</div>}
+          {success && <div className="text-green-500 mb-4">{success}</div>}
 
           <div>
             <label className="block text-sm md:text-base font-bold text-white mb-2">
@@ -134,7 +131,7 @@ export default function NewNews() {
                   <span className="mb-2 text-sm md:text-base">
                     Click to upload or drag and drop
                   </span>
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-white">
                     PNG, JPG, GIF up to 5MB
                   </span>
                 </>
@@ -159,8 +156,8 @@ export default function NewNews() {
               value={content}
               onChange={setContent}
               modules={{ toolbar: toolbarOptions }}
-              className="text-white h-[30vh] bg-[#1e293b] rounded-lg"
               readOnly={isSubmitting}
+              className="custom-quill  bg-white rounded-lg h-[30vh]"
             />
           </div>
 
