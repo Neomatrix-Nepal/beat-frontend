@@ -45,7 +45,7 @@ const CreatorsPage = () => {
         socialMediaUrl: creator.sociamediaurl,
         selected: false,
       })));
-      console.log(response)
+      console.log(response);
       setTotalPages(response.meta.totalPages);
     } catch (error: any) {
       console.error('Error fetching creators:', error);
@@ -68,7 +68,7 @@ const CreatorsPage = () => {
     });
   }, [creators]);
 
-  const toggleSelectEntry = useCallback((id: string) => {
+  const toggleSelectEntry = useCallback((id: number) => {
     setCreators(prev =>
       prev.map(entry =>
         entry.id === id ? { ...entry, selected: !entry.selected } : entry
@@ -76,7 +76,7 @@ const CreatorsPage = () => {
     );
   }, []);
 
-  const handleDeleteEntry = useCallback(async (id: string) => {
+  const handleDeleteEntry = useCallback(async (id: number) => {
     try {
       const result = await deleteCreator(id);
       if (result.success) {
@@ -108,21 +108,20 @@ const CreatorsPage = () => {
     }
   }, [creators, currentPage, fetchData]);
 
-const handleApproveCreator = useCallback(async (id: string) => {
-  try {
-   let userid=Number(id)
-    const result = await approveCreator(userid); // now sending only id
-    if (result.success) {
-      showUpdateToast('Success', 'Creator approved successfully', 'success');
-      fetchData(currentPage);
-    } else {
-      showUpdateToast('Error', result.error || 'Failed to approve creator', 'error');
+  const handleApproveCreator = useCallback(async (userId: number, rowId: number) => {
+    try {
+      console.log('approving:', { userId, rowId });
+      const result = await approveCreator(userId, rowId);
+      if (result.success) {
+        showUpdateToast('Success', 'Creator approved successfully', 'success');
+        fetchData(currentPage);
+      } else {
+        showUpdateToast('Error', result.error || 'Failed to approve creator', 'error');
+      }
+    } catch (error) {
+      showUpdateToast('Error', 'Failed to approve creator', 'error');
     }
-  } catch (error) {
-    showUpdateToast('Error', 'Failed to approve creator', 'error');
-  }
-}, [currentPage, fetchData]);
-
+  }, [currentPage, fetchData]);
 
   const goToPreviousPage = useCallback(() => {
     setCurrentPage(prev => Math.max(prev - 1, 1));
@@ -179,66 +178,66 @@ const handleApproveCreator = useCallback(async (id: string) => {
             />
           )}
 
-         <div className="mt-6 w-full font-michroma text-white flex justify-end items-center">
-                   <div className="flex">
-                     <Pagination>
-                       <PaginationContent className="flex items-center gap-2 p-2 rounded">
-                         <PaginationItem>
-                           <PaginationPrevious
-                             onClick={goToPreviousPage}
-                             className={
-                               currentPage === 1
-                                 ? "bg-gray-600 opacity-50"
-                                 : "border-2 border-white"
-                             }
-                           />
-                         </PaginationItem>
-       
-                         {currentPage > 1 && (
-                           <PaginationItem>
-                             <button
-                               onClick={() => setCurrentPage(currentPage - 1)}
-                               className="border-2 border-white text-white px-3 py-1 rounded hover:bg-slate-700"
-                             >
-                               {currentPage - 1}
-                             </button>
-                           </PaginationItem>
-                         )}
-       
-                         <PaginationItem>
-                           <button
-                             disabled
-                             className="bg-purple-700 text-white font-semibold px-3 py-1 rounded"
-                           >
-                             {currentPage}
-                           </button>
-                         </PaginationItem>
-       
-                         {currentPage < totalPages && (
-                           <PaginationItem>
-                             <button
-                               onClick={() => setCurrentPage(currentPage + 1)}
-                               className="text-white px-3 py-1 rounded border-2 border-white hover:bg-slate-700"
-                             >
-                               {currentPage + 1}
-                             </button>
-                           </PaginationItem>
-                         )}
-       
-                         <PaginationItem>
-                           <PaginationNext
-                             onClick={goToNextPage}
-                             className={
-                               currentPage === totalPages
-                                 ? "pointer-events-none bg-gray-600 opacity-50"
-                                 : "border-2 border-white"
-                             }
-                           />
-                         </PaginationItem>
-                       </PaginationContent>
-                     </Pagination>
-                   </div>
-                 </div>
+          <div className="mt-6 w-full font-michroma text-white flex justify-end items-center">
+            <div className="flex">
+              <Pagination>
+                <PaginationContent className="flex items-center gap-2 p-2 rounded">
+                  <PaginationItem>
+                    <PaginationPrevious
+                      onClick={goToPreviousPage}
+                      className={
+                        currentPage === 1
+                          ? "bg-gray-600 opacity-50"
+                          : "border-2 border-white"
+                      }
+                    />
+                  </PaginationItem>
+
+                  {currentPage > 1 && (
+                    <PaginationItem>
+                      <button
+                        onClick={() => setCurrentPage(currentPage - 1)}
+                        className="border-2 border-white text-white px-3 py-1 rounded hover:bg-slate-700"
+                      >
+                        {currentPage - 1}
+                      </button>
+                    </PaginationItem>
+                  )}
+
+                  <PaginationItem>
+                    <button
+                      disabled
+                      className="bg-purple-700 text-white font-semibold px-3 py-1 rounded"
+                    >
+                      {currentPage}
+                    </button>
+                  </PaginationItem>
+
+                  {currentPage < totalPages && (
+                    <PaginationItem>
+                      <button
+                        onClick={() => setCurrentPage(currentPage + 1)}
+                        className="text-white px-3 py-1 rounded border-2 border-white hover:bg-slate-700"
+                      >
+                        {currentPage + 1}
+                      </button>
+                    </PaginationItem>
+                  )}
+
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={goToNextPage}
+                      className={
+                        currentPage === totalPages
+                          ? "pointer-events-none bg-gray-600 opacity-50"
+                          : "border-2 border-white"
+                      }
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          </div>
         </div>
       </div>
     </div>

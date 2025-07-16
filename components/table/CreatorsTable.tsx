@@ -4,7 +4,7 @@ import Image from "next/image";
 import bin from "@/image/tablevector/bin.png";
 import whitecheck from "@/image/tablevector/whitecheck.png";
 import { CreatorEntry } from "@/types";
- 
+
 export interface FrontendCreatorEntry extends CreatorEntry {
   name: string;
   style: string;
@@ -16,9 +16,9 @@ interface CreatorTableProps {
   entries: FrontendCreatorEntry[];
   selectAll: boolean;
   onSelectAll: () => void;
-  onSelectEntry: (id: string) => void;
-  onDeleteEntry: (id: string) => void;
-  onApproveEntry: (id: string) => void;
+  onSelectEntry: (id: number) => void;
+  onDeleteEntry: (id: number) => void;
+  onApproveEntry: (userId: number, rowId: number) => void;
 }
 
 export const CreatorTable: React.FC<CreatorTableProps> = ({
@@ -90,9 +90,23 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
                 <td className="p-4">
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={() => onApproveEntry(entry.id)}
-                      className="p-2 bg-foreground hover:bg-purple-500/20 rounded-lg transition-colors"
+                      onClick={() => {
+                        console.log(
+                          "userId:",
+                          entry.userId,
+                          "rowId:",
+                          entry.id
+                        );
+                        onApproveEntry(entry.userId, entry.id);
+                      }}
+                      className={`p-2 rounded-lg transition-colors 
+                        ${
+                          entry.isRoleChanged
+                            ? "bg-green-500 cursor-not-allowed"
+                            : "bg-foreground hover:bg-purple-500/20"
+                        }`}
                       title="Approve"
+                      disabled={entry.isRoleChanged}
                     >
                       <Image
                         src={whitecheck}
@@ -102,6 +116,7 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
                         className="m-0.5 my-1"
                       />
                     </button>
+
                     <button
                       onClick={() => onDeleteEntry(entry.id)}
                       className="p-2 text-red-400 bg-foreground hover:bg-red-500/20 rounded-lg transition-colors"
@@ -119,7 +134,7 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
 
       {/* Mobile Cards */}
       <div className="lg:hidden space-y-4 p-4">
-        {entries.map((entry, index) => (
+        {entries.map((entry) => (
           <div
             key={entry.id}
             className="bg-[#1A1F2E] rounded-lg p-4 border border-[#2C3A4F]"
@@ -165,7 +180,7 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
                   <Eye size={16} />
                 </button>
                 <button
-                  onClick={() => onApproveEntry(entry.id)}
+                  onClick={() => onApproveEntry(entry.userId, entry.id)}
                   className="p-2 rounded-lg text-green-400 hover:bg-green-600/20 transition-colors"
                   title="Approve"
                 >

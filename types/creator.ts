@@ -1,13 +1,11 @@
 
 export interface CreatorEntry {
-  id: string;
+  id: number;
+  userId:number;
   producername: string;
   paymentMethod: string;
   demoBeat: string;
-  stripeFullName: string | null;
-  stripeCardLast4: string | null;
-  stripeAccountId: string | null;
-  paypalEmailOrRef: string | null;
+  isRoleChanged:boolean;
   sociamediaurl: string;
   producerStyle: string;
   created_at: string;
