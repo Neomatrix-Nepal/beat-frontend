@@ -1,6 +1,6 @@
 import React from "react";
 import _client from "./_client";
-import { getGenre } from "./action";
+import { getGenre } from "../action";
 
 export default async function AddBeat() {
   let genres = [];
