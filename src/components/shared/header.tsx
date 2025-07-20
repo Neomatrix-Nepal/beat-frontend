@@ -4,8 +4,8 @@ import { LogOut } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuthStore } from "@/src/store/authStore";
-import { logoutAction } from "@/src/app/actions/form-actions";
 import { useState } from "react";
+import { signOut } from "next-auth/react";
 
 export function DashboardHeader() {
   const pathname = usePathname();
@@ -27,16 +27,7 @@ export function DashboardHeader() {
   const handleLogout = async () => {
     setIsLoading(true);
     try {
-      const result = await logoutAction();
-
-      if (result.success) {
-        // Clear Zustand store
-        clearAuth();
-        // Redirect to login page
-        router.push("/");
-      } else {
-        console.error("Logout failed:", result.error);
-      }
+      await signOut();
     } catch (error) {
       console.error("Logout error:", error);
     } finally {

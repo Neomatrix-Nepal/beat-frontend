@@ -1,11 +1,11 @@
 "use client";
 
-import { loginAction } from "@/src/app/actions/form-actions";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
-import { useAuthStore } from "@/src/store/authStore";
+import { toast } from "@/src/lib/use-toast";
 import { LogIn } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { redirect } from "next/navigation";
 import { useForm } from "react-hook-form";
 
 type LoginFormInputs = {
@@ -18,27 +18,26 @@ const LoginForm = () => {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    setError,
   } = useForm<LoginFormInputs>();
 
-  const router = useRouter();
-  const { setAccessToken, setUser } = useAuthStore();
-
   const onSubmit = async (data: LoginFormInputs) => {
-    const result = await loginAction(data);
-    console.log(result);
+    try {
+      const res = await signIn("credentials", {
+        redirect: false,
+        ...data,
+      });
+      console.log(res);
 
-    if (result.success && result.accessToken && result.redirect) {
-      document.cookie = `userRole=${result.user.roles}; path=/; max-age=${
-        7 * 24 * 60 * 60
-      }; SameSite=Strict`;
-      console.log("vayo hai vayo");
-      setAccessToken(result.accessToken);
-      setUser(result.user);
-      router.push(result.redirect || "/");
-    } else {
-      setError("email", { message: result.error || "Login failed" });
-      setError("password", { message: "" });
+      if (!res?.ok) {
+        // setIsLoading(false);
+        return alert("Invalid email or password");
+      }
+      setTimeout(() => {
+        alert("Login successful");
+        redirect("/");
+      }, 500);
+    } catch (error) {
+      console.error("Login error:", error);
     }
   };
 

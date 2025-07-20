@@ -8,8 +8,8 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 export const metadata: Metadata = {
-  title: "Your App",
-  description: "Description here",
+  title: "Cute Boka Admin",
+  description: "Cute Boka Admin Dashboard",
   icons: {
     icon: "./favicon.ico",
   },
