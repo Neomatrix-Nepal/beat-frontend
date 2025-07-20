@@ -32,6 +32,7 @@ const sidebarItems: SidebarItem[] = [
   { icon: Music, label: "Beats Manager", href: "/dashboard/beats_manager" },
   { icon: Users, label: "Mixing Pro", href: "/dashboard/mixing_pro" },
   { icon: Users, label: "Custom Beat", href: "/dashboard/custom_beats" },
+  { icon: Users, label: "Package Manager", href: "/dashboard/package_manager" },
   { icon: Droplets, label: "Drips Manager", href: "/dashboard/drips_manager" },
   {
     icon: Calendar,

@@ -123,13 +123,23 @@ const DripManager = () => {
               )}
             </div>
 
-            <button
-              onClick={() => router.push("/dashboard/beats_manager/add_beats")}
-              className=" bg-custom  w-40  bg-custom  text-white px-6 py-4 rounded-lg flex items-center gap-2 transition-all duration-200 transform hover:scale-105"
-            >
-              <Upload size={24} />
-              Upload
-            </button>
+            <div className="flex space-x-2">
+              <button
+                onClick={() =>
+                  router.push("/dashboard/beats_manager/add_beats")
+                }
+                className="bg-custom cursor-pointer  text-white px-6 py-3 rounded-lg flex justify-center items-center gap-2 transition-all duration-200 transform hover:scale-105"
+              >
+                <Upload size={20} />
+                <span>Upload</span>
+              </button>
+              <button
+                onClick={() => router.push("/dashboard/beats_manager/packages")}
+                className="bg-custom cursor-pointer text-white px-6 py-3 rounded-lg flex justify-center items-center gap-2 transition-all duration-200 transform hover:scale-105"
+              >
+                <span>Packages</span>
+              </button>
+            </div>
           </div>
 
           <BeatsTable
