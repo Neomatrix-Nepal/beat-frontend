@@ -10,17 +10,13 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import api from "@/hooks/useApi";
-import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
-
- 
 
 const BUTTON_CLASSES =
   "flex items-center gap-2 text-white px-5 py-3 font-michroma text-sm font-semibold rounded-lg bg-custom transition-transform transform hover:scale-105";
 
 const MixingProPage = () => {
-  const router = useRouter();
   const [uploads, setUploads] = useState<MixingProEntry[]>([]);
   const [selectAll, setSelectAll] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -34,7 +30,9 @@ const MixingProPage = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await api.get(`/mixing-order?page=${page}&limit=${itemsPerPage}`);
+      const response = await api.get(
+        `/mixing-order?page=${page}&limit=${itemsPerPage}`
+      );
       let data: MixingProEntry[] = [];
       let total = 0;
 
@@ -58,7 +56,10 @@ const MixingProPage = () => {
       setUploads(formattedData);
       setTotalPages(Math.ceil(total / itemsPerPage) || 1); // Fallback to 1 page if total is 0
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to fetch mixing orders. Please try again.";
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : "Failed to fetch mixing orders. Please try again.";
       setError(errorMessage);
       console.error("Error fetching mixing orders:", err);
       setUploads([]);
@@ -74,7 +75,10 @@ const MixingProPage = () => {
   }, [currentPage, fetchMixingOrders]);
 
   // Memoize selected count
-  const selectedCount = useMemo(() => uploads.filter((entry) => entry.selected).length, [uploads]);
+  const selectedCount = useMemo(
+    () => uploads.filter((entry) => entry.selected).length,
+    [uploads]
+  );
 
   // Handlers
   const handleSelectAll = useCallback(() => {
@@ -85,7 +89,9 @@ const MixingProPage = () => {
 
   const handleSelectEntry = useCallback((id: number) => {
     setUploads((prev) =>
-      prev.map((entry) => (entry.id === id ? { ...entry, selected: !entry.selected } : entry))
+      prev.map((entry) =>
+        entry.id === id ? { ...entry, selected: !entry.selected } : entry
+      )
     );
   }, []);
 
@@ -100,9 +106,13 @@ const MixingProPage = () => {
   }, []);
 
   const handleDeleteSelectedEntries = useCallback(async () => {
-    const selectedIds = uploads.filter((entry) => entry.selected).map((entry) => entry.id);
+    const selectedIds = uploads
+      .filter((entry) => entry.selected)
+      .map((entry) => entry.id);
     try {
-      await Promise.all(selectedIds.map((id) => api.delete(`/mixing-order/${id}`)));
+      await Promise.all(
+        selectedIds.map((id) => api.delete(`/mixing-order/${id}`))
+      );
       setUploads((prev) => prev.filter((entry) => !entry.selected));
       setSelectAll(false);
     } catch (err) {
@@ -115,7 +125,9 @@ const MixingProPage = () => {
     try {
       await api.patch(`/mixing-order/${id}`, { status: "sent" });
       setUploads((prev) =>
-        prev.map((entry) => (entry.id === id ? { ...entry, status: "sent" } : entry))
+        prev.map((entry) =>
+          entry.id === id ? { ...entry, status: "sent" } : entry
+        )
       );
     } catch (err) {
       setError("Failed to update status. Please try again.");
@@ -150,13 +162,15 @@ const MixingProPage = () => {
               />
               <span className="text-white font-michroma">Select All</span>
               {selectedCount >= 2 && (
-                <button onClick={handleDeleteSelectedEntries} className={BUTTON_CLASSES}>
+                <button
+                  onClick={handleDeleteSelectedEntries}
+                  className={BUTTON_CLASSES}
+                >
                   <RiDeleteBin6Line size={20} />
                   Delete
                 </button>
               )}
             </div>
-            
           </div>
 
           {/* Table Display */}
@@ -169,58 +183,62 @@ const MixingProPage = () => {
             onMarkAsSent={handleMarkAsSent}
           />
 
-           <div className="mt-6 w-full font-michroma text-white flex justify-end items-center">
-                   <div className="flex">
-                   <Pagination>
-                     <PaginationContent className="flex items-center gap-2 p-2 rounded">
-                       <PaginationItem>
-                         <PaginationPrevious
-                           onClick={goToPreviousPage}
-                           className={currentPage === 1 ? "bg-gray-600 opacity-50" : "border-2 border-white"}
-                         />
-                       </PaginationItem>
-                       {currentPage > 1 && (
-                         <PaginationItem>
-                           <button
-                             onClick={() => setCurrentPage(currentPage - 1)}
-                             className="border-2 border-white text-white px-3 py-1 rounded hover:bg-slate-700"
-                           >
-                             {currentPage - 1}
-                           </button>
-                         </PaginationItem>
-                       )}
-                       <PaginationItem>
-                         <button
-                           disabled
-                           className="bg-purple-700 text-white font-semibold px-3 py-1 rounded"
-                         >
-                           {currentPage}
-                         </button>
-                       </PaginationItem>
-                       {currentPage < totalPages && (
-                         <PaginationItem>
-                           <button
-                             onClick={() => setCurrentPage(currentPage + 1)}
-                             className="text-white px-3 py-1 rounded border-2 border-white hover:bg-slate-700"
-                           >
-                             {currentPage + 1}
-                           </button>
-                         </PaginationItem>
-                       )}
-                       <PaginationItem>
-                         <PaginationNext
-                           onClick={goToNextPage}
-                           className={
-                             currentPage === totalPages
-                               ? "pointer-events-none bg-gray-600 opacity-50"
-                               : "border-2 border-white"
-                           }
-                         />
-                       </PaginationItem>
-                     </PaginationContent>
-                   </Pagination>
-                 </div>
-               </div>
+          <div className="mt-6 w-full font-michroma text-white flex justify-end items-center">
+            <div className="flex">
+              <Pagination>
+                <PaginationContent className="flex items-center gap-2 p-2 rounded">
+                  <PaginationItem>
+                    <PaginationPrevious
+                      onClick={goToPreviousPage}
+                      className={
+                        currentPage === 1
+                          ? "bg-gray-600 opacity-50"
+                          : "border-2 border-white"
+                      }
+                    />
+                  </PaginationItem>
+                  {currentPage > 1 && (
+                    <PaginationItem>
+                      <button
+                        onClick={() => setCurrentPage(currentPage - 1)}
+                        className="border-2 border-white text-white px-3 py-1 rounded hover:bg-slate-700"
+                      >
+                        {currentPage - 1}
+                      </button>
+                    </PaginationItem>
+                  )}
+                  <PaginationItem>
+                    <button
+                      disabled
+                      className="bg-purple-700 text-white font-semibold px-3 py-1 rounded"
+                    >
+                      {currentPage}
+                    </button>
+                  </PaginationItem>
+                  {currentPage < totalPages && (
+                    <PaginationItem>
+                      <button
+                        onClick={() => setCurrentPage(currentPage + 1)}
+                        className="text-white px-3 py-1 rounded border-2 border-white hover:bg-slate-700"
+                      >
+                        {currentPage + 1}
+                      </button>
+                    </PaginationItem>
+                  )}
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={goToNextPage}
+                      className={
+                        currentPage === totalPages
+                          ? "pointer-events-none bg-gray-600 opacity-50"
+                          : "border-2 border-white"
+                      }
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          </div>
         </div>
       </div>
     </div>

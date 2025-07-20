@@ -2,10 +2,10 @@
 const nextConfig = {
   images: {
     domains: [
-      'i.pravatar.cc',
-      'images.unsplash.com',
-      'localhost',
-      'beats.neomatrix.live', // 👈 Add this line
+      "i.pravatar.cc",
+      "images.unsplash.com",
+      "localhost",
+      "beats.neomatrix.live",
     ],
   },
   eslint: {

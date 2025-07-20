@@ -1,20 +1,19 @@
-
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import { Michroma } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "../components/toaster";
- const geistSans = Geist({
+const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
 export const metadata: Metadata = {
-  title: 'Your App',
-  description: 'Description here',
+  title: "Your App",
+  description: "Description here",
   icons: {
-    icon: './favicon.ico',
+    icon: "./favicon.ico",
   },
-}
+};
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
@@ -26,13 +25,11 @@ const michroma = Michroma({
   subsets: ["latin"],
 });
 
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
- 
   return (
     <html lang="en">
       <body

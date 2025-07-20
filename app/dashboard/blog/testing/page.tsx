@@ -14,7 +14,7 @@ interface FetchBlogsResponse {
     totalPages: number;
   };
 }
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 const NewsPage = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
@@ -25,7 +25,6 @@ const NewsPage = () => {
     const loadBlogs = async () => {
       try {
         const response: FetchBlogsResponse = await fetchBlogs(1, 100); // Fetch all blogs
-        console.log(response.data)
         setBlogs(response.data);
         setLoading(false);
       } catch (err: any) {
@@ -69,7 +68,7 @@ const NewsPage = () => {
             {/* Display thumbnail image */}
             {blog.thumbnailUrl && (
               <Image
-                src={`${baseUrl}/${blog.thumbnailUrl.replace(/\\/g, '/')}`} // Use base URL and normalize path
+                src={`${baseUrl}/${blog.thumbnailUrl.replace(/\\/g, "/")}`} // Use base URL and normalize path
                 alt={`${blog.title} thumbnail`}
                 width={800}
                 height={400}
