@@ -22,8 +22,6 @@ const statusStyles = {
 
 export const CustombeatsTable: React.FC<CustombeatsTableProps> = ({
   entries,
-  selectAll,
-  onSelectAll,
   onSelectEntry,
   onDeleteEntry,
 }) => {
@@ -103,15 +101,19 @@ export const CustombeatsTable: React.FC<CustombeatsTableProps> = ({
                     </button>
                     <button
                       onClick={() => {
-                        updateCustomBeatStatus(entry.id, "sent", (success) => {
-                          if (success) {
-                            showUpdateToast(
-                              "Custom beat",
-                              "status updated",
-                              "success"
-                            );
+                        updateCustomBeatStatus(
+                          entry.id,
+                          "completed",
+                          (success) => {
+                            if (success) {
+                              // showUpdateToast(
+                              //   "Custom beat",
+                              //   "status updated",
+                              //   "success"
+                              // );
+                            }
                           }
-                        });
+                        );
                       }}
                       className="p-2 bg-foreground hover:bg-purple-500/20 rounded-lg transition-colors"
                     >
@@ -126,7 +128,6 @@ export const CustombeatsTable: React.FC<CustombeatsTableProps> = ({
                     <button
                       onClick={() => {
                         onDeleteEntry(entry.id.toString());
-                        showDeleteToast("Custom beat", "deleted", "success");
                       }}
                       className="p-2 text-red-400 bg-foreground hover:bg-red-500/20 rounded-lg transition-colors"
                     >
@@ -196,13 +197,13 @@ export const CustombeatsTable: React.FC<CustombeatsTableProps> = ({
                 </button>
                 <button
                   onClick={() => {
-                    updateCustomBeatStatus(entry.id, "sent", (success) => {
+                    updateCustomBeatStatus(entry.id, "completed", (success) => {
                       if (success) {
-                        showUpdateToast(
-                          "Custom beat",
-                          "status updated",
-                          "success"
-                        );
+                        // showUpdateToast(
+                        //   "Custom beat",
+                        //   "status updated",
+                        //   "success"
+                        // );
                       }
                     });
                   }}

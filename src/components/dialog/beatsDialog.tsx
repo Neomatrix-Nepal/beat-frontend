@@ -36,6 +36,8 @@ export default function BeatsDialogDetails({
             src={"/image/verctor/music.png"}
             alt="icon"
             className="w-5 h-5"
+            width={20}
+            height={20}
           />
           Custom Beat Submission Details
         </h2>
@@ -137,7 +139,7 @@ export default function BeatsDialogDetails({
       <div>
         <button
           onClick={() => {
-            updateCustomBeatStatus(beat.id, "sent", (success) => {
+            updateCustomBeatStatus(beat.id, "completed", (success) => {
               if (success) {
                 onClose();
               }

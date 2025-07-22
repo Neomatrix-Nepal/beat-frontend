@@ -25,7 +25,7 @@ export const fetchCustomBeats = async (
 
 export const updateCustomBeatStatus = async (
   id: number,
-  status: "pending" | "sent",
+  status: "pending" | "completed" | "in_progress",
   callback?: (success: boolean) => void
 ) => {
   try {
