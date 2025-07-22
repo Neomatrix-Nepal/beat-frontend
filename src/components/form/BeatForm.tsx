@@ -1,17 +1,19 @@
 "use client";
 
 import {
-  uploadBeat,
+  updateProduct,
+  uploadMusic,
   uploadProduct,
 } from "@/src/app/(protected_routes)/dashboard/beats_manager/action";
+import { Beat } from "@/src/types";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaUpload } from "react-icons/fa";
-import { FiSave, FiTrash2, FiUpload } from "react-icons/fi";
+import { FiSave, FiTrash2, FiUpload, FiX } from "react-icons/fi";
 import { MdInsertPhoto } from "react-icons/md";
 
-type FormData = {
+export type FormData = {
   beatTitle: string;
   price: string;
   genre: string;
@@ -21,17 +23,20 @@ type FormData = {
   audio: File | null;
 };
 
-type BeatFormProps = {
+type BeatFormModalProps = {
   genres: { id: number; name: string }[];
-  initialData?: Partial<FormData> & { id?: number }; // for edit
-  mode?: "upload" | "edit";
+  isOpen: boolean;
+  onClose: () => void;
+  initialData?: Beat | null;
 };
 
-export default function BeatForm({
+export default function BeatFormModal({
   genres,
-  initialData = {},
-  mode = "upload",
-}: BeatFormProps) {
+  isOpen,
+  onClose,
+  initialData,
+}: BeatFormModalProps) {
+  console.log(initialData);
   const [loading, setLoading] = useState(false);
   const [selectedGenreId, setSelectedGenreId] = useState<number | null>(null);
   const [previewCover, setPreviewCover] = useState<string | null>(null);
@@ -46,46 +51,68 @@ export default function BeatForm({
     reset,
   } = useForm<FormData>({
     defaultValues: {
-      beatTitle: initialData.beatTitle || "",
-      price: initialData.price || "",
-      genre: initialData.genre || "",
-      mood: initialData.mood || "",
-      description: initialData.description || "",
+      beatTitle: "",
+      price: "",
+      genre: "",
+      mood: "",
+      description: "",
       cover: null,
       audio: null,
     },
   });
 
-  const coverFile = watch("cover");
-  const audioFile = watch("audio");
-
   const coverInputRef = useRef<HTMLInputElement | null>(null);
   const audioInputRef = useRef<HTMLInputElement | null>(null);
 
+  const coverFile = watch("cover");
+  const audioFile = watch("audio");
+
   useEffect(() => {
-    if (initialData.genre) {
-      const genreObj = genres.find((g) => g.name === initialData.genre);
-      if (genreObj) setSelectedGenreId(genreObj.id);
+    if (!initialData) {
+      reset();
+      setSelectedGenreId(null);
+      setPreviewCover(null);
+      setPreviewAudio(null);
+      return;
     }
 
-    if (initialData.cover instanceof File) {
-      setPreviewCover(URL.createObjectURL(initialData.cover));
-    } else if (typeof initialData.cover === "string") {
-      setPreviewCover(initialData.cover);
+    const genreObj = genres.find(
+      (g) => g.name === initialData.subCategory?.name
+    );
+    if (genreObj) {
+      setSelectedGenreId(genreObj.id);
+      setValue("genre", genreObj.name);
     }
 
-    if (typeof initialData.audio === "string") {
-      setPreviewAudio(initialData.audio);
-    }
-  }, [initialData, genres]);
+    setValue("beatTitle", initialData.name);
+    setValue("price", initialData.price);
+    setValue("mood", initialData.name ?? "");
+    setValue("description", initialData.description ?? "");
+
+    // if (typeof initialData. === "string") {
+    //   setPreviewCover(initialData.cover);
+    // }
+
+    // if (typeof initialData.audio === "string") {
+    //   setPreviewAudio(initialData.audio);
+    // }
+  }, [initialData, genres, reset, setValue]);
 
   const openCoverDialog = () => coverInputRef.current?.click();
   const openAudioDialog = () => audioInputRef.current?.click();
+
   const removeAudio = () => {
     setValue("audio", null);
     setPreviewAudio(null);
   };
 
+  const handleClose = () => {
+    reset();
+    setPreviewCover(null);
+    setPreviewAudio(null);
+    setSelectedGenreId(null);
+    onClose();
+  };
   const onSubmit = async (data: FormData) => {
     setLoading(true);
 
@@ -99,29 +126,31 @@ export default function BeatForm({
       formData.append("user_id", "1");
       formData.append("product_type", "regular");
 
-      if (data.cover) {
+      if (data.cover instanceof File) {
         formData.append("images", data.cover);
       }
 
-      // TODO: Replace this with an update function if needed
-      const result = await uploadProduct(formData);
+      let result;
 
-      if (result.id && data.audio) {
+      if (initialData) {
+        result = await updateProduct(formData, initialData.id.toString());
+      } else {
+        result = await uploadProduct(formData);
+      }
+
+      if (result?.id && data.audio instanceof File) {
         const audioFormData = new FormData();
         audioFormData.append("product_id", result.id.toString());
         audioFormData.append("audio", data.audio);
-        await uploadBeat(audioFormData);
+        await uploadMusic(audioFormData);
       }
 
       alert(
-        mode === "edit"
+        initialData
           ? "Beat updated successfully!"
           : "Beat uploaded successfully!"
       );
-      reset();
-      setPreviewCover(null);
-      setPreviewAudio(null);
-      setSelectedGenreId(null);
+      handleClose();
     } catch (error) {
       console.error(error);
       alert("Failed: " + (error as Error).message);
@@ -130,199 +159,201 @@ export default function BeatForm({
     }
   };
 
+  if (!isOpen) return null;
+
   return (
-    <div className="max-w-6xl font-michroma mx-auto p-6 bg-[#1E293B] border border-gray-700 text-white">
-      <h2 className="flex items-center mb-6 text-2xl font-semibold">
-        <FaUpload className="mr-2" />{" "}
-        {mode === "edit" ? "Edit Beat" : "Upload New Beat"}
-      </h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+      <div className="bg-[#1E293B] w-full max-w-4xl rounded-xl p-6 relative text-white overflow-y-auto max-h-[90vh] border border-gray-700">
+        <button
+          onClick={handleClose}
+          className="absolute top-4 right-4 text-white hover:text-red-500"
+        >
+          <FiX size={20} />
+        </button>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {/* Cover & Audio Upload */}
-        <div>
-          <p className="mb-2 text-sm text-gray-400">
-            Upload Cover & Beat Audio
-          </p>
-          <div className="flex space-x-4 items-center">
-            <div
-              onClick={openCoverDialog}
-              className="w-24 h-24 bg-[#162133] rounded-lg cursor-pointer overflow-hidden relative flex items-center justify-center border border-gray-600"
-            >
-              {coverFile ? (
-                <Image
-                  src={URL.createObjectURL(coverFile)}
-                  alt="Cover"
-                  fill
-                  className="object-cover"
-                />
-              ) : previewCover ? (
-                <Image
-                  src={previewCover}
-                  alt="Cover Preview"
-                  fill
-                  className="object-cover"
-                />
-              ) : (
-                <MdInsertPhoto className="w-10 h-10 text-gray-500" />
-              )}
-            </div>
-            <input
-              type="file"
-              accept="image/*"
-              ref={coverInputRef}
-              className="hidden"
-              onChange={(e) => {
-                const file = e.target.files?.[0] || null;
-                if (file) setPreviewCover(URL.createObjectURL(file));
-                setValue("cover", file, { shouldValidate: true });
-              }}
-            />
-            <div className="flex-1 space-y-2">
-              <button
-                type="button"
-                onClick={openAudioDialog}
-                className="w-full bg-custom text-white py-2 px-4 rounded-lg flex items-center justify-center"
-              >
-                <FiUpload className="mr-2" /> Upload Beat Audio
-              </button>
-              <button
-                type="button"
-                onClick={removeAudio}
-                className="w-full bg-red-500 text-white py-2 px-4 rounded-lg flex items-center justify-center"
-              >
-                <FiTrash2 className="mr-2" /> Delete Beat Audio
-              </button>
-              {(audioFile || previewAudio) && (
-                <p className="text-gray-300 truncate max-w-[200px]">
-                  Selected audio: {audioFile?.name ?? "Preview available"}
-                </p>
-              )}
-            </div>
-            <input
-              type="file"
-              accept="audio/*"
-              ref={audioInputRef}
-              className="hidden"
-              onChange={(e) => {
-                const file = e.target.files?.[0] || null;
-                if (file) setPreviewAudio(URL.createObjectURL(file));
-                setValue("audio", file, { shouldValidate: true });
-              }}
-            />
-          </div>
-          {(audioFile || previewAudio) && (
-            <audio
-              controls
-              src={audioFile ? URL.createObjectURL(audioFile) : previewAudio!}
-              className="mt-4 w-full"
-            />
-          )}
-        </div>
+        <h2 className="flex items-center mb-6 text-2xl font-semibold">
+          <FaUpload className="mr-2" />
+          {initialData ? "Edit Beat" : "Upload New Beat"}
+        </h2>
 
-        {/* Text Inputs */}
-        <InputField
-          label="Beat Title"
-          placeholder="Enter beat name"
-          name="beatTitle"
-          register={register}
-          error={errors.beatTitle?.message}
-          rules={{ required: "Beat Title is required" }}
-        />
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Genre */}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          {/* Upload Inputs */}
           <div>
-            <label className="block mb-2 text-sm font-medium text-gray-300">
-              Genre
-            </label>
-            <select
-              value={selectedGenreId ?? ""}
-              onChange={(e) => {
-                const selectedId = Number(e.target.value);
-                setSelectedGenreId(selectedId);
-                const selectedGenre = genres.find((g) => g.id === selectedId);
-                if (selectedGenre) {
-                  setValue("genre", selectedGenre.name, {
-                    shouldValidate: true,
-                  });
-                }
-              }}
-              className="w-full bg-[#1E293B] border border-gray-600 text-white py-2 px-3 rounded-lg"
-            >
-              <option value="" disabled>
-                Select a genre
-              </option>
-              {genres.map((g) => (
-                <option key={g.id} value={g.id}>
-                  {g.name}
-                </option>
-              ))}
-            </select>
-            {errors.genre && (
-              <p className="text-sm text-red-500 mt-1">
-                {errors.genre.message}
-              </p>
+            <p className="mb-2 text-sm text-gray-400">
+              Upload Cover & Beat Audio
+            </p>
+            <div className="flex space-x-4 items-center">
+              <div
+                onClick={openCoverDialog}
+                className="w-24 h-24 bg-[#162133] rounded-lg cursor-pointer overflow-hidden relative flex items-center justify-center border border-gray-600"
+              >
+                {coverFile ? (
+                  <Image
+                    src={URL.createObjectURL(coverFile)}
+                    alt="Cover"
+                    fill
+                    className="object-cover"
+                  />
+                ) : previewCover ? (
+                  <Image
+                    src={previewCover}
+                    alt="Preview"
+                    fill
+                    className="object-cover"
+                  />
+                ) : (
+                  <MdInsertPhoto className="w-10 h-10 text-gray-500" />
+                )}
+              </div>
+              <input
+                type="file"
+                accept="image/*"
+                ref={coverInputRef}
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0] || null;
+                  if (file) setPreviewCover(URL.createObjectURL(file));
+                  setValue("cover", file, { shouldValidate: true });
+                }}
+              />
+              <div className="flex-1 space-y-2">
+                <button
+                  type="button"
+                  onClick={openAudioDialog}
+                  className="w-full bg-custom text-white py-2 px-4 rounded-lg flex items-center justify-center"
+                >
+                  <FiUpload className="mr-2" /> Upload Beat Audio
+                </button>
+                <button
+                  type="button"
+                  onClick={removeAudio}
+                  className="w-full bg-red-500 text-white py-2 px-4 rounded-lg flex items-center justify-center"
+                >
+                  <FiTrash2 className="mr-2" /> Delete Beat Audio
+                </button>
+                {(audioFile || previewAudio) && (
+                  <p className="text-gray-300 truncate max-w-[200px]">
+                    Selected audio: {audioFile?.name ?? "Preview available"}
+                  </p>
+                )}
+              </div>
+              <input
+                type="file"
+                accept="audio/*"
+                ref={audioInputRef}
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0] || null;
+                  if (file) setPreviewAudio(URL.createObjectURL(file));
+                  setValue("audio", file, { shouldValidate: true });
+                }}
+              />
+            </div>
+            {(audioFile || previewAudio) && (
+              <audio
+                controls
+                src={audioFile ? URL.createObjectURL(audioFile) : previewAudio!}
+                className="mt-4 w-full"
+              />
             )}
           </div>
 
-          {/* Price & Mood */}
           <InputField
-            label="Price"
-            placeholder="Set beat price"
-            name="price"
+            label="Beat Title"
+            placeholder="Enter beat name"
+            name="beatTitle"
             register={register}
-            error={errors.price?.message}
-            rules={{ required: "Price is required" }}
+            error={errors.beatTitle?.message}
+            rules={{ required: "Beat Title is required" }}
           />
-          <InputField
-            label="Mood"
-            placeholder="Mood of beat"
-            name="mood"
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+              <label className="block mb-2 text-sm font-medium text-gray-300">
+                Genre
+              </label>
+              <select
+                value={selectedGenreId ?? ""}
+                onChange={(e) => {
+                  const selectedId = Number(e.target.value);
+                  setSelectedGenreId(selectedId);
+                  const selectedGenre = genres.find((g) => g.id === selectedId);
+                  if (selectedGenre) {
+                    setValue("genre", selectedGenre.name, {
+                      shouldValidate: true,
+                    });
+                  }
+                }}
+                className="w-full bg-[#1E293B] border border-gray-600 text-white py-2 px-3 rounded-lg"
+              >
+                <option value="" disabled>
+                  Select a genre
+                </option>
+                {genres.map((g) => (
+                  <option key={g.id} value={g.id}>
+                    {g.name}
+                  </option>
+                ))}
+              </select>
+              {errors.genre && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.genre.message}
+                </p>
+              )}
+            </div>
+
+            <InputField
+              label="Price"
+              placeholder="Set beat price"
+              name="price"
+              register={register}
+              error={errors.price?.message}
+              rules={{ required: "Price is required" }}
+            />
+            <InputField
+              label="Mood"
+              placeholder="Mood of beat"
+              name="mood"
+              register={register}
+              error={errors.mood?.message}
+            />
+          </div>
+
+          <TextareaField
+            label="Description"
+            placeholder="Describe your beat"
+            name="description"
             register={register}
-            error={errors.mood?.message}
           />
-        </div>
 
-        <TextareaField
-          label="Description"
-          placeholder="Describe your beat"
-          name="description"
-          register={register}
-        />
-
-        {/* Submit */}
-        <button
-          type="submit"
-          disabled={loading}
-          className={`w-full bg-custom text-white py-3 rounded-lg flex items-center justify-center ${
-            loading ? "opacity-50 cursor-not-allowed" : ""
-          }`}
-        >
-          {loading ? (
-            <svg
-              className="w-5 h-5 mr-2 animate-spin"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-            >
-              <circle cx="12" cy="12" r="10" strokeOpacity="0.25" />
-              <path d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8z" />
-            </svg>
-          ) : (
-            <FiSave className="mr-2" />
-          )}
-          {loading
-            ? "Saving..."
-            : mode === "edit"
-            ? "Update Beat"
-            : "Save Beat"}
-        </button>
-      </form>
+          <button
+            type="submit"
+            disabled={loading}
+            className={`w-full bg-custom text-white py-3 rounded-lg flex items-center justify-center ${
+              loading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          >
+            {loading ? (
+              <svg
+                className="w-5 h-5 mr-2 animate-spin"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <circle cx="12" cy="12" r="10" strokeOpacity="0.25" />
+                <path d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8z" />
+              </svg>
+            ) : (
+              <FiSave className="mr-2" />
+            )}
+            {loading ? "Saving..." : initialData ? "Update Beat" : "Save Beat"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
 
-// Helper components
 const InputField = ({
   label,
   placeholder,

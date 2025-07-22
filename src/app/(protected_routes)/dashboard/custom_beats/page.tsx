@@ -57,15 +57,15 @@ const CustomBeatsPage = () => {
   const toggleSelectAll = () => {
     const newVal = !selectAll;
     setSelectAll(newVal);
-    setBeats(beats.map((entry) => ({ ...entry, selected: newVal })));
+    // setBeats(beats.map((entry) => ({ ...entry, selected: newVal })));
   };
 
   const toggleSelectEntry = (id: number) => {
-    setBeats(
-      beats.map((entry) =>
-        entry.id === id ? { ...entry, selected: !entry.selected } : entry
-      )
-    );
+    // setBeats(
+    //   beats.map((entry) =>
+    //     entry.id === id ? { ...entry, selected: !entry.selected } : entry
+    //   )
+    // );
   };
 
   const deleteSelectedEntries = () => {

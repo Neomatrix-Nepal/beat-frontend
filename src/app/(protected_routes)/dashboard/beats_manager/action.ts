@@ -5,6 +5,11 @@ export const getGenre = async (slug: string) => {
   return response.data;
 };
 
+export const getBeats = async () => {
+  const response = await api.get("/products/getall");
+  return response.data.data;
+};
+
 export const uploadProduct = async (formData: FormData) => {
   const response = await api.post("/products", formData, {
     headers: {
@@ -14,7 +19,25 @@ export const uploadProduct = async (formData: FormData) => {
   return response.data;
 };
 
-export const uploadBeat = async (formData: FormData) => {
+export const updateProduct = async (formData: FormData, productId: string) => {
+  const response = await api.patch("/products/" + productId, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data;
+};
+
+export const deleteProduct = async (productId: string) => {
+  const response = await api.delete("/products/" + productId, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data;
+};
+
+export const uploadMusic = async (formData: FormData) => {
   const response = await api.post("/stream/upload", formData, {
     headers: {
       "Content-Type": "multipart/form-data",

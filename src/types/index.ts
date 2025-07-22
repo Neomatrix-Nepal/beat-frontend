@@ -7,3 +7,4 @@ export * from "./blogs";
 export * from "./beats";
 export * from "./auth";
 export * from "./package.type";
+export * from "./genres.type";

@@ -1,31 +1,65 @@
-
-// Request and Response interfaces for beats API
-export interface BeatsRequest {
-  // Add request parameters if needed, e.g., pagination, filters
-}
-
 export interface BeatsResponse {
-  // Add response structure, e.g.,
   beats: Beat[];
   total: number;
 }
 
-// Beat entity interface
 export interface Beat {
-  id: string;
-  title: string;
-  genre: string;
-  price: number;
-  producer: string;
-  uploadDate: string; // Consider using `Date` if working with JS Date objects
-  selected: boolean;
+  id: number;
+  user_id: number;
+  name: string;
+  description: string;
+  price: string;
+  stock: string;
+  category_id: number;
+  subcategory_id: number;
+  size: string | null;
+  status: "active" | "inactive" | string;
+  product_type: "regular" | "exclusive" | string;
+  created_at: string;
+  updated_at: string;
+  wishlistCount: number;
+  images: BeatImage[];
+  digital_assets: DigitalAsset[];
+  category: Category;
+  subCategory: SubCategory;
 }
 
-// Props for Beats Table Component
+export interface BeatImage {
+  id: number;
+  product_id: number;
+  url: string;
+}
+
+export interface DigitalAsset {
+  id: number;
+  product_id: number;
+  contentPath: string;
+  manifestPath: string;
+  fileType: string;
+  assetId: string;
+  isEncrypted: boolean;
+  metadata: {
+    playlistUrl: string;
+    keyUrl: string;
+  };
+}
+
+export interface Category {
+  id: number;
+  name: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SubCategory {
+  id: number;
+  name: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface BeatsTableProps {
   beats: Beat[];
-  selectAll: boolean;
-  onSelectAll: () => void;
-  onSelectBeat: (id: string) => void;
+  onEditBeat: (beat: Beat) => void;
   onDeleteBeat: (id: string) => void;
 }
