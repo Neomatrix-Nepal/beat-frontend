@@ -20,13 +20,12 @@ interface MixingProTableProps {
 
 const statusStyles = {
   pending: "bg-yellow-700/20 text-yellow-400 border-yellow-700/30",
-  sent: "bg-green-800/20 text-green-400 border-green-800/30",
+  in_progress: "bg-blue-800/20 text-blue-400 border-blue-800/30",
+  completed: "bg-green-800/20 text-green-400 border-green-800/30",
 };
 
 export const MixingProTable: React.FC<MixingProTableProps> = ({
   entries,
-  selectAll,
-  onSelectAll,
   onSelectEntry,
   onDeleteEntry,
   onMarkAsSent,
@@ -110,33 +109,16 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
                     </button>
                     <button
                       onClick={() => onMarkAsSent(entry.id)}
-                      className="p-2 bg-foreground hover:bg-purple-500/20 rounded-lg transition-colors"
+                      className="p-2 rounded-lg text-green-400 hover:bg-green-600/20 transition-colors"
+                      title="Mark Sent"
                     >
-                      <Image
-                        src={"/image/verctor/whitecheck.png"}
-                        alt="check"
-                        width={14}
-                        height={14}
-                        className="m-0.5 my-1"
-                      />
+                      <Check size={16} />
                     </button>
                     <button
-                      onClick={() => {
-                        onDeleteEntry(entry.id);
-                        showDeleteToast(
-                          "order sucessfully deleted",
-                          "Deleted",
-                          "show all"
-                        );
-                      }}
-                      className="p-2 text-red-400 bg-foreground hover:bg-red-500/20 rounded-lg transition-colors"
+                      onClick={() => onMarkAsSent(entry.id)}
+                      className="p-2 bg-foreground hover:bg-purple-500/20 rounded-lg transition-colors"
                     >
-                      <Image
-                        src={"/image/verctor/bpm.png"}
-                        alt="Delete"
-                        width={16}
-                        height={16}
-                      />
+                      <Trash size={16} className="text-white" />
                     </button>
                   </div>
                 </td>

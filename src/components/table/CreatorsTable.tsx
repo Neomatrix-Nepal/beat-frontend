@@ -108,7 +108,7 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
                       disabled={entry.isRoleChanged}
                     >
                       <Image
-                        src={"/image/verctor/whitecheck.png"}
+                        src={"/image/tablevector/whitecheck.png"}
                         alt="Approve"
                         width={14}
                         height={14}
@@ -121,12 +121,7 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
                       className="p-2 text-red-400 bg-foreground hover:bg-red-500/20 rounded-lg transition-colors"
                       title="Delete"
                     >
-                      <Image
-                        src={"/image/tablevector/bin.png"}
-                        alt="Delete"
-                        width={16}
-                        height={16}
-                      />
+                      <Trash size={16} />
                     </button>
                   </div>
                 </td>

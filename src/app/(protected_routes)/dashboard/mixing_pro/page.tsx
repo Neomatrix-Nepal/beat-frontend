@@ -12,6 +12,7 @@ import {
 import api from "@/src/hooks/useApi";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { deleteMixingOrder } from "./action";
 
 const BUTTON_CLASSES =
   "flex items-center gap-2 text-white px-5 py-3 font-michroma text-sm font-semibold rounded-lg bg-custom transition-transform transform hover:scale-105";
@@ -95,15 +96,16 @@ const MixingProPage = () => {
     );
   }, []);
 
-  const handleDeleteEntry = useCallback(async (id: number) => {
+  const handleDeleteEntry = async (id: number) => {
     try {
-      await api.delete(`/mixing-order/${id}`);
+      await deleteMixingOrder(id);
       setUploads((prev) => prev.filter((entry) => entry.id !== id));
+      alert("Mixing order deleted successfully");
     } catch (err) {
       setError("Failed to delete mixing order. Please try again.");
       console.error("Error deleting entry:", err);
     }
-  }, []);
+  };
 
   const handleDeleteSelectedEntries = useCallback(async () => {
     const selectedIds = uploads
@@ -123,10 +125,10 @@ const MixingProPage = () => {
 
   const handleMarkAsSent = useCallback(async (id: number) => {
     try {
-      await api.patch(`/mixing-order/${id}`, { status: "sent" });
+      await api.patch(`/mixing-order/${id}`, { status: "completed" });
       setUploads((prev) =>
         prev.map((entry) =>
-          entry.id === id ? { ...entry, status: "sent" } : entry
+          entry.id === id ? { ...entry, status: "completed" } : entry
         )
       );
     } catch (err) {

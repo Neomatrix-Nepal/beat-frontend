@@ -15,7 +15,7 @@ export interface MixingProEntry {
   description: string;
   referenceTrack: string;
   additionalInstructions: string;
-  status: "pending" | "sent";
+  status: "pending" | "in_progress" | "completed";
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
@@ -51,7 +51,7 @@ export default function MixingProSubmissionDetails({
   const total = (basePrice + packageTotal).toFixed(2);
 
   const handleMarkAsCompleted = () => {
-    if (onMarkAsCompleted && entry.status !== "sent") {
+    if (onMarkAsCompleted && entry.status !== "completed") {
       onMarkAsCompleted(entry.id);
     }
   };
@@ -65,6 +65,8 @@ export default function MixingProSubmissionDetails({
             src={"/image/verctor/icon.png"}
             alt="icon"
             className="w-5 h-5"
+            width={200}
+            height={200}
           />
           Mixing Pro Submission Details
         </h2>
@@ -99,7 +101,7 @@ export default function MixingProSubmissionDetails({
             value={entry.musicGenre || "N/A"}
           />
           <InfoRow
-            icon={"//image/verctor/editor.png"}
+            icon={"/image/verctor/editor.png"}
             label="Preferred Mixing Style"
             value={entry.musicStyle || "N/A"}
           />
@@ -158,13 +160,13 @@ export default function MixingProSubmissionDetails({
       <div>
         <button
           onClick={handleMarkAsCompleted}
-          disabled={entry.status === "sent"}
+          disabled={entry.status === "completed"}
           className={`bg-[#00e08f] hover:bg-[#00c97e] text-black px-5 py-2 rounded-md font-semibold text-sm flex items-center gap-2 ${
-            entry.status === "sent" ? "opacity-50 cursor-not-allowed" : ""
+            entry.status === "completed" ? "opacity-50 cursor-not-allowed" : ""
           }`}
         >
           <FaCheckCircle className="text-sm" />
-          {entry.status === "sent" ? "Completed" : "Mark as Completed"}
+          {entry.status === "completed" ? "Completed" : "Mark as Completed"}
         </button>
       </div>
     </div>

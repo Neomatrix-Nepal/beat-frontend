@@ -106,7 +106,7 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
                       className="p-2 bg-foreground hover:bg-purple-500/20 rounded-lg transition-colors"
                     >
                       <Image
-                        src={"/image/verctor/whitecheck.png"}
+                        src={"/image/tablevector/whitecheck.png"}
                         alt="check"
                         width={14}
                         height={14}
