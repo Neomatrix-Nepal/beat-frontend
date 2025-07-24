@@ -13,6 +13,10 @@ import {
   Users,
   Menu,
   X,
+  Ticket,
+  Drum,
+  Package,
+  Blend,
 } from "lucide-react";
 import Image from "next/image";
 
@@ -30,10 +34,19 @@ const sidebarItems: SidebarItem[] = [
     href: "/dashboard/customer_orders",
   },
   { icon: Music, label: "Beats Manager", href: "/dashboard/beats_manager" },
-  { icon: Users, label: "Mixing Pro", href: "/dashboard/mixing_pro" },
-  { icon: Users, label: "Custom Beat", href: "/dashboard/custom_beats" },
-  { icon: Users, label: "Package Manager", href: "/dashboard/package_manager" },
+  { icon: Blend, label: "Mixing Pro", href: "/dashboard/mixing_pro" },
+  { icon: Drum, label: "Custom Beat", href: "/dashboard/custom_beats" },
+  {
+    icon: Package,
+    label: "Package Manager",
+    href: "/dashboard/package_manager",
+  },
   { icon: Droplets, label: "Drips Manager", href: "/dashboard/drips_manager" },
+  {
+    icon: Ticket,
+    label: "Discount Coupon",
+    href: "/dashboard/discount_coupon",
+  },
   {
     icon: Calendar,
     label: "Studio Bookings",

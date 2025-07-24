@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Michroma } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "../components/toaster";
+import AuthSession from "../components/AuthSession";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -35,8 +36,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${michroma.variable}  bg-[#151515] antialiased`}
       >
-        {children}
-        <Toaster />
+        <AuthSession>
+          {children}
+          <Toaster />
+        </AuthSession>
       </body>
     </html>
   );

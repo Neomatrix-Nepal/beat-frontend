@@ -17,3 +17,9 @@ export function formatDateTime(isoString: string): string {
     hour12: true,
   });
 }
+
+export const toDateInputValue = (value?: string | Date) => {
+  if (!value) return "";
+  const iso = typeof value === "string" ? value : value.toISOString();
+  return iso.slice(0, 10);
+};
