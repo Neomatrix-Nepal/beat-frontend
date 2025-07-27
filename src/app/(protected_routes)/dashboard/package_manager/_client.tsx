@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Package } from "@/src/types";
 import { updatePackage, uploadPackage } from "./action";
+import toast from "react-hot-toast";
 
 const defaultFormData = {
   id: 0,
@@ -50,7 +51,8 @@ export default function _client({
   };
 
   const handleAddUpdate = async () => {
-    if (!form.name || !form.price) return alert("Name and Price are required");
+    if (!form.name || !form.price)
+      return toast.error("Name and Price are required");
     setLoading(true);
 
     const pkgData: Package = {
@@ -72,9 +74,9 @@ export default function _client({
         setPackages((prev) =>
           prev.map((p) => (p.id === form.id ? pkgData : p))
         );
-        alert("Package updated successfully!");
+        toast.success("Package updated successfully!");
       } else {
-        alert("Failed to update package. Please try again.");
+        toast.error("Failed to update package. Please try again.");
         console.error("Upload failed:", response.error);
       }
     } else {
@@ -83,9 +85,9 @@ export default function _client({
 
       if (response.id) {
         setPackages((prev) => [pkgData, ...prev]);
-        alert("Package added successfully!");
+        toast.success("Package added successfully!");
       } else {
-        alert("Failed to add package. Please try again.");
+        toast.error("Failed to add package. Please try again.");
         console.error("Upload failed:", response.error);
       }
     }

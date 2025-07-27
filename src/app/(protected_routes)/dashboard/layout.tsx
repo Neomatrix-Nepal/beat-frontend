@@ -7,7 +7,7 @@ import { ReactNode } from "react";
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
     <div className="flex  ">
-      <div className="sticky  top-0 z-50  ">
+      <div className="sticky top-0 z-50  ">
         <DashboardSidebar />
       </div>
       <div className="w-full ">

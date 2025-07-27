@@ -2,11 +2,11 @@
 
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
-import { toast } from "@/src/lib/use-toast";
 import { LogIn } from "lucide-react";
 import { signIn } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
 type LoginFormInputs = {
   email: string;
@@ -30,10 +30,10 @@ const LoginForm = () => {
 
       if (!res?.ok) {
         // setIsLoading(false);
-        return alert("Invalid email or password");
+        return toast.error("Invalid email or password");
       }
       setTimeout(() => {
-        alert("Login successful");
+        toast.success("Login successful");
         redirect("/");
       }, 500);
     } catch (error) {

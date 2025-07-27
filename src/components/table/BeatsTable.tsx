@@ -2,7 +2,7 @@ import React from "react";
 
 import { formatDateTime } from "@/src/lib/utils";
 import { BeatsTableProps } from "@/src/types";
-import Image from "next/image";
+import { Pencil, Play, Trash } from "lucide-react";
 
 const genreColors: Record<string, string> = {
   chill: "bg-orange-500/20 text-orange-400 border-orange-500/30",
@@ -96,11 +96,6 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
                       <button
                         onClick={() => {
                           onDeleteBeat(beat.id.toString());
-                          // showDeleteToast(
-                          //   "Delete?",
-                          //   "Are you sure?",
-                          //   "Confirm"
-                          // );
                         }}
                         className="p-2 text-white bg-red-600 hover:text-red-600 hover:bg-white border-2  border-white hover:border-red-600 rounded-lg transition-colors"
                       >
@@ -149,36 +144,25 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
 
                 <div className="flex items-center gap-2">
                   <button className="p-2 text-red-400 hover:bg-green-500/20 rounded-lg transition-colors">
-                    <Image
-                      src={"/image/verctor/play.png"}
-                      alt="Play"
-                      width={16}
-                      height={16}
-                    />
+                    <Play size={16} />
                   </button>
 
-                  <button className="p-2 text-purple-400 hover:bg-purple-500/20 rounded-lg transition-colors">
-                    <Image
-                      src={"/image/verctor/edit.png"}
-                      alt="Edit"
-                      width={16}
-                      height={16}
-                    />
+                  <button
+                    onClick={() => {
+                      onEditBeat(beat);
+                    }}
+                    className="p-2 text-purple-400 hover:bg-purple-500/20 rounded-lg transition-colors"
+                  >
+                    <Pencil size={16} />
                   </button>
 
                   <button
                     onClick={() => {
                       onDeleteBeat(beat.id.toString());
-                      // showDeleteToast("Delete?", "Are you sure?", "Confirm");
                     }}
                     className="p-2 text-red-400 hover:bg-red-500/20 rounded-lg transition-colors"
                   >
-                    <Image
-                      src={"/image/verctor/bin.png"}
-                      alt="Delete"
-                      width={16}
-                      height={16}
-                    />
+                    <Trash size={16} />
                   </button>
                 </div>
               </div>

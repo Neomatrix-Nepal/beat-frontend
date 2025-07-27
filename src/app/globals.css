@@ -46,7 +46,11 @@
 
 :root {
   --radius: 0.625rem;
-  --gradient-purple-pink-horizontal: linear-gradient(90deg, #9859E8 0%, #D84CAB 100%);
+  --gradient-purple-pink-horizontal: linear-gradient(
+    90deg,
+    #9859e8 0%,
+    #d84cab 100%
+  );
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -122,10 +126,6 @@
     @apply bg-background text-foreground;
   }
 }
- 
- 
-
-
 
 .bg-custom {
   @apply bg-gradient-to-r from-purple-500 to-pink-500;
@@ -133,8 +133,23 @@
 .bg-button {
   @apply bg-gradient-to-r from-purple-500 to-pink-500;
 }
- .custom-quill .ql-toolbar button:hover,
-.custom-quill .ql-toolbar .ql-picker-label:hover  {
+.custom-quill .ql-toolbar button:hover,
+.custom-quill .ql-toolbar .ql-picker-label:hover {
   color: #000000 !important; /* Tailwind sky-400 */
 }
 
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.test {
+  border: 1px solid red;
+}

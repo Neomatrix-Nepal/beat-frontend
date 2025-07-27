@@ -8,6 +8,7 @@ import {
   uploadDiscountCoupon,
 } from "./action";
 import { formatDateTime, toDateInputValue } from "@/src/lib/utils";
+import toast from "react-hot-toast";
 
 const defaultForm: Coupon = {
   code: "",
@@ -42,7 +43,7 @@ export default function _Client({
       !form.validFrom ||
       !form.validUntil
     ) {
-      alert("Please fill all required fields.");
+      toast.error("Please fill all required fields.");
       return;
     }
 
@@ -66,25 +67,25 @@ export default function _Client({
         session?.user?.tokens.accessToken!
       );
       if (!id) {
-        alert("Failed to update coupon.");
+        toast.error("Failed to update coupon.");
         return;
       }
       setCoupons((prev) =>
         prev.map((c) => (c.id === newCoupon.id ? newCoupon : c))
       );
-      alert("Coupon updated.");
+      toast.success("Coupon updated.");
     } else {
       const { id } = await uploadDiscountCoupon(
         newCoupon,
         session?.user?.tokens.accessToken!
       );
       if (!id) {
-        alert("Failed to add coupon.");
+        toast.error("Failed to add coupon.");
         return;
       }
       newCoupon.id = id;
       setCoupons((prev) => [newCoupon, ...prev]);
-      alert("Coupon added.");
+      toast.success("Coupon added.");
     }
 
     setForm(defaultForm);
@@ -103,9 +104,9 @@ export default function _Client({
         id.toString(),
         session?.user?.tokens.accessToken!
       );
-      if (message) return alert("Failed to delete coupon." + message);
+      if (message) return toast.error("Failed to delete coupon." + message);
       setCoupons((prev) => prev.filter((c) => c.id !== id));
-      alert("Coupon deleted.");
+      toast.success("Coupon deleted.");
       setForm(defaultForm);
       setEditing(false);
     }

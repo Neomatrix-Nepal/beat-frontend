@@ -13,6 +13,7 @@ import api from "@/src/hooks/useApi";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { deleteMixingOrder } from "./action";
+import toast from "react-hot-toast";
 
 const BUTTON_CLASSES =
   "flex items-center gap-2 text-white px-5 py-3 font-michroma text-sm font-semibold rounded-lg bg-custom transition-transform transform hover:scale-105";
@@ -100,7 +101,7 @@ const MixingProPage = () => {
     try {
       await deleteMixingOrder(id);
       setUploads((prev) => prev.filter((entry) => entry.id !== id));
-      alert("Mixing order deleted successfully");
+      toast.success("Mixing order deleted successfully");
     } catch (err) {
       setError("Failed to delete mixing order. Please try again.");
       console.error("Error deleting entry:", err);

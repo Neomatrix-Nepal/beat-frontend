@@ -12,6 +12,8 @@ import { useForm } from "react-hook-form";
 import { FaUpload } from "react-icons/fa";
 import { FiSave, FiTrash2, FiUpload, FiX } from "react-icons/fi";
 import { MdInsertPhoto } from "react-icons/md";
+import AudioPlayer from "../HLSAudioPlayer";
+import toast from "react-hot-toast";
 
 export type FormData = {
   beatTitle: string;
@@ -36,7 +38,6 @@ export default function BeatFormModal({
   onClose,
   initialData,
 }: BeatFormModalProps) {
-  console.log(initialData);
   const [loading, setLoading] = useState(false);
   const [selectedGenreId, setSelectedGenreId] = useState<number | null>(null);
   const [previewCover, setPreviewCover] = useState<string | null>(null);
@@ -89,13 +90,18 @@ export default function BeatFormModal({
     setValue("mood", initialData.name ?? "");
     setValue("description", initialData.description ?? "");
 
-    // if (typeof initialData. === "string") {
-    //   setPreviewCover(initialData.cover);
-    // }
+    if (typeof initialData.images[0].url === "string") {
+      setPreviewCover(
+        process.env.NEXT_PUBLIC_API_URL + "/" + initialData.images[0].url
+      );
+    }
 
-    // if (typeof initialData.audio === "string") {
-    //   setPreviewAudio(initialData.audio);
-    // }
+    if (typeof initialData.digital_assets[0].contentPath === "string") {
+      setPreviewAudio(
+        process.env.NEXT_PUBLIC_API_URL +
+          initialData.digital_assets[0].metadata.playlistUrl
+      );
+    }
   }, [initialData, genres, reset, setValue]);
 
   const openCoverDialog = () => coverInputRef.current?.click();
@@ -145,7 +151,7 @@ export default function BeatFormModal({
         await uploadMusic(audioFormData);
       }
 
-      alert(
+      toast.success(
         initialData
           ? "Beat updated successfully!"
           : "Beat uploaded successfully!"
@@ -153,7 +159,7 @@ export default function BeatFormModal({
       handleClose();
     } catch (error) {
       console.error(error);
-      alert("Failed: " + (error as Error).message);
+      toast.error("Failed: " + (error as Error).message);
     } finally {
       setLoading(false);
     }
@@ -219,7 +225,10 @@ export default function BeatFormModal({
               <div className="flex-1 space-y-2">
                 <button
                   type="button"
-                  onClick={openAudioDialog}
+                  onClick={() => {
+                    setPreviewAudio(null);
+                    openAudioDialog();
+                  }}
                   className="w-full bg-custom text-white py-2 px-4 rounded-lg flex items-center justify-center"
                 >
                   <FiUpload className="mr-2" /> Upload Beat Audio
@@ -243,19 +252,22 @@ export default function BeatFormModal({
                 ref={audioInputRef}
                 className="hidden"
                 onChange={(e) => {
+                  setPreviewAudio(null);
                   const file = e.target.files?.[0] || null;
                   if (file) setPreviewAudio(URL.createObjectURL(file));
                   setValue("audio", file, { shouldValidate: true });
                 }}
               />
             </div>
-            {(audioFile || previewAudio) && (
+            {audioFile ? (
               <audio
                 controls
-                src={audioFile ? URL.createObjectURL(audioFile) : previewAudio!}
+                src={URL.createObjectURL(audioFile)}
                 className="mt-4 w-full"
               />
-            )}
+            ) : previewAudio ? (
+              <AudioPlayer audioSrc={previewAudio} />
+            ) : null}
           </div>
 
           <InputField
@@ -306,6 +318,7 @@ export default function BeatFormModal({
               label="Price"
               placeholder="Set beat price"
               name="price"
+              type="number"
               register={register}
               error={errors.price?.message}
               rules={{ required: "Price is required" }}
@@ -356,6 +369,7 @@ export default function BeatFormModal({
 
 const InputField = ({
   label,
+  type = "text",
   placeholder,
   name,
   register,
@@ -363,6 +377,7 @@ const InputField = ({
   rules,
 }: {
   label: string;
+  type?: string;
   placeholder: string;
   name: keyof FormData;
   register: ReturnType<typeof useForm<FormData>>["register"];
@@ -375,6 +390,7 @@ const InputField = ({
     </label>
     <input
       placeholder={placeholder}
+      type={type}
       {...register(name, rules)}
       className="w-full bg-[#162133] border border-gray-600 text-white py-2 px-3 rounded-lg"
     />

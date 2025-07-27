@@ -115,7 +115,7 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
                       <Check size={16} />
                     </button>
                     <button
-                      onClick={() => onMarkAsSent(entry.id)}
+                      onClick={() => onDeleteEntry(entry.id)}
                       className="p-2 bg-foreground hover:bg-purple-500/20 rounded-lg transition-colors"
                     >
                       <Trash size={16} className="text-white" />
