@@ -74,14 +74,14 @@ export function DashboardSidebar() {
       {/* Mobile Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-60 z-40 xl:hidden"
+          className="fixed inset-0 bg-black/40 bg-opacity-60 z-40 xl:hidden"
           onClick={() => setIsOpen(false)}
         />
       )}
 
       {/* Sidebar */}
       <aside
-        className={`fixed xl:static top-0 left-0 z-50 w-full xl:w-80 bg-[#151515]  transform transition-transform duration-300 ease-in-out
+        className={`fixed h-screen top-0 left-0 z-50 w-2/3 xl:w-80 bg-[#151515] transform transition-transform duration-300 ease-in-out
         ${
           isOpen ? "translate-x-0" : "-translate-x-full xl:translate-x-0"
         } min-h-[100dvh] xl:min-h-screen`}
@@ -100,7 +100,7 @@ export function DashboardSidebar() {
         </div>
 
         {/* Navigation */}
-        <nav className="p-4 font-michroma space-y-2">
+        <nav className="p-4 font-michroma gap-2 flex flex-col">
           {sidebarItems.map((item, index) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;

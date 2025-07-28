@@ -36,7 +36,7 @@ export function DashboardHeader() {
   };
 
   return (
-    <header className="relative p-4 bg-primary flex items-center justify-between">
+    <header className="relative p-4 bg-[#151515] flex items-center justify-between">
       {/* Centered Title */}
       <h1 className="absolute left-1/2 transform -translate-x-1/2 text-2xl tracking-wider font-michroma text-white">
         {formattedTitle}
