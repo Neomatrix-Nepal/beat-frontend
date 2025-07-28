@@ -51,7 +51,6 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
         <table className="w-full text-sm">
           <thead className="bg-[#1A2233] text-[#E4E4E7] border-b border-[#2C3A4F]">
             <tr>
-              <th className="p-4 w-10"></th>
               <th className="text-left p-4">Id</th>
               <th className="text-left p-4">Customer's Name</th>
               <th className="text-left p-4">Product</th>
@@ -69,14 +68,6 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
                   index % 2 === 0 ? "bg-[#1C2433]" : "bg-[#1A1F2E]"
                 }`}
               >
-                <td className="p-4">
-                  <input
-                    type="checkbox"
-                    checked={entry.selected}
-                    onChange={() => onSelectEntry(entry.id)}
-                    className="w-4 h-4 text-purple-600 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
-                  />
-                </td>
                 <td className="p-4 text-white font-medium">{entry.id}</td>
                 <td className="p-4 text-white font-medium">
                   {entry.customerName}
@@ -196,7 +187,7 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
                   className="p-2 rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                   title="Delete"
                 >
-                  <Trash size={16} />
+                  {/* <Trash size={16} /> */}
                 </button>
               </div>
             </div>

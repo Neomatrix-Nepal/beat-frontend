@@ -2,9 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { IoMdCheckmark } from "react-icons/io";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { RiArrowDropDownLine } from "react-icons/ri";
 
 import {
   Pagination,
@@ -115,7 +113,7 @@ const CustomerOrdersPage = () => {
               )}
 
               <div className="relative inline-block">
-                <select className="pl-10 pr-4 py-3 text-sm font-semibold rounded-lg bg-purple-700 text-white hover:bg-purple-800 transition-transform transform hover:scale-105 appearance-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50">
+                <select className="cursor-pointer pl-10 pr-4 py-3 text-sm font-semibold rounded-lg bg-purple-700 text-white hover:bg-purple-800 transition-transform transform hover:scale-105 appearance-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50">
                   <option value="beats">Beats</option>
                   <option value="drips">Drips</option>
                 </select>

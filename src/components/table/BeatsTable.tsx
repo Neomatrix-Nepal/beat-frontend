@@ -2,7 +2,8 @@ import React from "react";
 
 import { formatDateTime } from "@/src/lib/utils";
 import { BeatsTableProps } from "@/src/types";
-import { Pencil, Play, Trash } from "lucide-react";
+import { Edit, Pencil, Play, Trash } from "lucide-react";
+import Image from "next/image";
 
 const genreColors: Record<string, string> = {
   chill: "bg-orange-500/20 text-orange-400 border-orange-500/30",
@@ -18,12 +19,12 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
 }) => {
   if (beats.length === 0) return null;
   return (
-    <div className="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden font-michroma">
+    <div className="bg-[#101828] rounded-xl border border-[#1D2939] overflow-hidden font-michroma">
       {/* Desktop Table */}
 
-      <div className="hidden lg:block overflow-x-auto">
+      <div className="hidden lg:block overflow-x-auto text-sm">
         <table className="w-full">
-          <thead className="bg-slate-700/50 border-b border-slate-600">
+          <thead className="bg-[#1A2233] text-[#E4E4E7] border-b border-[#2C3A4F]">
             <tr>
               <th className="text-left p-4 w-12"></th>
               <th className="text-left p-4 text-slate-300 font-semibold">
@@ -89,17 +90,22 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
                         onClick={() => {
                           onEditBeat(beat);
                         }}
-                        className="p-2 text-white bg-custom hover:bg-white border-2  border-white hover:border-red-600 rounded-lg transition-colors"
+                        className="cursor-pointer p-2 text-white bg-black hover:bg-purple-700 hover:border-red-600 rounded-lg transition-colors"
                       >
-                        Edit
+                        <Edit size={16}/>
                       </button>
                       <button
                         onClick={() => {
                           onDeleteBeat(beat.id.toString());
                         }}
-                        className="p-2 text-white bg-red-600 hover:text-red-600 hover:bg-white border-2  border-white hover:border-red-600 rounded-lg transition-colors"
+                        className="cursor-pointer p-2 bg-black rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                       >
-                        Delete
+                        <Image
+                          src={"/image/tablevector/bin.png"}
+                          alt="Delete"
+                          width={16}
+                          height={16}
+                        />
                       </button>
                     </div>
                   </td>
