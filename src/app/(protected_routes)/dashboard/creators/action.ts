@@ -1,15 +1,15 @@
 import api from "@/src/hooks/useApi";
-import { CreatorEntry, FetchCreatorsResponse } from "@/src/types/creator";
+import { FetchCreatorsResponse } from "@/src/types/creator";
 
 export const fetchCreators = async (
-  page: number = 1,
-  limit: number = 10
+  token: string
 ): Promise<FetchCreatorsResponse> => {
   try {
     const response = await api.get("/producer-request", {
-      params: { page, limit },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
-    console.log(response);
     return response.data;
   } catch (error: any) {
     console.error("Failed to fetch creators:", error);
@@ -19,9 +19,13 @@ export const fetchCreators = async (
   }
 };
 
-export const deleteCreator = async (id: number) => {
+export const deleteCreator = async (id: number, token: string) => {
   try {
-    const response = await api.delete(`/producer-request/${id}`);
+    const response = await api.delete(`/producer-request/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return {
       success: true,
       data: response.data,
@@ -55,27 +59,22 @@ export const deleteMultipleCreators = async (ids: number[]) => {
 };
 
 export const approveCreator = async (
-  userId: number,
-  producerRequestId: number
+  producerRequestId: number,
+  status: { status: string },
+  token: string
 ) => {
   try {
-    console.log(
-      `Sending request with userId: ${userId}, producerRequestId: ${producerRequestId}`
-    );
     const response = await api.patch(
-      "/producer-request/change-user-role",
-      { userId, producerRequestId },
+      "/producer-request/change-user-role/" + producerRequestId,
+      status,
       {
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       }
     );
-    console.log("Response:", response);
-    return {
-      success: true,
-      data: response.data,
-    };
+    return response.data;
   } catch (error: any) {
     console.error("Failed to approve creator:", {
       message: error.message,

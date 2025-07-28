@@ -1,9 +1,8 @@
-import React from "react";
-import { getAllCoupons } from "./action";
-import _Client from "./_Client";
-import { Coupon, Package } from "@/src/types";
-import { getServerSession } from "next-auth";
 import { authOptions } from "@/src/app/api/auth/option";
+import { Coupon } from "@/src/types";
+import { getServerSession } from "next-auth";
+import _Client from "./_Client";
+import { getAllCoupons } from "./action";
 
 export default async function PackageManager() {
   const session = await getServerSession(authOptions);

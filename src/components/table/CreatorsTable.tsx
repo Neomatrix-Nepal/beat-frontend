@@ -1,52 +1,45 @@
-import React from "react";
-import { Eye, Check, Trash } from "lucide-react";
-import Image from "next/image";
-
+import React, { useState } from "react";
+import { Eye, Check, Trash, Cross, X } from "lucide-react";
 import { CreatorEntry } from "@/src/types";
-
-export interface FrontendCreatorEntry extends CreatorEntry {
-  name: string;
-  style: string;
-  socialMediaUrl: string;
-  selected: boolean;
-}
+import { formatDateTime } from "@/src/lib/utils";
 
 interface CreatorTableProps {
-  entries: FrontendCreatorEntry[];
-  selectAll: boolean;
-  onSelectAll: () => void;
-  onSelectEntry: (id: number) => void;
+  entries: CreatorEntry[];
   onDeleteEntry: (id: number) => void;
-  onApproveEntry: (userId: number, rowId: number) => void;
+  onChangeStatus: (producerRequestId: number, status: string) => void;
+  isLoading: boolean;
 }
 
 export const CreatorTable: React.FC<CreatorTableProps> = ({
   entries,
-  selectAll,
-  onSelectAll,
-  onSelectEntry,
   onDeleteEntry,
-  onApproveEntry,
+  onChangeStatus,
+  isLoading,
 }) => {
+  const [selectedEntry, setSelectedEntry] = useState<CreatorEntry | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = (entry: CreatorEntry) => {
+    setSelectedEntry(entry);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedEntry(null);
+  };
+
   return (
     <div className="bg-[#101828] rounded-xl border border-[#1D2939] overflow-hidden font-michroma">
-      {/* Desktop Table */}
       <div className="hidden lg:block overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="bg-[#1A2233] text-[#E4E4E7] border-b border-[#2C3A4F]">
             <tr>
-              <th className="p-4 w-10">
-                <input
-                  type="checkbox"
-                  checked={selectAll}
-                  onChange={onSelectAll}
-                  className="w-4 h-4 text-purple-600 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
-                />
-              </th>
               <th className="text-left p-4">Creator's Name</th>
               <th className="text-left p-4">Producer Style</th>
               <th className="text-left p-4">Social Media URL</th>
               <th className="text-center p-4">Demo Beat</th>
+              <th className="text-center p-4">Status</th>
               <th className="text-left p-4">Actions</th>
             </tr>
           </thead>
@@ -58,19 +51,11 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
                   index % 2 === 0 ? "bg-[#1C2433]" : "bg-[#1A1F2E]"
                 }`}
               >
-                <td className="p-4">
-                  <input
-                    type="checkbox"
-                    checked={entry.selected}
-                    onChange={() => onSelectEntry(entry.id)}
-                    className="w-4 h-4 text-purple-600 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
-                  />
-                </td>
                 <td className="p-4 text-white font-medium">{entry.name}</td>
                 <td className="p-4 pl-16 text-blue-400">{entry.style}</td>
                 <td className="p-4 pl-12 text-blue-400 underline">
                   <a
-                    href={entry.socialMediaUrl}
+                    href={entry.socialUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -79,47 +64,72 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
                 </td>
                 <td className="p-4 text-center text-blue-400 underline">
                   <a
-                    href={entry.demoBeat}
+                    href={entry.demoLink}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     Open Link
                   </a>
                 </td>
+                <td
+                  className={`p-4 text-center font-semibold ${
+                    entry.status === "approved"
+                      ? "text-green-500"
+                      : entry.status === "reject"
+                      ? "text-red-500"
+                      : "text-yellow-500"
+                  }`}
+                >
+                  {entry.status.charAt(0).toUpperCase() + entry.status.slice(1)}
+                </td>
+
                 <td className="p-4">
                   <div className="flex items-center gap-2">
                     <button
+                      onClick={() => openModal(entry)}
+                      className="p-2 rounded-lg text-white hover:bg-slate-600/30 transition-colors"
+                      title="View"
+                      disabled={isLoading}
+                    >
+                      <Eye size={16} />
+                    </button>
+
+                    <button
                       onClick={() => {
-                        console.log(
-                          "userId:",
-                          entry.userId,
-                          "rowId:",
-                          entry.id
-                        );
-                        onApproveEntry(entry.userId, entry.id);
+                        onChangeStatus(entry.id, "approved");
                       }}
                       className={`p-2 rounded-lg transition-colors 
                         ${
-                          entry.isRoleChanged
+                          entry.status === "approved"
                             ? "bg-green-500 cursor-not-allowed"
                             : "bg-foreground hover:bg-purple-500/20"
                         }`}
                       title="Approve"
-                      disabled={entry.isRoleChanged}
+                      disabled={entry.status === "approved" || isLoading}
                     >
-                      <Image
-                        src={"/image/tablevector/whitecheck.png"}
-                        alt="Approve"
-                        width={14}
-                        height={14}
-                        className="m-0.5 my-1"
-                      />
+                      <Check size={16} className="text-white" />
+                    </button>
+                    <button
+                      onClick={() => {
+                        onChangeStatus(entry.id, "reject");
+                      }}
+                      className={`p-2 rounded-lg transition-colors 
+                        ${
+                          entry.status === "reject"
+                            ? "bg-red-500 cursor-not-allowed"
+                            : "bg-foreground hover:bg-purple-500/20"
+                        }`}
+                      title="Reject"
+                      disabled={entry.status === "reject" || isLoading}
+                    >
+                      <X size={16} className="text-white" />
                     </button>
 
                     <button
                       onClick={() => onDeleteEntry(entry.id)}
                       className="p-2 text-red-400 bg-foreground hover:bg-red-500/20 rounded-lg transition-colors"
                       title="Delete"
+                      disabled={isLoading}
                     >
                       <Trash size={16} />
                     </button>
@@ -140,12 +150,6 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
           >
             <div className="flex items-start justify-between mb-3">
               <div className="flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  checked={entry.selected}
-                  onChange={() => onSelectEntry(entry.id)}
-                  className="w-4 h-4 text-purple-600 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
-                />
                 <div>
                   <h3 className="text-white font-medium">{entry.name}</h3>
                   <p className="text-blue-400 text-sm">{entry.style}</p>
@@ -154,7 +158,7 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
             </div>
             <div className="flex flex-col gap-2 mt-2">
               <a
-                href={entry.socialMediaUrl}
+                href={entry.socialUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-400 underline text-sm"
@@ -162,7 +166,7 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
                 Social Media URL: Open Link
               </a>
               <a
-                href={entry.demoBeat}
+                href={entry.demoLink}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-400 underline text-sm"
@@ -173,22 +177,36 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
             <div className="flex items-center justify-between mt-2">
               <div className="flex items-center gap-2">
                 <button
+                  onClick={() => openModal(entry)}
                   className="p-2 rounded-lg text-white hover:bg-slate-600/30 transition-colors"
                   title="View"
+                  disabled={isLoading}
                 >
                   <Eye size={16} />
                 </button>
                 <button
-                  onClick={() => onApproveEntry(entry.userId, entry.id)}
+                  onClick={() => onChangeStatus(entry.id, "approved")}
                   className="p-2 rounded-lg text-green-400 hover:bg-green-600/20 transition-colors"
                   title="Approve"
+                  disabled={isLoading}
                 >
                   <Check size={16} />
+                </button>
+                <button
+                  onClick={() => {
+                    onChangeStatus(entry.id, "reject");
+                  }}
+                  className="p-2 rounded-lg text-green-400 hover:bg-green-600/20 transition-colors"
+                  title="Reject"
+                  disabled={isLoading}
+                >
+                  <X size={16} className="text-white" />
                 </button>
                 <button
                   onClick={() => onDeleteEntry(entry.id)}
                   className="p-2 rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                   title="Delete"
+                  disabled={isLoading}
                 >
                   <Trash size={16} />
                 </button>
@@ -197,6 +215,52 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
           </div>
         ))}
       </div>
+
+      {/* Modal */}
+      {isModalOpen && selectedEntry && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center">
+          <div className="bg-[#1C2433] w-full max-w-md p-6 rounded-lg text-white relative shadow-lg border border-[#2C3A4F]">
+            <button
+              onClick={closeModal}
+              className="absolute top-2 right-2 text-gray-400 hover:text-red-500 text-lg"
+              disabled={isLoading}
+            >
+              ✕
+            </button>
+            <h2 className="text-xl font-bold mb-4">Payment Details</h2>
+            <div className="space-y-2 text-sm">
+              <p>
+                <span className="font-semibold">Method:</span>{" "}
+                {selectedEntry.paymentDetail.method}
+              </p>
+              <p>
+                <span className="font-semibold">Full Name:</span>{" "}
+                {selectedEntry.paymentDetail.fullName}
+              </p>
+              <p>
+                <span className="font-semibold">Email:</span>{" "}
+                {selectedEntry.paymentDetail.email}
+              </p>
+              {selectedEntry.paymentDetail.method === "khalti" && (
+                <p>
+                  <span className="font-semibold">Khalti Number:</span>{" "}
+                  {selectedEntry.paymentDetail.khaltiNumber || "N/A"}
+                </p>
+              )}
+              {selectedEntry.paymentDetail.method === "stripe" && (
+                <p>
+                  <span className="font-semibold">Stripe Account ID:</span>{" "}
+                  {selectedEntry.paymentDetail.stripeAccountId || "N/A"}
+                </p>
+              )}
+              <p>
+                <span className="font-semibold">Submitted At:</span>{" "}
+                {formatDateTime(selectedEntry.paymentDetail.createdAt)}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

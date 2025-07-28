@@ -120,14 +120,14 @@ export default function _client({
     filter === "all" ? packages : packages.filter((p) => p.purpose === filter);
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white p-6">
+    <div className="min-h-screen bg-slate-900 text-white p-6 font-michroma">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-xl font-bold font-michroma">Package Manager</h1>
+        <h1 className="text-xl font-bold ">Package Manager</h1>
       </div>
 
       {/* Form */}
       <div className="bg-slate-800 p-4 rounded-lg mb-6">
-        <h2 className="text-lg font-semibold mb-3 font-michroma">
+        <h2 className="text-lg font-semibold mb-3 ">
           {editing ? "Edit Package" : "Add New Package"}
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -171,7 +171,7 @@ export default function _client({
 
         {form.purpose === "product" && (
           <div className="mt-4">
-            <label className="block mb-2 font-michroma">Features</label>
+            <label className="block mb-2 ">Features</label>
             <div className="space-y-2">
               {form.features.map((feature, index) => (
                 <div key={index} className="flex items-center gap-2">
@@ -207,14 +207,14 @@ export default function _client({
         <button
           onClick={handleAddUpdate}
           disabled={loading}
-          className="mt-6 bg-custom px-6 py-2 rounded hover:scale-105 transition-transform font-michroma disabled:opacity-50"
+          className="mt-6 bg-custom px-6 py-2 rounded hover:scale-105 transition-transform  disabled:opacity-50"
         >
           {loading ? "Saving..." : editing ? "Update Package" : "Add Package"}
         </button>
       </div>
 
       <div className="mb-4">
-        <label className="mr-2 font-michroma">Filter by Purpose:</label>
+        <label className="mr-2 ">Filter by Purpose:</label>
         <select
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
@@ -228,13 +228,11 @@ export default function _client({
       </div>
 
       <div className="bg-slate-800 p-4 rounded-lg">
-        <h2 className="text-lg font-semibold mb-3 font-michroma">
-          All Packages
-        </h2>
+        <h2 className="text-lg font-semibold mb-3 ">All Packages</h2>
         <div className="overflow-x-auto">
           {packages.length > 0 && (
             <table className="w-full text-left text-sm">
-              <thead className="bg-slate-700 text-white font-michroma">
+              <thead className="bg-slate-700 text-white ">
                 <tr>
                   <th className="px-4 py-2">Name</th>
                   <th className="px-4 py-2">Purpose</th>
@@ -297,9 +295,7 @@ export default function _client({
             >
               ×
             </button>
-            <h2 className="text-lg font-bold font-michroma mb-3">
-              {viewPackage.name}
-            </h2>
+            <h2 className="text-lg font-bold  mb-3">{viewPackage.name}</h2>
             <p>
               <strong>Purpose:</strong> {viewPackage.purpose}
             </p>
