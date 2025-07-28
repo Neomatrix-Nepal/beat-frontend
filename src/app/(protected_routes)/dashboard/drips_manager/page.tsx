@@ -113,13 +113,6 @@ const DripManager = () => {
           {error && <p className="text-red-400 font-michroma">{error}</p>}
           <div className="gap-2 pl-4 mb-2 h-16 p-4 flex items-center justify-between">
             <div className="flex gap-2 items-center">
-              <input
-                type="checkbox"
-                checked={selectAll}
-                onChange={handleSelectAllDrips}
-                className="w-5 h-5 text-purple-600 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
-              />
-              <p className="text-white font-michroma">Select All</p>
               {selectedCount >= 2 && (
                 <button
                   onClick={handleDeleteSelectedDrips}

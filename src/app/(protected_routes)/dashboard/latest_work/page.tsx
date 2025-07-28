@@ -176,17 +176,6 @@ const LatestWorkManager: React.FC = () => {
         {error && <p className="text-red-500 font-michroma">{error}</p>}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
           <div className="flex flex-wrap items-center gap-2">
-            <label className="flex items-center gap-2 cursor-pointer select-none">
-              <input
-                type="checkbox"
-                checked={selectAll}
-                onChange={handleSelectAllWorks}
-                className="w-5 h-5 text-purple-600 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
-              />
-              <span className="text-white font-michroma text-sm sm:text-base">
-                Select All
-              </span>
-            </label>
             {selectedCount > 0 && ( // Changed to show button when at least one is selected
               <button
                 onClick={handleBatchDelete}

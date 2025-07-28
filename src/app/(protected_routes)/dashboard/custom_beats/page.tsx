@@ -94,15 +94,6 @@ const CustomBeatsPage = () => {
       <div className="flex-1 flex flex-col">
         <div className="flex-1 p-6">
           <div className="gap-2 pl-4 mb-2 h-16 p-4 flex items-center justify-between">
-            <div className="flex gap-2">
-              <input
-                type="checkbox"
-                checked={selectAll}
-                onChange={toggleSelectAll}
-                className="w-5 h-5 text-purple-600 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
-              />
-              <p className="text-white font-michroma">Select All</p>
-            </div>
             {selectedCount >= 2 && (
               <div className="flex gap-2">
                 <button className={BUTTON_CLASSES}>
