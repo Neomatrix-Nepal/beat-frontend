@@ -57,7 +57,7 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
               <th className="text-left p-4">Price</th>
               <th className="text-left p-4">Order Date</th>
               <th className="text-center p-4">Status</th>
-              <th className="text-left p-4">Action</th>
+              <th className="text-center p-4">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -85,16 +85,16 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
                   </div>
                 </td>
                 <td className="p-4">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center justify-center gap-2">
                     <button
                       onClick={() => handleViewClick(entry)}
-                      className="p-2 text-white bg-foreground hover:bg-green-500/20 rounded-lg transition-colors"
+                      className="cursor-pointer p-2 text-white bg-foreground hover:bg-purple-700 rounded-lg transition-colors"
                     >
                       <IoMdEye size={16} />
                     </button>
                     <button
                       onClick={() => showUpdateToast("xxx", "yyy", "zzz")}
-                      className="p-2 bg-foreground hover:bg-purple-500/20 rounded-lg transition-colors"
+                      className="cursor-pointer p-2 bg-foreground hover:bg-purple-700 rounded-lg transition-colors"
                     >
                       <Image
                         src={"/image/tablevector/whitecheck.png"}
@@ -109,7 +109,7 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
                         onDeleteEntry(entry.id);
                         showDeleteToast("yyy", "xxx", "zzz");
                       }}
-                      className="p-2 text-red-400 bg-foreground hover:bg-red-500/20 rounded-lg transition-colors"
+                      className="cursor-pointer p-2 bg-foreground hover:bg-purple-600/20 rounded-lg transition-colors"
                     >
                       <Image
                         src={"/image/tablevector/bin.png"}
@@ -187,7 +187,7 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
                   className="p-2 rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                   title="Delete"
                 >
-                  {/* <Trash size={16} /> */}
+                  <Trash size={16} />
                 </button>
               </div>
             </div>

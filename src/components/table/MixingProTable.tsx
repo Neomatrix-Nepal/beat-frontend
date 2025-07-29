@@ -1,13 +1,11 @@
 import React, { useState } from "react";
-import { Eye, Check, Trash } from "lucide-react";
+import { Check, Trash } from "lucide-react";
 import { IoMdEye } from "react-icons/io";
 import Image from "next/image";
 import PopupWrapper from "../shared/PopupWrapper";
 import MixingProSubmissionDetails, {
   MixingProEntry,
 } from "../dialog/mixingProDialog";
-
-import { showDeleteToast } from "@/src/lib/util";
 
 interface MixingProTableProps {
   entries: MixingProEntry[];
@@ -52,12 +50,11 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
         <table className="w-full text-sm">
           <thead className="bg-[#1A2233] text-[#E4E4E7] border-b border-[#2C3A4F]">
             <tr>
-              <th className="p-4 w-10"></th>
               <th className="text-left p-4">Name</th>
-              <th className=" pr-32 p-4">Uploaded Link</th>
+              <th className=" p-4">Uploaded Link</th>
               <th className="text-left p-4">Uploaded Date</th>
               <th className="text-center p-4">Status</th>
-              <th className="text-left p-4">Actions</th>
+              <th className="text-center p-4">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -68,22 +65,16 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
                   index % 2 === 0 ? "bg-[#1C2433]" : "bg-[#1A1F2E]"
                 }`}
               >
-                <td className="p-4">
-                  <input
-                    type="checkbox"
-                    checked={entry.selected}
-                    onChange={() => onSelectEntry(entry.id)}
-                    className="w-4 h-4 text-purple-600 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
-                  />
-                </td>
-                <td className="p-4 text-white font-medium">{entry.name}</td>
-                <td className="p-4   text-blue-400 ">
+                
+                <td className="p-4 text-white font-medium max-w-50">{entry.name}</td>
+                <td className="p-4 text-blue-400">
                   <a
                     href={entry.referenceTrack}
                     target="_blank"
                     rel="noopener noreferrer"
+                    className="flex justify-center"
                   >
-                    {entry.referenceTrack}
+                    Visit Link
                   </a>
                 </td>
                 <td className="p-4 text-slate-400">
@@ -100,25 +91,30 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
                   </div>
                 </td>
                 <td className="p-4">
-                  <div className="flex items-center gap-2">
+                  <div className="flex justify-center items-center gap-2">
                     <button
                       onClick={() => handleViewClick(entry)}
-                      className="p-2 text-white bg-foreground hover:bg-green-500/20 rounded-lg transition-colors"
+                      className="cursor-pointer p-2 text-white bg-foreground hover:bg-purple-700 rounded-lg transition-colors"
                     >
                       <IoMdEye size={16} />
                     </button>
                     <button
                       onClick={() => onMarkAsSent(entry.id)}
-                      className="p-2 rounded-lg text-green-400 hover:bg-green-600/20 transition-colors"
+                      className="cursor-pointer p-2 rounded-lg bg-black text-white hover:bg-purple-700 transition-colors"
                       title="Mark Sent"
                     >
                       <Check size={16} />
                     </button>
                     <button
                       onClick={() => onDeleteEntry(entry.id)}
-                      className="p-2 bg-foreground hover:bg-purple-500/20 rounded-lg transition-colors"
+                        className="cursor-pointer p-2 bg-black rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                     >
-                      <Trash size={16} className="text-white" />
+                      <Image
+                        src={"/image/tablevector/bin.png"}
+                        alt="Delete"
+                        width={16}
+                        height={16}
+                      />
                     </button>
                   </div>
                 </td>

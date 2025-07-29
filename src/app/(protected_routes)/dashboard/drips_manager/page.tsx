@@ -128,10 +128,10 @@ const DripManager = () => {
                 onClick={() =>
                   router.push("/dashboard/drips_manager/add_drips")
                 }
-                className="w-40 bg-custom text-white px-6 py-4 rounded-lg flex items-center gap-2 transition-all duration-200 transform hover:scale-105"
+                className="flex items-center gap-2 cursor-pointer py-3 px-5 text-sm font-semibold rounded-lg bg-purple-700 text-white hover:bg-purple-800 transition-transform transform hover:scale-105 appearance-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50"
               >
-                <Upload size={24} />
-                Upload
+                <Upload size={20} />
+                <span className="font-michroma font-semibold">Upload</span>
               </button>
             </div>
           </div>

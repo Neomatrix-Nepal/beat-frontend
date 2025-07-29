@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { Trash } from "lucide-react";
+import { Edit, Trash } from "lucide-react";
 import { showDeleteToast, showUpdateToast } from "@/src/lib/util";
 
 import Image from "next/image";
@@ -115,10 +115,8 @@ export const LatestWorkTable: React.FC<LatestWorkTableProps> = ({
         <table className="w-full text-sm">
           <thead className="bg-[#1A2233] text-[#E4E4E7] border-b border-[#2C3A4F]">
             <tr>
-              <th className="p-4 w-10"></th>
-
               <th className="text-left p-4">Title</th>
-              <th className="text-left   pl-20">Description</th>
+              <th className="text-center p-4">Description</th>
               <th className="text-center p-4">Platform</th>
               <th className="text-center p-4">Uploades Date</th>
               <th className="text-left p-4">Actions</th>
@@ -132,21 +130,14 @@ export const LatestWorkTable: React.FC<LatestWorkTableProps> = ({
                   index % 2 === 0 ? "bg-[#1C2433]" : "bg-[#1A1F2E]"
                 }`}
               >
-                <td className="p-4">
-                  <input
-                    type="checkbox"
-                    checked={work.selected}
-                    onChange={() => onSelectWork(work.id)}
-                    className="w-4 h-4 text-purple-600 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
-                  />
-                </td>
-
-                <td className="p-4 text-white font-medium">{work.title}</td>
-                <td className="p-4   text-center text-white">
+                <td className="p-4 text-white font-medium max-w-50">{work.title}</td>
+                <td className="p-4 text-center text-white max-w-40">
                   {work.description.slice(0, 10)}...
                 </td>
-                <td className="p-4 text-center flex justify-center">
-                  {getPlatformIcon(work.platform)}
+                <td className="text-center align-middle">
+                  <div className="flex justify-center items-center h-full">
+                    {getPlatformIcon(work.platform)}
+                  </div>
                 </td>
                 <td className="p-4 text-white text-center">
                   {work.uploadDate}
@@ -161,15 +152,9 @@ export const LatestWorkTable: React.FC<LatestWorkTableProps> = ({
                           work.id.toString()
                         )
                       }
-                      className="p-2 bg-foreground hover:bg-purple-500/20 rounded-lg transition-colors"
+                      className="cursor-pointer p-2 text-white bg-foreground hover:bg-purple-700 rounded-lg transition-colors"
                     >
-                      <Image
-                        src={"/image/tablevector/edit.png"}
-                        alt="Edit"
-                        width={14}
-                        height={14}
-                        className="m-0.5 my-1"
-                      />
+                      <Edit size={16} />
                     </button>
                     <button
                       onClick={() => {
@@ -180,14 +165,13 @@ export const LatestWorkTable: React.FC<LatestWorkTableProps> = ({
                           work.id.toString()
                         );
                       }}
-                      className="p-2 text-red-400 bg-foreground hover:bg-red-500/20 rounded-lg transition-colors"
+                        className="cursor-pointer p-2 bg-black rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                     >
                       <Image
                         src={"/image/tablevector/bin.png"}
                         alt="Delete"
-                        width={14}
-                        height={14}
-                        className="m-0.5 my-1"
+                        width={16}
+                        height={16}
                       />
                     </button>
                   </div>

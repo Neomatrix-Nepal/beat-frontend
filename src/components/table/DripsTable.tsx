@@ -1,6 +1,6 @@
 // components/table/DripsTable.tsx
 import React from "react";
-import { Trash } from "lucide-react";
+import { Edit, Trash } from "lucide-react";
 import { showDeleteToast, showUpdateToast } from "../../lib/util";
 import Image from "next/image";
 import { Drip } from "@/src/types/drip";
@@ -27,14 +27,6 @@ export const DripsTable: React.FC<DripsTableProps> = ({
         <table className="w-full">
           <thead className="bg-slate-700/50 border-b border-slate-600">
             <tr>
-              <th className="text-left p-4 w-12">
-                <input
-                  type="checkbox"
-                  checked={selectAll}
-                  onChange={onSelectAll}
-                  className="w-4 h-4 text-purple-600 bg-slate-700 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
-                />
-              </th>
               <th className="text-left p-4 text-slate-300 font-semibold">
                 Name
               </th>
@@ -61,14 +53,6 @@ export const DripsTable: React.FC<DripsTableProps> = ({
                   index % 2 === 0 ? "bg-slate-800/30" : "bg-slate-800/50"
                 }`}
               >
-                <td className="p-4">
-                  <input
-                    type="checkbox"
-                    checked={drip.selected || false}
-                    onChange={() => onSelectDrip(drip.id)}
-                    className="w-4 h-4 text-purple-600 bg-slate-700 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
-                  />
-                </td>
                 <td className="p-4 text-white font-medium">{drip.name}</td>
                 <td className="p-4 text-slate-300">{drip.id}</td>
                 <td className="p-4 text-white font-semibold">${drip.price}</td>
@@ -86,14 +70,9 @@ export const DripsTable: React.FC<DripsTableProps> = ({
                       onClick={() =>
                         showUpdateToast("Product", drip.name, "updated")
                       }
-                      className="p-2 text-purple-400 bg-foreground hover:bg-purple-500/20 rounded-lg transition-colors"
+                      className="cursor-pointer p-2 text-white bg-foreground hover:bg-purple-700 rounded-lg duration-300 transition-colors"
                     >
-                      <Image
-                        src={"/image/tablevector/edit.png"}
-                        alt="Edit"
-                        width={16}
-                        height={16}
-                      />
+                     <Edit size={16} />
                     </button>
                     <button
                       onClick={() => {
@@ -104,7 +83,7 @@ export const DripsTable: React.FC<DripsTableProps> = ({
                           "show all"
                         );
                       }}
-                      className="p-2 text-red-400 bg-foreground hover:bg-red-500/20 rounded-lg transition-colors"
+                      className="cursor-pointer p-2 bg-foreground hover:bg-purple-600/20 rounded-lg transition-colors"
                     >
                       <Image
                         src={"/image/tablevector/bin.png"}
@@ -157,30 +136,9 @@ export const DripsTable: React.FC<DripsTableProps> = ({
                   onClick={() =>
                     showUpdateToast("Product", drip.name, "updated")
                   }
-                  className="p-2 text-purple-400 hover:bg-purple-500/20 rounded-lg transition-colors"
+                  className="cursor-pointer p-2 text-white hover:bg-purple-600/20 rounded-lg transition-colors"
                 >
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="m18.5 2.5 a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+                  <Edit size={16} />
                 </button>
                 <button
                   onClick={() => {

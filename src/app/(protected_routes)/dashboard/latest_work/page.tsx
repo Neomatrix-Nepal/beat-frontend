@@ -188,12 +188,10 @@ const LatestWorkManager: React.FC = () => {
           </div>
           <button
             onClick={() => router.push("/dashboard/latest_work/add_work")}
-            className="w-full sm:w-40 bg-custom text-white px-4 py-3 rounded-lg flex items-center justify-center gap-2 transition-transform duration-200 transform hover:scale-105"
+            className="flex items-center gap-2 cursor-pointer py-3 px-5 text-sm font-semibold rounded-lg bg-purple-700 text-white hover:bg-purple-800 transition-transform transform hover:scale-105 appearance-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50"
           >
             <Upload size={20} />
-            <span className="whitespace-nowrap text-sm sm:text-base">
-              Upload
-            </span>
+              <span className="font-michroma font-semibold">Upload</span>
           </button>
         </div>
         <div className="overflow-x-auto rounded-lg border border-slate-700">

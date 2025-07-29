@@ -26,7 +26,6 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
         <table className="w-full">
           <thead className="bg-[#1A2233] text-[#E4E4E7] border-b border-[#2C3A4F]">
             <tr>
-              <th className="text-left p-4 w-12"></th>
               <th className="text-left p-4 text-slate-300 font-semibold">
                 Title
               </th>
@@ -56,14 +55,6 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
                     index % 2 === 0 ? "bg-slate-800/30" : "bg-slate-800/50"
                   }`}
                 >
-                  <td className="p-4">
-                    {/* <input
-                    type="checkbox"
-                    checked={beat.selected}
-                    onChange={() => onSelectBeat(beat.id)}
-                    className="w-4 h-4 text-purple-600 bg-slate-700 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
-                  /> */}
-                  </td>
                   <td className="p-4 text-white font-medium">
                     {beat?.name || ""}
                   </td>
@@ -90,9 +81,9 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
                         onClick={() => {
                           onEditBeat(beat);
                         }}
-                        className="cursor-pointer p-2 text-white bg-black hover:bg-purple-700 hover:border-red-600 rounded-lg transition-colors"
+                        className="cursor-pointer p-2 text-white bg-black hover:bg-purple-700 rounded-lg transition-colors duration-300"
                       >
-                        <Edit size={16}/>
+                        <Edit size={16}/> 
                       </button>
                       <button
                         onClick={() => {
