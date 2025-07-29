@@ -1,11 +1,9 @@
 import api from "@/src/hooks/useApi";
 import { FetchCreatorsResponse } from "@/src/types/creator";
 
-export const fetchCreators = async (
-  token: string
-): Promise<FetchCreatorsResponse> => {
+export const fetchBookings = async (token: string) => {
   try {
-    const response = await api.get("/producer-request", {
+    const response = await api.get("/bookings", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -19,17 +17,14 @@ export const fetchCreators = async (
   }
 };
 
-export const deleteCreator = async (id: number, token: string) => {
+export const deleteBooking = async (id: number, token: string) => {
   try {
-    const response = await api.delete(`/producer-request/${id}`, {
+    const response = await api.delete(`/bookings/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-    return {
-      success: true,
-      data: response.data,
-    };
+    return response.data;
   } catch (error: any) {
     console.error("Failed to delete creator:", error);
     return {
@@ -39,14 +34,14 @@ export const deleteCreator = async (id: number, token: string) => {
   }
 };
 
-export const changeCreatorStatus = async (
-  producerRequestId: number,
+export const changeBookingStatus = async (
+  bookingId: number,
   status: { status: string },
   token: string
 ) => {
   try {
     const response = await api.patch(
-      "/producer-request/change-user-role/" + producerRequestId,
+      "/bookings/change-booking-status/" + bookingId,
       status,
       {
         headers: {

@@ -12,7 +12,7 @@ import { CreatorEntry } from "@/src/types/creator";
 import { useSession } from "next-auth/react";
 import { useCallback, useState } from "react";
 import toast from "react-hot-toast";
-import { approveCreator, deleteCreator } from "./action";
+import { changeCreatorStatus, deleteCreator } from "./action";
 
 export default function CreatorsClient({
   creators: initialCreators,
@@ -47,7 +47,7 @@ export default function CreatorsClient({
   ) => {
     setIsLoading(true);
     try {
-      const result = await approveCreator(
+      const result = await changeCreatorStatus(
         producerRequestId,
         { status },
         token!
