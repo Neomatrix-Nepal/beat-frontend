@@ -36,24 +36,28 @@ export function DashboardHeader() {
   };
 
   return (
-    <header className="relative p-4 bg-[#151515] flex items-center justify-between">
-      {/* Centered Title */}
-      <h1 className="absolute left-1/2 transform -translate-x-1/2 text-2xl tracking-wider font-michroma text-white">
-        {formattedTitle}
-      </h1>
+    <div className="fixed top-0 z-30 w-screen">
+      <header className="relative p-4 bg-[#151515] flex items-center justify-between">
+        {/* Centered Title */}
+        <h1 className="absolute left-1/2 transform -translate-x-1/2 text-2xl tracking-wider font-michroma text-white">
+          {formattedTitle}
+        </h1>
 
-      {/* Logout Button Right-Aligned */}
-      <div className="ml-auto">
-        <Button
-          variant="ghost"
-          className=" text-white hover:text-black hover:bg-white"
-          onClick={handleLogout}
-          disabled={isLoading}
-        >
-          <LogOut className="w-4 h-4 mr-2" />
-          {isLoading ? "Logging out..." : "Logout"}
-        </Button>
-      </div>
-    </header>
+        {/* Logout Button Right-Aligned */}
+        <div className="ml-auto mr-2">
+          <Button
+            variant="ghost"
+            className="cursor-pointer bg-purple-700 text-white hover:text-white hover:bg-red-600"
+            onClick={handleLogout}
+            disabled={isLoading}
+          >
+            <LogOut size={16} />
+            <div className="hidden md:block font-michroma font-semibold">
+              {isLoading ? "Logging out..." : "Logout"}
+            </div>
+          </Button>
+        </div>
+      </header>
+    </div>
   );
 }

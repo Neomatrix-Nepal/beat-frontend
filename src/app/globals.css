@@ -153,3 +153,11 @@ input[type="number"] {
 .test {
   border: 1px solid red;
 }
+
+.max-lines-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}

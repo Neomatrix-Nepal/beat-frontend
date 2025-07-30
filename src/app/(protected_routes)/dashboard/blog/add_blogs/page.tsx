@@ -73,10 +73,10 @@ export default function NewNews() {
               Add New News
             </h1>
             <Link
-              href="/news"
+              href="/dashboard/blog"
               className="px-4 py-2 bg-black text-white border-2 border-white rounded-md hover:bg-gray-300 transition-colors"
             >
-              Back to News
+              Back to Blogs
             </Link>
           </div>
 
