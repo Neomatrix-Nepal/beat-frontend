@@ -1,9 +1,9 @@
 export interface BeatsResponse {
-  beats: Beat[];
+  beats: Product[];
   total: number;
 }
 
-export interface Beat {
+export interface Product {
   id: number;
   user_id: number;
   name: string;
@@ -59,7 +59,13 @@ export interface SubCategory {
 }
 
 export interface BeatsTableProps {
-  beats: Beat[];
-  onEditBeat: (beat: Beat) => void;
+  beats: Product[];
+  onEditBeat: (beat: Product) => void;
   onDeleteBeat: (id: string) => void;
+}
+
+export interface DripsTableProps {
+  drips: Product[];
+  onEditDrip: (beat: Product) => void;
+  onDeleteDrip: (id: string) => void;
 }

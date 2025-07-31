@@ -11,37 +11,31 @@ import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { FaUpload } from "react-icons/fa";
-import { FiSave, FiTrash2, FiUpload, FiX } from "react-icons/fi";
+import { FiSave, FiX } from "react-icons/fi";
 import { MdInsertPhoto } from "react-icons/md";
-import AudioPlayer from "../HLSAudioPlayer";
 
 export type FormData = {
-  beatTitle: string;
+  dripTitle: string;
   price: string;
-  genre: string;
-  mood: string;
+  size: string;
   description: string;
   cover: File | null;
   audio: File | null;
 };
 
-type BeatFormModalProps = {
-  genres: { id: number; name: string }[];
+type DripFormModalProps = {
   isOpen: boolean;
   onClose: () => void;
   initialData?: Product | null;
 };
 
-export default function BeatFormModal({
-  genres,
+export default function DripFormModal({
   isOpen,
   onClose,
   initialData,
-}: BeatFormModalProps) {
+}: DripFormModalProps) {
   const [loading, setLoading] = useState(false);
-  const [selectedGenreId, setSelectedGenreId] = useState<number | null>(null);
   const [previewCover, setPreviewCover] = useState<string | null>(null);
-  const [previewAudio, setPreviewAudio] = useState<string | null>(null);
 
   const {
     register,
@@ -52,10 +46,9 @@ export default function BeatFormModal({
     reset,
   } = useForm<FormData>({
     defaultValues: {
-      beatTitle: "",
+      dripTitle: "",
       price: "",
-      genre: "",
-      mood: "",
+      size: "",
       description: "",
       cover: null,
       audio: null,
@@ -63,31 +56,19 @@ export default function BeatFormModal({
   });
 
   const coverInputRef = useRef<HTMLInputElement | null>(null);
-  const audioInputRef = useRef<HTMLInputElement | null>(null);
 
   const coverFile = watch("cover");
-  const audioFile = watch("audio");
 
   useEffect(() => {
     if (!initialData) {
       reset();
-      setSelectedGenreId(null);
       setPreviewCover(null);
-      setPreviewAudio(null);
       return;
     }
 
-    const genreObj = genres.find(
-      (g) => g.name === initialData.subCategory?.name
-    );
-    if (genreObj) {
-      setSelectedGenreId(genreObj.id);
-      setValue("genre", genreObj.name);
-    }
-
-    setValue("beatTitle", initialData.name);
+    setValue("dripTitle", initialData.name);
     setValue("price", initialData.price);
-    setValue("mood", initialData.name ?? "");
+    setValue("size", initialData.size ?? "");
     setValue("description", initialData.description ?? "");
 
     if (typeof initialData.images[0].url === "string") {
@@ -95,28 +76,13 @@ export default function BeatFormModal({
         process.env.NEXT_PUBLIC_API_URL + "/" + initialData.images[0].url
       );
     }
-
-    if (typeof initialData.digital_assets[0].contentPath === "string") {
-      setPreviewAudio(
-        process.env.NEXT_PUBLIC_API_URL +
-          initialData.digital_assets[0].metadata.playlistUrl
-      );
-    }
-  }, [initialData, genres, reset, setValue]);
+  }, [initialData, reset, setValue]);
 
   const openCoverDialog = () => coverInputRef.current?.click();
-  const openAudioDialog = () => audioInputRef.current?.click();
-
-  const removeAudio = () => {
-    setValue("audio", null);
-    setPreviewAudio(null);
-  };
 
   const handleClose = () => {
     reset();
     setPreviewCover(null);
-    setPreviewAudio(null);
-    setSelectedGenreId(null);
     onClose();
   };
   const onSubmit = async (data: FormData) => {
@@ -124,13 +90,11 @@ export default function BeatFormModal({
 
     try {
       const formData = new FormData();
-      formData.append("name", data.beatTitle);
+      formData.append("name", data.dripTitle);
       formData.append("price", data.price);
       formData.append("description", data.description);
-      formData.append("category_id", "1");
-      formData.append("subCategory_id", selectedGenreId?.toString()!);
       formData.append("user_id", "1");
-      formData.append("product_type", "digital-asset");
+      formData.append("product_type", "drip");
 
       if (data.cover instanceof File) {
         formData.append("images", data.cover);
@@ -153,8 +117,8 @@ export default function BeatFormModal({
 
       toast.success(
         initialData
-          ? "Beat updated successfully!"
-          : "Beat uploaded successfully!"
+          ? "Drip updated successfully!"
+          : "Drip uploaded successfully!"
       );
       handleClose();
     } catch (error) {
@@ -179,14 +143,14 @@ export default function BeatFormModal({
 
         <h2 className="flex items-center mb-6 text-2xl font-semibold">
           <FaUpload className="mr-2" />
-          {initialData ? "Edit Beat" : "Upload New Beat"}
+          {initialData ? "Edit Drip" : "Upload New Drip"}
         </h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Upload Inputs */}
           <div>
             <p className="mb-2 text-sm text-gray-400">
-              Upload Cover & Beat Audio
+              Upload Cover & Drip Audio
             </p>
             <div className="flex space-x-4 items-center">
               <div
@@ -222,101 +186,22 @@ export default function BeatFormModal({
                   setValue("cover", file, { shouldValidate: true });
                 }}
               />
-              <div className="flex-1 space-y-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setPreviewAudio(null);
-                    openAudioDialog();
-                  }}
-                  className="w-full bg-custom text-white py-2 px-4 rounded-lg flex items-center justify-center"
-                >
-                  <FiUpload className="mr-2" /> Upload Beat Audio
-                </button>
-                <button
-                  type="button"
-                  onClick={removeAudio}
-                  className="w-full bg-red-500 text-white py-2 px-4 rounded-lg flex items-center justify-center"
-                >
-                  <FiTrash2 className="mr-2" /> Delete Beat Audio
-                </button>
-                {(audioFile || previewAudio) && (
-                  <p className="text-gray-300 truncate max-w-[200px]">
-                    Selected audio: {audioFile?.name ?? "Preview available"}
-                  </p>
-                )}
-              </div>
-              <input
-                type="file"
-                accept="audio/*"
-                ref={audioInputRef}
-                className="hidden"
-                onChange={(e) => {
-                  setPreviewAudio(null);
-                  const file = e.target.files?.[0] || null;
-                  if (file) setPreviewAudio(URL.createObjectURL(file));
-                  setValue("audio", file, { shouldValidate: true });
-                }}
-              />
             </div>
-            {audioFile ? (
-              <audio
-                controls
-                src={URL.createObjectURL(audioFile)}
-                className="mt-4 w-full"
-              />
-            ) : previewAudio ? (
-              <AudioPlayer audioSrc={previewAudio} />
-            ) : null}
           </div>
 
           <InputField
-            label="Beat Title"
-            placeholder="Enter beat name"
-            name="beatTitle"
+            label="Drip Title"
+            placeholder="Enter Drip name"
+            name="dripTitle"
             register={register}
-            error={errors.beatTitle?.message}
-            rules={{ required: "Beat Title is required" }}
+            error={errors.dripTitle?.message}
+            rules={{ required: "Drip Title is required" }}
           />
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div>
-              <label className="block mb-2 text-sm font-medium text-gray-300">
-                Genre
-              </label>
-              <select
-                value={selectedGenreId ?? ""}
-                onChange={(e) => {
-                  const selectedId = Number(e.target.value);
-                  setSelectedGenreId(selectedId);
-                  const selectedGenre = genres.find((g) => g.id === selectedId);
-                  if (selectedGenre) {
-                    setValue("genre", selectedGenre.name, {
-                      shouldValidate: true,
-                    });
-                  }
-                }}
-                className="w-full bg-[#1E293B] border border-gray-600 text-white py-2 px-3 rounded-lg"
-              >
-                <option value="" disabled>
-                  Select a genre
-                </option>
-                {genres.map((g) => (
-                  <option key={g.id} value={g.id}>
-                    {g.name}
-                  </option>
-                ))}
-              </select>
-              {errors.genre && (
-                <p className="text-sm text-red-500 mt-1">
-                  {errors.genre.message}
-                </p>
-              )}
-            </div>
-
             <InputField
               label="Price"
-              placeholder="Set beat price"
+              placeholder="Set Drip price"
               name="price"
               type="number"
               register={register}
@@ -324,17 +209,17 @@ export default function BeatFormModal({
               rules={{ required: "Price is required" }}
             />
             <InputField
-              label="Mood"
-              placeholder="Mood of beat"
-              name="mood"
+              label="Size"
+              placeholder="Size of Drip"
+              name="size"
               register={register}
-              error={errors.mood?.message}
+              error={errors.size?.message}
             />
           </div>
 
           <TextareaField
             label="Description"
-            placeholder="Describe your beat"
+            placeholder="Describe your Drip"
             name="description"
             register={register}
           />
@@ -359,7 +244,7 @@ export default function BeatFormModal({
             ) : (
               <FiSave className="mr-2" />
             )}
-            {loading ? "Saving..." : initialData ? "Update Beat" : "Save Beat"}
+            {loading ? "Saving..." : initialData ? "Update Drip" : "Save Drip"}
           </button>
         </form>
       </div>
