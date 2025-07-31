@@ -21,8 +21,6 @@ export default function NewNews() {
 
   const toolbarOptions = [
     [{ header: [1, 2, 3, 4, 5, 6, false] }],
-    [{ font: [] }],
-    [{ size: [] }],
     ["bold", "italic", "underline", "strike", "blockquote"],
     [
       { list: "ordered" },
@@ -65,7 +63,7 @@ export default function NewNews() {
   };
 
   return (
-    <div className="w-full h-full bg-[#0f172b] p-6 flex items-center justify-center">
+    <div className="w-full h-full bg-[#0f172b] font-michroma p-6 flex items-center justify-center">
       <div className="bg-[#0f172b] rounded-xl border-white border-2 shadow-sm p-2 md:p-6 w-full mx-auto space-y-6">
         <div className="w-full px-4 md:px-0">
           <div className="flex justify-between items-center mb-6">
@@ -74,7 +72,7 @@ export default function NewNews() {
             </h1>
             <Link
               href="/dashboard/blog"
-              className="px-4 py-2 bg-black text-white border-2 border-white rounded-md hover:bg-gray-300 transition-colors"
+              className="cursor-pointer px-5 py-3 text-sm font-semibold rounded-lg bg-purple-700 text-white hover:bg-purple-800 transition-transform transform hover:scale-105 appearance-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50"
             >
               Back to Blogs
             </Link>
@@ -157,7 +155,7 @@ export default function NewNews() {
               onChange={setContent}
               modules={{ toolbar: toolbarOptions }}
               readOnly={isSubmitting}
-              className="custom-quill  bg-white rounded-lg h-[30vh]"
+              className="custom-quill text-white bg-slate-900 rounded-lg h-[30vh]"
             />
           </div>
 

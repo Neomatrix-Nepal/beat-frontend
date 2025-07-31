@@ -133,10 +133,86 @@
 .bg-button {
   @apply bg-gradient-to-r from-purple-500 to-pink-500;
 }
+
+/* REACT QUILL CUSTOM STYLES */
+.custom-quill,
+.custom-quill * {
+  font-family: var(--font-michroma) !important;
+}
+
 .custom-quill .ql-toolbar button:hover,
+.custom-quill .ql-toolbar .ql-picker-label,
 .custom-quill .ql-toolbar .ql-picker-label:hover {
   color: #000000 !important; /* Tailwind sky-400 */
+  font-size: 11px;
 }
+
+.custom-quill .ql-toolbar {
+  background-color: #1e293b; /* toolbar background (e.g., slate-800) */
+  border: none;
+}
+
+.custom-quill .ql-toolbar .ql-picker-label {
+  color: white !important;
+}
+.custom-quill .ql-toolbar .ql-picker-label:hover {
+  color: white !important;
+}
+
+.ql-toolbar .ql-snow {
+  font-family:var(--font-michroma);
+  color: white !important;
+}
+
+.ql-toolbar .ql-italic {
+  color: white !important;
+}
+
+.ql-snow .ql-stroke {
+  stroke:#ffff !important;
+}
+
+.ql-fill {
+  stroke:#ffff !important;
+  fill: #fff !important;
+}
+
+.ql-snow .ql-fill {
+    fill: #fff !important;
+}
+
+/* For active buttons: paths WITHOUT .ql-fill → stroke red */
+.custom-quill .ql-toolbar .ql-formats button.ql-active path:not(.ql-fill) {
+  stroke: rgb(53, 46, 255) !important;
+}
+
+/* For active buttons: paths WITH .ql-fill → fill red */
+.custom-quill .ql-toolbar .ql-formats button.ql-active path.ql-fill {
+  stroke: rgb(53, 46, 255) !important;
+  fill: rgb(53, 46, 255) !important;
+}
+
+.custom-quill .ql-toolbar .ql-formats button.ql-active line {
+  stroke: rgb(53, 46, 255) !important;
+  fill: rgb(53, 46, 255) !important;
+}
+
+.custom-quill .ql-toolbar .ql-formats button.ql-active rect {
+  stroke: rgb(53, 46, 255) !important;
+  fill: rgb(53, 46, 255) !important;
+}
+
+.custom-quill .ql-toolbar .ql-formats button.ql-active polygon {
+  stroke: rgb(53, 46, 255) !important;
+  fill: rgb(53, 46, 255) !important;
+}
+
+.ql-snow .ql-picker.ql-expanded .ql-picker-label .ql-stroke {
+  stroke: rgb(53, 46, 255) !important;
+  fill: rgb(53, 46, 255) !important;
+  color: rgb(53, 46, 255) !important;
+}
+/* REACT QUILL CUSTOM STYLES */
 
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
