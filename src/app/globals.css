@@ -145,11 +145,19 @@
 .custom-quill .ql-toolbar .ql-picker-label:hover {
   color: #000000 !important; /* Tailwind sky-400 */
   font-size: 11px;
+  border:none !important;
 }
 
 .custom-quill .ql-toolbar {
   background-color: #1e293b; /* toolbar background (e.g., slate-800) */
-  border: none;
+}
+
+.quill-error .ql-toolbar{
+  border: 1px red solid !important;
+}
+
+.quill-error .ql-editor{
+  outline: 1px red solid !important;
 }
 
 .custom-quill .ql-toolbar .ql-picker-label {
@@ -158,6 +166,7 @@
 .custom-quill .ql-toolbar .ql-picker-label:hover {
   color: white !important;
 }
+
 
 .ql-toolbar .ql-snow {
   font-family:var(--font-michroma);

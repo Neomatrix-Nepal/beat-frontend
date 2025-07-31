@@ -49,3 +49,17 @@ export interface FetchBlogsResponse {
     totalPages: number;
   };
 }
+
+export type AddBlogFormType = {
+  title: string;
+  date: string;
+  content: string;
+  image: File | null;
+};
+
+export type BlogFormErrorsType = {
+  title?: string;
+  date?: string;
+  content?: string;
+  image?: string;
+};
