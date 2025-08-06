@@ -1,4 +1,12 @@
 import { User } from "./user.type";
+interface Items {
+  id: number;
+  productId: number;
+  price: string;
+  quantity: number;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export interface Order {
   id: number;
@@ -6,6 +14,7 @@ export interface Order {
   amount: string;
   stripePaymentId: string | null;
   user: User;
+  items: Items[];
   khaltiId: string | null;
   paymentMethod: "stripe" | "khalti";
   paymentType: "cart" | string;
