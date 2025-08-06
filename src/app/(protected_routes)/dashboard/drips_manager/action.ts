@@ -30,7 +30,7 @@ export const updateProduct = async (formData: FormData, productId: string) => {
   return response.data;
 };
 
-export const deleteProduct = async (productId: string) => {
+export const deleteProduct = async (productId: number) => {
   const response = await api.delete("/products/" + productId, {
     headers: {
       "Content-Type": "multipart/form-data",

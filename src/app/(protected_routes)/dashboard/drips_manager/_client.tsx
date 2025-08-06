@@ -1,8 +1,6 @@
 "use client";
 import { Upload } from "lucide-react";
 import { useState } from "react";
-
-import BeatFormModal from "@/src/components/form/BeatForm";
 import { DripsTable } from "@/src/components/table/DripsTable";
 import {
   Pagination,
@@ -32,10 +30,10 @@ export default function _Client({ dripsData }: { dripsData: Product[] }) {
     setIsOpen(true);
   };
 
-  const handleDeleteDrip = async (id: string) => {
+  const handleDeleteDrip = async (id: number) => {
     const { message } = await deleteProduct(id);
     if (!message) return toast.error("Failed to delete beat");
-    setBeats(beats.filter((beat) => beat.id.toString() !== id));
+    setBeats(beats.filter((beat) => beat.id !== id));
     toast.success("Beat deleted successfully");
   };
 

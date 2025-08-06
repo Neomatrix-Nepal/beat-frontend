@@ -3,22 +3,18 @@ import React from "react";
 import { Edit, Trash } from "lucide-react";
 import { showDeleteToast, showUpdateToast } from "../../lib/util";
 import Image from "next/image";
-import { Drip } from "@/src/types/drip";
+import { Product } from "@/src/types";
 
 interface DripsTableProps {
-  drips: Drip[];
-  selectAll: boolean;
-  onSelectAll: () => void;
-  onSelectDrip: (id: number) => void;
+  drips: Product[];
   onDeleteDrip: (id: number) => void;
+  onEditDrip: (beat:Product) => void;
 }
 
 export const DripsTable: React.FC<DripsTableProps> = ({
   drips,
-  selectAll,
-  onSelectAll,
-  onSelectDrip,
   onDeleteDrip,
+  onEditDrip,
 }) => {
   return (
     <div className="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden font-michroma">
@@ -68,7 +64,7 @@ export const DripsTable: React.FC<DripsTableProps> = ({
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() =>
-                        showUpdateToast("Product", drip.name, "updated")
+                        onEditDrip(drip)
                       }
                       className="cursor-pointer p-2 text-white bg-foreground hover:bg-purple-700 rounded-lg duration-300 transition-colors"
                     >
@@ -109,12 +105,6 @@ export const DripsTable: React.FC<DripsTableProps> = ({
           >
             <div className="flex items-start justify-between mb-3">
               <div className="flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  checked={drip.selected || false}
-                  onChange={() => onSelectDrip(drip.id)}
-                  className="w-4 h-4 text-purple-600 bg-slate-700 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
-                />
                 <div>
                   <h3 className="text-white font-medium">{drip.name}</h3>
                   <p className="text-slate-400 text-sm">{drip.id}</p>
@@ -134,7 +124,7 @@ export const DripsTable: React.FC<DripsTableProps> = ({
               <div className="flex items-center gap-2">
                 <button
                   onClick={() =>
-                    showUpdateToast("Product", drip.name, "updated")
+                    onEditDrip(drip)
                   }
                   className="cursor-pointer p-2 text-white hover:bg-purple-600/20 rounded-lg transition-colors"
                 >
