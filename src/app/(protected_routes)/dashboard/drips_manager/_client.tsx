@@ -1,6 +1,7 @@
 "use client";
 import { Upload } from "lucide-react";
 import { useState } from "react";
+
 import { DripsTable } from "@/src/components/table/DripsTable";
 import {
   Pagination,
@@ -9,7 +10,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/src/components/ui/pagination";
-import { Genre, Product } from "@/src/types";
+import { Product } from "@/src/types";
 import toast from "react-hot-toast";
 import { deleteProduct } from "./action";
 import DripFormModal from "@/src/components/form/DripForm";

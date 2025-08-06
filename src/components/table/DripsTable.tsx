@@ -1,4 +1,3 @@
-// components/table/DripsTable.tsx
 import React from "react";
 import { Edit, Trash } from "lucide-react";
 import { showDeleteToast, showUpdateToast } from "../../lib/util";
@@ -8,7 +7,7 @@ import { Product } from "@/src/types";
 interface DripsTableProps {
   drips: Product[];
   onDeleteDrip: (id: number) => void;
-  onEditDrip: (beat:Product) => void;
+  onEditDrip: (beat: Product) => void;
 }
 
 export const DripsTable: React.FC<DripsTableProps> = ({
@@ -63,12 +62,10 @@ export const DripsTable: React.FC<DripsTableProps> = ({
                 <td className="p-4">
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={() =>
-                        onEditDrip(drip)
-                      }
+                      onClick={() => onEditDrip(drip)}
                       className="cursor-pointer p-2 text-white bg-foreground hover:bg-purple-700 rounded-lg duration-300 transition-colors"
                     >
-                     <Edit size={16} />
+                      <Edit size={16} />
                     </button>
                     <button
                       onClick={() => {
@@ -123,9 +120,7 @@ export const DripsTable: React.FC<DripsTableProps> = ({
               </div>
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() =>
-                    onEditDrip(drip)
-                  }
+                  onClick={() => onEditDrip(drip)}
                   className="cursor-pointer p-2 text-white hover:bg-purple-600/20 rounded-lg transition-colors"
                 >
                   <Edit size={16} />
