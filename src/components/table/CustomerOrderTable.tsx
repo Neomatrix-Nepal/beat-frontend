@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { IoMdEye } from "react-icons/io";
 import CustomerOrderDetails from "../dialog/customerOrderDialog";
 import { formatDateTime } from "@/src/lib/utils";
+import Image from "next/image";
 
 interface CustomerOrderTableProps {
   entries: Order[];
@@ -96,9 +97,14 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
                       onClick={() => {
                         onDeleteEntry(entry.id.toString());
                       }}
-                      className="cursor-pointer p-2 bg-foreground hover:bg-purple-600/20 rounded-lg transition-colors"
+                      className="cursor-pointer p-2 bg-black rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                     >
-                      <Trash size={16} className="text-red-500" />
+                      <Image
+                        src={"/image/tablevector/bin.png"}
+                        alt="Delete"
+                        width={16}
+                        height={16}
+                      />
                     </button>
                   </div>
                 </td>
@@ -166,10 +172,15 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
                   onClick={() => {
                     onDeleteEntry(entry.id.toString());
                   }}
-                  className="p-2 rounded-lg text-red-500 hover:bg-purple-600/20 transition-colors"
+                  className="cursor-pointer p-2 bg-black rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                   title="Delete"
                 >
-                  <Trash size={16} />
+                  <Image
+                    src={"/image/tablevector/bin.png"}
+                    alt="Delete"
+                    width={16}
+                    height={16}
+                  />
                 </button>
               </div>
             </div>
