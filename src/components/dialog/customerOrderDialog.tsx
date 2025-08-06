@@ -16,7 +16,7 @@ export default function CustomerOrderDetails({
   if (!order) return null;
 
   return (
-    <div className="bg-[#0f0f10] text-white p-6 font-michroma rounded-xl shadow-xl max-w-4xl mx-auto space-y-6 border border-[#333]">
+    <div className="bg-[#0f0f10] text-white p-6 font-michroma rounded-xl shadow-xl max-w-5xl mx-auto space-y-6 border border-[#333]">
       {/* Header */}
       <div className="flex justify-between items-center">
         <h2 className="text-lg md:text-xl font-semibold">
@@ -24,7 +24,7 @@ export default function CustomerOrderDetails({
         </h2>
         <button
           onClick={onClose}
-          className="text-xs text-[#74f9e0] px-3 py-1 rounded-full flex items-center gap-1"
+          className="cursor-pointer text-xs text-[#74f9e0] px-3 py-1 rounded-full flex items-center gap-1"
         >
           <X className="w-3 h-3" />
           Close
@@ -57,6 +57,21 @@ export default function CustomerOrderDetails({
           </h3>
           <OrderInfoRow label="Delivery Status" value={order.status} />
           <OrderInfoRow label="Delivery Address" value={order.address ?? ""} />
+          {/* Shipping Details Panel */}
+          <h3 className="text-center text-[#00e08f] text-lg mt-4">
+            Delivery Information
+          </h3>
+          {order.city && <OrderInfoRow label="Delivery City" value={order.city} />}
+          {order.country && <OrderInfoRow label="Delivery Country" value={order.country} />}
+          {order.phone && <OrderInfoRow label="Phone Number" value={order.phone} />}
+          {order.email && <OrderInfoRow label="Email" value={order.email} />}
+          {order.couponId && <OrderInfoRow label="Coupon Id" value={order.couponId} />}
+          {order.discountPercentage !== null && order.discountPercentage !== undefined && (
+            <OrderInfoRow label="Discount" value={order.discountPercentage.toString()} />
+          )}
+          {order.notes && <OrderInfoRow label="Notes" value={order.notes} />}
+          {order.createdAt && <OrderInfoRow label="Created Date" value={formatDateTime(order.createdAt)} />}
+          {order.updatedAt && <OrderInfoRow label="Updated Date" value={formatDateTime(order.updatedAt)} />}
         </div>
       </div>
 
