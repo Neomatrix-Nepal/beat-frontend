@@ -176,17 +176,6 @@ const LatestWorkManager: React.FC = () => {
         {error && <p className="text-red-500 font-michroma">{error}</p>}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
           <div className="flex flex-wrap items-center gap-2">
-            <label className="flex items-center gap-2 cursor-pointer select-none">
-              <input
-                type="checkbox"
-                checked={selectAll}
-                onChange={handleSelectAllWorks}
-                className="w-5 h-5 text-purple-600 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
-              />
-              <span className="text-white font-michroma text-sm sm:text-base">
-                Select All
-              </span>
-            </label>
             {selectedCount > 0 && ( // Changed to show button when at least one is selected
               <button
                 onClick={handleBatchDelete}
@@ -199,12 +188,10 @@ const LatestWorkManager: React.FC = () => {
           </div>
           <button
             onClick={() => router.push("/dashboard/latest_work/add_work")}
-            className="w-full sm:w-40 bg-custom text-white px-4 py-3 rounded-lg flex items-center justify-center gap-2 transition-transform duration-200 transform hover:scale-105"
+            className="flex items-center gap-2 cursor-pointer py-3 px-5 text-sm font-semibold rounded-lg bg-purple-700 text-white hover:bg-purple-800 transition-transform transform hover:scale-105 appearance-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50"
           >
             <Upload size={20} />
-            <span className="whitespace-nowrap text-sm sm:text-base">
-              Upload
-            </span>
+              <span className="font-michroma font-semibold">Upload</span>
           </button>
         </div>
         <div className="overflow-x-auto rounded-lg border border-slate-700">

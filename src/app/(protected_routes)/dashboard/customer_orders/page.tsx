@@ -2,9 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { IoMdCheckmark } from "react-icons/io";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { RiArrowDropDownLine } from "react-icons/ri";
 
 import {
   Pagination,
@@ -100,16 +98,7 @@ const CustomerOrdersPage = () => {
     <div className="min-h-screen bg-slate-900 flex">
       <div className="flex-1 flex flex-col">
         <div className="flex-1 p-6">
-          <div className="gap-2 pl-4 mb-2 h-16 p-4 flex items-center justify-between">
-            <div className="flex gap-2">
-              <input
-                type="checkbox"
-                checked={selectAll}
-                onChange={toggleSelectAll}
-                className="w-5 h-5 text-purple-600 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
-              />
-              <p className="text-white font-michroma">Select All</p>
-            </div>
+          <div className="gap-2 pl-4 mb-2 h-16 p-4 flex items-center justify-end">
             <div className="flex font-michroma gap-2">
               {selectedCount > 1 && (
                 <button
@@ -124,7 +113,7 @@ const CustomerOrdersPage = () => {
               )}
 
               <div className="relative inline-block">
-                <select className="pl-10 pr-4 py-3 text-sm font-semibold rounded-lg bg-purple-700 text-white hover:bg-purple-800 transition-transform transform hover:scale-105 appearance-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50">
+                <select className="cursor-pointer pl-10 pr-4 py-3 text-sm font-semibold rounded-lg bg-purple-700 text-white hover:bg-purple-800 transition-transform transform hover:scale-105 appearance-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50">
                   <option value="beats">Beats</option>
                   <option value="drips">Drips</option>
                 </select>

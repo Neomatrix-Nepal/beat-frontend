@@ -122,7 +122,7 @@ export default function NewsManagement() {
   }
 
   return (
-    <div className="w-full min-h-screen bg-[#0f172b] p-6 flex  justify-center">
+    <div className="w-full min-h-screen p-6 flex justify-center font-michroma">
       <div className=" rounded-xl shadow-sm p-4 md:p-6 w-full mx-auto">
         <div className="space-y-6 mb-8 md:mb-10">
           <div className="flex justify-between items-center">
@@ -131,7 +131,7 @@ export default function NewsManagement() {
             </h2>
             <Link
               href="/dashboard/blog/add_blogs"
-              className="px-4 py-2 font-semibold bg-black text-white rounded-md hover:bg-gray-700 transition-colors"
+              className="cursor-pointer px-5 py-3 text-sm font-semibold rounded-lg bg-purple-700 text-white hover:bg-purple-800 transition-transform transform hover:scale-105 appearance-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50"
             >
               Add New
             </Link>
@@ -164,7 +164,7 @@ export default function NewsManagement() {
             ))}
           </div>
           {/* Pagination Controls */}
-          <div className="flex justify-center space-x-4 mt-6">
+          <div className="flex justify-center items-center space-x-4 mt-6">
             <button
               onClick={() => handlePageChange(page - 1)}
               disabled={page === 1}

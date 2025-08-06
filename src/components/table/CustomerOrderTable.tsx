@@ -51,14 +51,13 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
         <table className="w-full text-sm">
           <thead className="bg-[#1A2233] text-[#E4E4E7] border-b border-[#2C3A4F]">
             <tr>
-              <th className="p-4 w-10"></th>
               <th className="text-left p-4">Id</th>
               <th className="text-left p-4">Customer's Name</th>
               <th className="text-left p-4">Product</th>
               <th className="text-left p-4">Price</th>
               <th className="text-left p-4">Order Date</th>
               <th className="text-center p-4">Status</th>
-              <th className="text-left p-4">Action</th>
+              <th className="text-center p-4">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -69,14 +68,6 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
                   index % 2 === 0 ? "bg-[#1C2433]" : "bg-[#1A1F2E]"
                 }`}
               >
-                <td className="p-4">
-                  <input
-                    type="checkbox"
-                    checked={entry.selected}
-                    onChange={() => onSelectEntry(entry.id)}
-                    className="w-4 h-4 text-purple-600 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
-                  />
-                </td>
                 <td className="p-4 text-white font-medium">{entry.id}</td>
                 <td className="p-4 text-white font-medium">
                   {entry.customerName}
@@ -94,16 +85,16 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
                   </div>
                 </td>
                 <td className="p-4">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center justify-center gap-2">
                     <button
                       onClick={() => handleViewClick(entry)}
-                      className="p-2 text-white bg-foreground hover:bg-green-500/20 rounded-lg transition-colors"
+                      className="cursor-pointer p-2 text-white bg-foreground hover:bg-purple-700 rounded-lg transition-colors"
                     >
                       <IoMdEye size={16} />
                     </button>
                     <button
                       onClick={() => showUpdateToast("xxx", "yyy", "zzz")}
-                      className="p-2 bg-foreground hover:bg-purple-500/20 rounded-lg transition-colors"
+                      className="cursor-pointer p-2 bg-foreground hover:bg-purple-700 rounded-lg transition-colors"
                     >
                       <Image
                         src={"/image/tablevector/whitecheck.png"}
@@ -118,7 +109,7 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
                         onDeleteEntry(entry.id);
                         showDeleteToast("yyy", "xxx", "zzz");
                       }}
-                      className="p-2 text-red-400 bg-foreground hover:bg-red-500/20 rounded-lg transition-colors"
+                      className="cursor-pointer p-2 bg-foreground hover:bg-purple-600/20 rounded-lg transition-colors"
                     >
                       <Image
                         src={"/image/tablevector/bin.png"}
