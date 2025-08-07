@@ -127,6 +127,25 @@
   }
 }
 
+/*custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: gray; /* purple-600 */
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #a855f7; /* lighter on hover */
+}
+/*custom scrollbar */
+
 .bg-custom {
   @apply bg-gradient-to-r from-purple-500 to-pink-500;
 }

@@ -7,13 +7,15 @@ import {
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 
 const pieData = [
-  { name: "Beats", value: 70, color: "#ff7675" },
-  { name: "Drips", value: 30, color: "#6c5ce7" },
+  { name: "Beats", value: 34, color: "#ff7675" },
+  { name: "Drips", value: 16, color: "#6c5ce7" },
+  { name: "Commission", value: 7, color: "#00b894" },
+  { name: "Mixing Pro", value: 47, color: "#fff45e" },
 ];
 
 export function EarningsChart() {
   return (
-    <Card className="bg-[#1a1a2e] border-[#2d2d44]">
+    <Card className="bg-[#1a1a2e] border-[#2d2d44] h-full">
       <CardHeader>
         <CardTitle className="text-white">Earnings Breakdown</CardTitle>
       </CardHeader>
@@ -37,15 +39,23 @@ export function EarningsChart() {
             </PieChart>
           </ResponsiveContainer>
         </div>
-        <div className="flex justify-center gap-6 mt-4">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-[#ff7675] rounded-sm"></div>
-            <span className="text-sm text-gray-400">Beats</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-[#6c5ce7] rounded-sm"></div>
-            <span className="text-sm text-gray-400">Drips</span>
-          </div>
+        <div className="flex justify-center gap-2 mt-4 shrink">
+          {
+            pieData.map((item,index)=>{
+              return(
+                <div 
+                  key={index}
+                  className="flex items-center gap-2"
+                >
+                  <div
+                    className="w-3 h-3 rounded-sm shrink-0"
+                    style={{backgroundColor:item.color}}
+                  />
+                  <span className="text-sm text-gray-400">{item.name}</span>
+                </div>
+              )
+            })
+          }
         </div>
       </CardContent>
     </Card>

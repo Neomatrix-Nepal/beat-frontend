@@ -1,9 +1,12 @@
 import { Card, CardContent } from "@/src/components/ui/card";
 import type { LucideIcon } from "lucide-react";
+import { useState } from "react";
 
 interface StatCardProps {
   title: string;
   value: string | number;
+  publicCount: number,
+  adminCount: number,
   icon: LucideIcon;
   iconColor: string;
   valueColor: string;
@@ -12,12 +15,58 @@ interface StatCardProps {
 export function StatCard({
   title,
   value,
+  publicCount,
+  adminCount,
   icon: Icon,
   iconColor,
   valueColor,
 }: StatCardProps) {
+  const [hoverPos, setHoverPos] = useState<{ x: number; y: number } | null>(
+    null
+  );
+
+  const FloatingHoverPanel = () => {
+    return (
+      <div className="bg-white w-40 text-black text-sm px-4 py-2 rounded-lg shadow-lg whitespace-nowrap">
+        <h2 className="font-semibold mb-2">
+          Counts
+        </h2>
+        <div className="flex w-full gap-2 items-center mb-2">
+          <div className="w-4 h-3 rounded-xs bg-yellow-300" />
+          <p className="flex w-full text-xs text-gray-500 items-center justify-between">
+            Other Users 
+            <span className="text-black font-semibold">
+              {publicCount}
+            </span>
+          </p>
+        </div>
+        <div className="flex w-full gap-2 items-center mb-2">
+          <div className="w-4 h-3 rounded-xs bg-purple-300" />
+          <p className="flex w-full text-xs text-gray-500 items-center justify-between">
+            Lil Rock
+            <span className="text-black font-semibold">
+              {adminCount}
+            </span>
+          </p>
+        </div>
+
+      </div>
+    );
+  };
+
   return (
-    <Card className="bg-[#1a1a2e] border-[#2d2d44]">
+    <>
+    <Card
+      className="bg-[#1a1a2e] border-[#2d2d44] relative"
+      onMouseMove={(e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        setHoverPos({
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top,
+        });
+      }}
+      onMouseLeave={() => setHoverPos(null)}
+    >
       <CardContent className="p-6">
         <div className="flex items-center gap-4">
           <div
@@ -33,6 +82,20 @@ export function StatCard({
           </div>
         </div>
       </CardContent>
+
+      {/* 🟢 Floating Panel */}
+      {hoverPos && (
+        <div
+          className="absolute z-50 pointer-events-none transition-opacity duration-200"
+          style={{
+            top: hoverPos.y + 10,
+            left: hoverPos.x + 10,
+          }}
+        >
+          <FloatingHoverPanel />
+        </div>
+      )}
     </Card>
+    </>
   );
 }
