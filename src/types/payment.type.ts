@@ -30,3 +30,22 @@ export interface Order {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface Commission {
+  id: number;
+  creatorId: number;
+  paymentItemId: number;
+  amount: string;
+  status: "pending" | "requested" | "paid" | "failed" | string;
+  createdAt: string;
+  updatedAt: string;
+  paymentItem: {
+    id: number;
+    productId: number;
+    price: string;
+    quantity: number;
+    createdAt: string;
+    updatedAt: string;
+  };
+  creator: User;
+}

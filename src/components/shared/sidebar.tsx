@@ -48,6 +48,11 @@ const sidebarItems: SidebarItem[] = [
     href: "/dashboard/discount_coupon",
   },
   {
+    icon: Ticket,
+    label: "Commission Manager",
+    href: "/dashboard/commission",
+  },
+  {
     icon: Calendar,
     label: "Studio Bookings",
     href: "/dashboard/studio_bookings",

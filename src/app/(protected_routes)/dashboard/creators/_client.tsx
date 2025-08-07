@@ -52,6 +52,7 @@ export default function CreatorsClient({
         { status },
         token!
       );
+      setIsLoading(false);
       if (result.success) {
         toast.success(result.message || "Creator approved successfully");
         setCreators(

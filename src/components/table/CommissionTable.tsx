@@ -1,33 +1,30 @@
-import PopupWrapper from "@/src/components/shared/PopupWrapper";
 import { formatDateTime } from "@/src/lib/utils";
-import { Order } from "@/src/types";
-import { Check, Eye } from "lucide-react";
-import Image from "next/image";
+import { Commission } from "@/src/types";
+import { Check, Eye, Trash } from "lucide-react";
 import React, { useState } from "react";
 import { IoMdEye } from "react-icons/io";
-import CustomerOrderDetails from "../dialog/customerOrderDialog";
 
-interface CustomerOrderTableProps {
-  entries: Order[];
+interface CommissionTableProps {
+  entries: Commission[];
   onDeleteEntry: (id: string) => void;
   handleChangeStatus: (id: string) => void;
 }
 
 const statusStyles = {
   pending: "bg-green-800/20 text-green-400 border-green-800/30",
-  completed: "bg-yellow-700/20 text-yellow-400 border-yellow-700/30",
+  paid: "bg-yellow-700/20 text-yellow-400 border-yellow-700/30",
   failed: "bg-red-800/20 text-red-400 border-red-800/30",
 };
 
-export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
+export const CommissionTable: React.FC<CommissionTableProps> = ({
   entries,
   onDeleteEntry,
   handleChangeStatus,
 }) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [selectedEntry, setSelectedEntry] = useState<Order | null>(null);
+  const [selectedEntry, setSelectedEntry] = useState<Commission | null>(null);
 
-  const handleViewClick = (entry: Order) => {
+  const handleViewClick = (entry: Commission) => {
     setSelectedEntry(entry);
     setIsPopupOpen(true);
   };
@@ -62,7 +59,7 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
               >
                 <td className="p-4 text-white font-medium">{entry.id}</td>
                 <td className="p-4 text-white font-medium">
-                  {entry.user.fullname}
+                  {entry.creator.fullname}
                 </td>
                 {/* <td className="p-4 text-white">{entry.}</td> */}
                 <td className="p-4 text-white">{entry.amount}</td>
@@ -88,7 +85,7 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
                     </button>
                     <button
                       onClick={() => handleChangeStatus(entry.id.toString())}
-                      disabled={entry.status === "completed"}
+                      disabled={entry.status === "paid"}
                       className="cursor-pointer p-2 bg-foreground hover:bg-purple-700 rounded-lg transition-colors"
                     >
                       <Check size={16} className="text-white" />
@@ -99,12 +96,7 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
                       }}
                       className="cursor-pointer p-2 bg-black rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                     >
-                      <Image
-                        src={"/image/tablevector/bin.png"}
-                        alt="Delete"
-                        width={16}
-                        height={16}
-                      />
+                      <Trash size={16} />
                     </button>
                   </div>
                 </td>
@@ -132,7 +124,7 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
                 <div>
                   <h3 className="text-white font-medium">Id: {entry.id}</h3>
                   <h3 className="text-white font-medium">
-                    {entry.user.fullname}
+                    {entry.creator.fullname}
                   </h3>
                   {/* <p className="text-white text-sm">Product: {entry.product}</p> */}
                 </div>
@@ -162,7 +154,7 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
                 </button>
                 <button
                   onClick={() => handleChangeStatus(entry.id.toString())}
-                  disabled={entry.status === "completed"}
+                  disabled={entry.status === "paid"}
                   className="p-2 rounded-lg text-green-400 hover:bg-green-600/20 transition-colors"
                   title="Mark Sent"
                 >
@@ -175,25 +167,20 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
                   className="cursor-pointer p-2 bg-black rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                   title="Delete"
                 >
-                  <Image
-                    src={"/image/tablevector/bin.png"}
-                    alt="Delete"
-                    width={16}
-                    height={16}
-                  />
+                  <Trash size={16} />
                 </button>
               </div>
             </div>
           </div>
         ))}
       </div>
-
+      {/* 
       <PopupWrapper isOpen={isPopupOpen}>
         <CustomerOrderDetails
           order={selectedEntry}
           onClose={handleClosePopup}
         />
-      </PopupWrapper>
+      </PopupWrapper> */}
     </div>
   );
 };
