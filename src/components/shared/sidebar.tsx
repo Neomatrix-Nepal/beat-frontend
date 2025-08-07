@@ -86,20 +86,20 @@ export function DashboardSidebar() {
 
       {/* Sidebar */}
       <aside
-        className={`fixed h-screen top-0 left-0 z-50 w-2/3 xl:w-80 bg-[#151515] transform transition-transform duration-300 ease-in-out
+        className={`fixed overflow-y-auto h-screen top-0 left-0 z-50 w-8/10 md:w-2/3 xl:w-80 bg-[#151515] transform transition-transform duration-300 ease-in-out
         ${
           isOpen ? "translate-x-0" : "-translate-x-full xl:translate-x-0"
         } min-h-[100dvh] xl:min-h-screen`}
       >
         {/* Logo */}
-        <div className="flex justify-center py-6">
+        <div className="flex justify-center pt-6">
           <a href="/">
             <Image
               src={"/image/logo.png"}
               alt="Logo"
-              width={100}
-              height={100}
-              className="drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]"
+              width={120}
+              height={120}
+              className=""
             />
           </a>
         </div>
@@ -114,14 +114,14 @@ export function DashboardSidebar() {
               <Link href={item.href} key={index}>
                 <div
                   onClick={() => setIsOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl hover:cursor-pointer transition-colors duration-200 ${
+                  className={`flex items-center gap-3 px-4 py-[10px] rounded-xl hover:cursor-pointer transition-colors duration-200 ${
                     isActive
                       ? "bg-purple-700 text-white"
                       : "text-slate-300 hover:bg-purple-600 hover:text-white"
                   }`}
                 >
                   <Icon />
-                  <span className="font-medium">{item.label}</span>
+                  <span className="font-medium text-sm">{item.label}</span>
                 </div>
               </Link>
             );
