@@ -28,7 +28,7 @@ const salesData = [
 
 export function SalesChart() {
   return (
-    <Card className="bg-[#1a1a2e] border-[#2d2d44] w-full">
+    <Card className="bg-[#1a1a2e] border-[#2d2d44] flex flex-cols justify-between  w-full h-full">
       <CardHeader>
         <CardTitle className="text-white">Sales Performance</CardTitle>
       </CardHeader>
