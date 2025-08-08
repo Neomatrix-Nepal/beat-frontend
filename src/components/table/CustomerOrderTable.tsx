@@ -1,3 +1,4 @@
+"use client";
 import PopupWrapper from "@/src/components/shared/PopupWrapper";
 import { formatDateTime } from "@/src/lib/utils";
 import { Order } from "@/src/types";
@@ -6,6 +7,8 @@ import Image from "next/image";
 import React, { useState } from "react";
 import { IoMdEye } from "react-icons/io";
 import CustomerOrderDetails from "../dialog/customerOrderDialog";
+import ConfirmPopUp from "../ui/confirmPopUp";
+import LoadingEffect from "../loadingEffect";
 
 interface CustomerOrderTableProps {
   entries: Order[];
@@ -24,7 +27,10 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
   onDeleteEntry,
   handleChangeStatus,
 }) => {
+  const [deletePopUp, setDeletePopUp] = useState<boolean>(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [selectedEntryId, setSelectedEntryId] = useState<string | null>();
   const [selectedEntry, setSelectedEntry] = useState<Order | null>(null);
 
   const handleViewClick = (entry: Order) => {
@@ -36,6 +42,18 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
     setIsPopupOpen(false);
     setSelectedEntry(null);
   };
+
+  const deleteOrder = async(id: string) =>{
+    setIsLoading(true);
+    try{
+      await Promise.resolve(onDeleteEntry(id));
+    }catch(error){
+      console.log(error);
+    }finally{
+      setSelectedEntryId(null);
+      setIsLoading(false);
+    }
+  }
 
   return (
     <div className="bg-[#101828] rounded-xl border border-[#1D2939] overflow-hidden font-michroma">
@@ -95,8 +113,9 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
                     </button>
                     <button
                       onClick={() => {
-                        onDeleteEntry(entry.id.toString());
-                      }}
+                      setSelectedEntryId(entry.id.toString());
+                      setDeletePopUp(true);
+                    }}
                       className="cursor-pointer p-2 bg-black rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                     >
                       <Image
@@ -170,8 +189,9 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
                 </button>
                 <button
                   onClick={() => {
-                    onDeleteEntry(entry.id.toString());
-                  }}
+                      setSelectedEntryId(entry.id.toString());
+                      setDeletePopUp(true);
+                    }}
                   className="cursor-pointer p-2 bg-black rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                   title="Delete"
                 >
@@ -194,6 +214,23 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
           onClose={handleClosePopup}
         />
       </PopupWrapper>
+
+      {
+        deletePopUp &&
+        <ConfirmPopUp 
+          title={"Delete Customer order?"} 
+          message={"Are you sure you want to delete this order?"} 
+          onCancel={()=>setDeletePopUp(false)} 
+          onConfirm={()=>{
+            setDeletePopUp(false);
+            deleteOrder(selectedEntryId!);
+          }}
+        />
+      }
+
+      {
+        isLoading && <LoadingEffect/>
+      }
     </div>
   );
 };

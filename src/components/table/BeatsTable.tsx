@@ -1,9 +1,11 @@
-import React from "react";
-
+"use client";
+import React, { useState } from "react";
 import { formatDateTime } from "@/src/lib/utils";
 import { BeatsTableProps } from "@/src/types";
 import { Edit, Pencil, Play, Trash } from "lucide-react";
 import Image from "next/image";
+import ConfirmPopUp from "../ui/confirmPopUp";
+import LoadingEffect from "../loadingEffect";
 
 const genreColors: Record<string, string> = {
   chill: "bg-orange-500/20 text-orange-400 border-orange-500/30",
@@ -17,6 +19,22 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
   onEditBeat,
   onDeleteBeat,
 }) => {
+  const [deletePopUp, setDeletePopUp] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [selectedBeatId, setSelectedBeatId] = useState<string|null>();
+
+  const deleteBeat = async(id: string) =>{
+    setIsLoading(true);
+    try{
+      await Promise.resolve(onDeleteBeat(id));
+    }catch(error){
+      console.log(error);
+    }finally{
+      setSelectedBeatId(null);
+      setIsLoading(false);
+    }
+  }
+  
   if (beats.length === 0) return null;
   return (
     <div className="bg-[#101828] rounded-xl border border-[#1D2939] overflow-hidden font-michroma">
@@ -87,7 +105,8 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
                       </button>
                       <button
                         onClick={() => {
-                          onDeleteBeat(beat.id.toString());
+                          setSelectedBeatId(beat.id.toString());
+                          setDeletePopUp(true);
                         }}
                         className="cursor-pointer p-2 bg-black rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                       >
@@ -155,7 +174,8 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
 
                   <button
                     onClick={() => {
-                      onDeleteBeat(beat.id.toString());
+                      setSelectedBeatId(beat.id.toString());
+                      setDeletePopUp(true);
                     }}
                     className="p-2 text-red-400 hover:bg-red-500/20 rounded-lg transition-colors"
                   >
@@ -166,6 +186,22 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
             </div>
           ))}
       </div>
+      {
+        deletePopUp &&
+        <ConfirmPopUp 
+          title={"Delete Beat?"} 
+          message={"Are you sure you want to delete this beat?"} 
+          onCancel={()=>setDeletePopUp(false)} 
+          onConfirm={()=>{
+            setDeletePopUp(false);
+            deleteBeat(selectedBeatId!);
+          }}
+        />
+      }
+
+      {
+        isLoading && <LoadingEffect/>
+      }
     </div>
   );
 };

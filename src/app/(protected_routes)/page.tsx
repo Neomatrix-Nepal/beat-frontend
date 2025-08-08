@@ -7,7 +7,7 @@ import AdminLayout from "./dashboard/layout";
 export default function Dashboard() {
   return (
     <AdminLayout>
-      <div className="p-6bg-[#252525] space-y-6">
+      <div className="space-y-6">
         <StatsGrid />
         <ChartsSection />
         <LatestUploads />

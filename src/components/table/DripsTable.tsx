@@ -1,8 +1,11 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import { Edit, Trash } from "lucide-react";
 import { showDeleteToast, showUpdateToast } from "../../lib/util";
 import Image from "next/image";
 import { Product } from "@/src/types";
+import LoadingEffect from "../loadingEffect";
+import ConfirmPopUp from "../ui/confirmPopUp";
 
 interface DripsTableProps {
   drips: Product[];
@@ -15,6 +18,22 @@ export const DripsTable: React.FC<DripsTableProps> = ({
   onDeleteDrip,
   onEditDrip,
 }) => {
+  const [deletePopUp, setDeletePopUp] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [selectedDripId, setSelectedDripId] = useState<number|null>();
+
+  const deleteDrip = async(id: number) =>{
+    setIsLoading(true);
+    try{
+      await Promise.resolve(onDeleteDrip(id));
+    }catch(error){
+      console.log(error);
+    }finally{
+      setSelectedDripId(null);
+      setIsLoading(false);
+    }
+  }
+  
   return (
     <div className="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden font-michroma">
       {/* Desktop Table */}
@@ -69,12 +88,8 @@ export const DripsTable: React.FC<DripsTableProps> = ({
                     </button>
                     <button
                       onClick={() => {
-                        onDeleteDrip(drip.id);
-                        showDeleteToast(
-                          "Drip sucessfully deleted",
-                          "Deleted",
-                          "show all"
-                        );
+                        setSelectedDripId(drip.id);
+                        setDeletePopUp(true);
                       }}
                       className="cursor-pointer p-2 bg-foreground hover:bg-purple-600/20 rounded-lg transition-colors"
                     >
@@ -127,12 +142,8 @@ export const DripsTable: React.FC<DripsTableProps> = ({
                 </button>
                 <button
                   onClick={() => {
-                    onDeleteDrip(drip.id);
-                    showDeleteToast(
-                      "Drip sucessfully deleted",
-                      "Deleted",
-                      "show all"
-                    );
+                    setSelectedDripId(drip.id);
+                    setDeletePopUp(true);
                   }}
                   className="p-2 text-red-400 hover:bg-red-500/20 rounded-lg transition-colors"
                 >
@@ -143,6 +154,22 @@ export const DripsTable: React.FC<DripsTableProps> = ({
           </div>
         ))}
       </div>
+      {
+        deletePopUp &&
+        <ConfirmPopUp 
+          title={"Delete Customer order?"} 
+          message={"Are you sure you want to delete this order?"} 
+          onCancel={()=>setDeletePopUp(false)} 
+          onConfirm={()=>{
+            setDeletePopUp(false);
+            deleteDrip(selectedDripId!);
+          }}
+        />
+      }
+
+      {
+        isLoading && <LoadingEffect/>
+      }
     </div>
   );
 };

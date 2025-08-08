@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 import { Check, Trash } from "lucide-react";
 import { IoMdEye } from "react-icons/io";
@@ -6,6 +7,8 @@ import PopupWrapper from "../shared/PopupWrapper";
 import MixingProSubmissionDetails, {
   MixingProEntry,
 } from "../dialog/mixingProDialog";
+import LoadingEffect from "../loadingEffect";
+import ConfirmPopUp from "../ui/confirmPopUp";
 
 interface MixingProTableProps {
   entries: MixingProEntry[];
@@ -32,6 +35,9 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
   const [selectedEntry, setSelectedEntry] = useState<MixingProEntry | null>(
     null
   );
+  const [deletePopUp, setDeletePopUp] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [selectedEntryId, setSelectedEntryId] = useState<number|null>();
 
   const handleViewClick = (entry: MixingProEntry) => {
     setSelectedEntry(entry);
@@ -42,6 +48,18 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
     setIsPopupOpen(false);
     setSelectedEntry(null);
   };
+
+  const deleteEntry = async(id: number) =>{
+    setIsLoading(true);
+    try{
+      await Promise.resolve(onDeleteEntry(id));
+    }catch(error){
+      console.log(error);
+    }finally{
+      setSelectedEntryId(null);
+      setIsLoading(false);
+    }
+  }
 
   return (
     <div className="bg-[#101828] rounded-xl border border-[#1D2939] overflow-hidden font-michroma">
@@ -106,8 +124,11 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
                       <Check size={16} />
                     </button>
                     <button
-                      onClick={() => onDeleteEntry(entry.id)}
-                        className="cursor-pointer p-2 bg-black rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
+                      onClick={() => {
+                      setSelectedEntryId(entry.id);
+                      setDeletePopUp(true);
+                      }}
+                      className="cursor-pointer p-2 bg-black rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                     >
                       <Image
                         src={"/image/tablevector/bin.png"}
@@ -174,7 +195,10 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
                   <Check size={16} />
                 </button>
                 <button
-                  onClick={() => onDeleteEntry(entry.id)}
+                  onClick={() => {
+                      setSelectedEntryId(entry.id);
+                      setDeletePopUp(true);
+                    }}
                   className="p-2 rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                   title="Delete"
                 >
@@ -192,6 +216,23 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
           onClose={handleClosePopup}
         />
       </PopupWrapper>
+
+      {
+        deletePopUp &&
+        <ConfirmPopUp 
+          title={"Delete Customer order?"} 
+          message={"Are you sure you want to delete this order?"} 
+          onCancel={()=>setDeletePopUp(false)} 
+          onConfirm={()=>{
+            setDeletePopUp(false);
+            deleteEntry(selectedEntryId!);
+          }}
+        />
+      }
+
+      {
+        isLoading && <LoadingEffect/>
+      }
     </div>
   );
 };

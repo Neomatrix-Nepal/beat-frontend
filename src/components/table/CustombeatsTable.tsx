@@ -1,3 +1,4 @@
+"use state";
 import { updateCustomBeatStatus } from "@/src/app/actions/customs-beats-actions";
 import { CustomBeat } from "@/src/types";
 import Image from "next/image";
@@ -6,6 +7,8 @@ import { IoMdEye } from "react-icons/io";
 import { showDeleteToast } from "../../lib/util";
 import BeatsDialogDetails from "../dialog/beatsDialog";
 import PopupWrapper from "../shared/PopupWrapper";
+import LoadingEffect from "../loadingEffect";
+import ConfirmPopUp from "../ui/confirmPopUp";
 
 interface CustombeatsTableProps {
   entries: CustomBeat[];
@@ -28,6 +31,9 @@ export const CustombeatsTable: React.FC<CustombeatsTableProps> = ({
 }) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState<CustomBeat | null>(null);
+  const [deletePopUp, setDeletePopUp] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [selectedEntryId, setSelectedEntryId] = useState<string|null>();
 
   const handleViewClick = (entry: CustomBeat) => {
     setSelectedEntry(entry);
@@ -38,6 +44,18 @@ export const CustombeatsTable: React.FC<CustombeatsTableProps> = ({
     setIsPopupOpen(false);
     setSelectedEntry(null);
   };
+
+  const deleteBeat = async(id: string) =>{
+    setIsLoading(true);
+    try{
+      await Promise.resolve(onDeleteEntry(id));
+    }catch(error){
+      console.log(error);
+    }finally{
+      setSelectedEntryId(null);
+      setIsLoading(false);
+    }
+  }
 
   return (
     <div className="bg-[#101828] rounded-xl border border-[#1D2939] overflow-hidden font-michroma">
@@ -120,7 +138,8 @@ export const CustombeatsTable: React.FC<CustombeatsTableProps> = ({
                     </button>
                     <button
                       onClick={() => {
-                        onDeleteEntry(entry.id.toString());
+                        setSelectedEntryId(entry.id.toString());
+                        setDeletePopUp(true);
                       }}
                       className="cursor-pointer p-2 text-red-400 bg-foreground hover:bg-purple-600/20 rounded-lg transition-colors"
                     >
@@ -233,6 +252,23 @@ export const CustombeatsTable: React.FC<CustombeatsTableProps> = ({
       <PopupWrapper isOpen={isPopupOpen}>
         <BeatsDialogDetails onClose={handleClosePopup} beat={selectedEntry} />
       </PopupWrapper>
+
+      {
+        deletePopUp &&
+        <ConfirmPopUp 
+          title={"Delete Customer order?"} 
+          message={"Are you sure you want to delete this order?"} 
+          onCancel={()=>setDeletePopUp(false)} 
+          onConfirm={()=>{
+            setDeletePopUp(false);
+            deleteBeat(selectedEntryId!);
+          }}
+        />
+      }
+
+      {
+        isLoading && <LoadingEffect/>
+      }
     </div>
   );
 };

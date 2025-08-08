@@ -1,3 +1,4 @@
+"use client";
 import { formatDateTime } from "@/src/lib/utils";
 import { Commission } from "@/src/types";
 import { Check, Eye, Trash } from "lucide-react";

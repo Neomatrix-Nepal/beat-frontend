@@ -1,9 +1,12 @@
-import React, { useCallback } from "react";
+"use client";
+import React, { useCallback, useState } from "react";
 import { Edit, Trash } from "lucide-react";
 import { showDeleteToast, showUpdateToast } from "@/src/lib/util";
 
 import Image from "next/image";
 import { Platform } from "@/src/types/latest-work";
+import LoadingEffect from "../loadingEffect";
+import ConfirmPopUp from "../ui/confirmPopUp";
 
 interface Image {
   id: number;
@@ -42,6 +45,10 @@ export const LatestWorkTable: React.FC<LatestWorkTableProps> = ({
   onSelectWork,
   onDeleteWork,
 }) => {
+  const [deletePopUp, setDeletePopUp] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [selectedWorkId, setSelectedWorkId] = useState<number|null>();
+  
   const getPlatformIcon = useCallback((platform: Platform) => {
     switch (platform) {
       case Platform.YOUTUBE:
@@ -109,6 +116,18 @@ export const LatestWorkTable: React.FC<LatestWorkTableProps> = ({
     }
   }, []);
 
+  const deleteWork = async(id: number) =>{
+    setIsLoading(true);
+    try{
+      await Promise.resolve(onDeleteWork(id));
+    }catch(error){
+      console.log(error);
+    }finally{
+      setSelectedWorkId(null);
+      setIsLoading(false);
+    }
+  }
+
   return (
     <div className="bg-[#101828] rounded-xl border border-[#1D2939] overflow-hidden font-michroma">
       <div className="hidden lg:block overflow-x-auto">
@@ -158,12 +177,8 @@ export const LatestWorkTable: React.FC<LatestWorkTableProps> = ({
                     </button>
                     <button
                       onClick={() => {
-                        onDeleteWork(work.id);
-                        showDeleteToast(
-                          "Deleted",
-                          work.title,
-                          work.id.toString()
-                        );
+                        setSelectedWorkId(work.id);
+                        setDeletePopUp(true);
                       }}
                         className="cursor-pointer p-2 bg-black rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                     >
@@ -243,8 +258,8 @@ export const LatestWorkTable: React.FC<LatestWorkTableProps> = ({
                 </button>
                 <button
                   onClick={() => {
-                    onDeleteWork(work.id);
-                    showDeleteToast("Deleted", work.title, work.id.toString());
+                    setSelectedWorkId(work.id);
+                    setDeletePopUp(true);
                   }}
                   className="p-2 rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                   title="Delete"
@@ -256,6 +271,22 @@ export const LatestWorkTable: React.FC<LatestWorkTableProps> = ({
           </div>
         ))}
       </div>
+      {
+        deletePopUp &&
+        <ConfirmPopUp 
+          title={"Delete Customer order?"} 
+          message={"Are you sure you want to delete this order?"} 
+          onCancel={()=>setDeletePopUp(false)} 
+          onConfirm={()=>{
+            setDeletePopUp(false);
+            deleteWork(selectedWorkId!);
+          }}
+        />
+      }
+
+      {
+        isLoading && <LoadingEffect/>
+      }
     </div>
   );
 };
