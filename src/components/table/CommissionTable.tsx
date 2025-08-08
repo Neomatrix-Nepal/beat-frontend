@@ -4,6 +4,8 @@ import { Commission } from "@/src/types";
 import { Check, Eye, Trash } from "lucide-react";
 import React, { useState } from "react";
 import { IoMdEye } from "react-icons/io";
+import PopupWrapper from "../shared/PopupWrapper";
+import CommissionDetails from "../dialog/commissionDialog";
 
 interface CommissionTableProps {
   entries: Commission[];
@@ -175,13 +177,13 @@ export const CommissionTable: React.FC<CommissionTableProps> = ({
           </div>
         ))}
       </div>
-      {/* 
+      
       <PopupWrapper isOpen={isPopupOpen}>
-        <CustomerOrderDetails
-          order={selectedEntry}
+        <CommissionDetails
+          commission={selectedEntry}
           onClose={handleClosePopup}
         />
-      </PopupWrapper> */}
+      </PopupWrapper>
     </div>
   );
 };
