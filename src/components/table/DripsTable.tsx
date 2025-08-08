@@ -157,8 +157,8 @@ export const DripsTable: React.FC<DripsTableProps> = ({
       {
         deletePopUp &&
         <ConfirmPopUp 
-          title={"Delete Customer order?"} 
-          message={"Are you sure you want to delete this order?"} 
+          title={"Delete this Drip?"} 
+          message={"Are you sure you want to delete this Drip?"} 
           onCancel={()=>setDeletePopUp(false)} 
           onConfirm={()=>{
             setDeletePopUp(false);

@@ -256,8 +256,8 @@ export const CustombeatsTable: React.FC<CustombeatsTableProps> = ({
       {
         deletePopUp &&
         <ConfirmPopUp 
-          title={"Delete Customer order?"} 
-          message={"Are you sure you want to delete this order?"} 
+          title={"Delete Custom beat?"} 
+          message={"Are you sure you want to delete this custom beat?"} 
           onCancel={()=>setDeletePopUp(false)} 
           onConfirm={()=>{
             setDeletePopUp(false);

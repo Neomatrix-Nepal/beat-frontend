@@ -274,8 +274,8 @@ export const LatestWorkTable: React.FC<LatestWorkTableProps> = ({
       {
         deletePopUp &&
         <ConfirmPopUp 
-          title={"Delete Customer order?"} 
-          message={"Are you sure you want to delete this order?"} 
+          title={"Delete Work?"} 
+          message={"Are you sure you want to delete this Work?"} 
           onCancel={()=>setDeletePopUp(false)} 
           onConfirm={()=>{
             setDeletePopUp(false);

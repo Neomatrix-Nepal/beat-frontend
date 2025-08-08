@@ -6,6 +6,9 @@ import React, { useState } from "react";
 import { IoMdEye } from "react-icons/io";
 import PopupWrapper from "../shared/PopupWrapper";
 import CommissionDetails from "../dialog/commissionDialog";
+import Image from "next/image";
+import LoadingEffect from "../loadingEffect";
+import ConfirmPopUp from "../ui/confirmPopUp";
 
 interface CommissionTableProps {
   entries: Commission[];
@@ -26,6 +29,9 @@ export const CommissionTable: React.FC<CommissionTableProps> = ({
 }) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState<Commission | null>(null);
+  const [deletePopUp, setDeletePopUp] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [selectedCommissionId, setSelectedCommissionId] = useState<string|null>();
 
   const handleViewClick = (entry: Commission) => {
     setSelectedEntry(entry);
@@ -36,6 +42,18 @@ export const CommissionTable: React.FC<CommissionTableProps> = ({
     setIsPopupOpen(false);
     setSelectedEntry(null);
   };
+
+  const deleteCommission = async(id: string) =>{
+    setIsLoading(true);
+    try{
+      await Promise.resolve(onDeleteEntry(id));
+    }catch(error){
+      console.log(error);
+    }finally{
+      setSelectedCommissionId(null);
+      setIsLoading(false);
+    }
+  }
 
   return (
     <div className="bg-[#101828] rounded-xl border border-[#1D2939] overflow-hidden font-michroma">
@@ -95,11 +113,17 @@ export const CommissionTable: React.FC<CommissionTableProps> = ({
                     </button>
                     <button
                       onClick={() => {
-                        onDeleteEntry(entry.id.toString());
-                      }}
+                          setSelectedCommissionId(entry.id.toString());
+                          setDeletePopUp(true);
+                        }}
                       className="cursor-pointer p-2 bg-black rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                     >
-                      <Trash size={16} />
+                      <Image
+                        src={"/image/tablevector/bin.png"}
+                        alt="Delete"
+                        width={16}
+                        height={16}
+                      />
                     </button>
                   </div>
                 </td>
@@ -165,12 +189,18 @@ export const CommissionTable: React.FC<CommissionTableProps> = ({
                 </button>
                 <button
                   onClick={() => {
-                    onDeleteEntry(entry.id.toString());
+                    setSelectedCommissionId(entry.id.toString());
+                    setDeletePopUp(true);
                   }}
                   className="cursor-pointer p-2 bg-black rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                   title="Delete"
                 >
-                  <Trash size={16} />
+                  <Image
+                    src={"/image/tablevector/bin.png"}
+                    alt="Delete"
+                    width={16}
+                    height={16}
+                  />
                 </button>
               </div>
             </div>
@@ -184,6 +214,23 @@ export const CommissionTable: React.FC<CommissionTableProps> = ({
           onClose={handleClosePopup}
         />
       </PopupWrapper>
+
+      {
+        deletePopUp &&
+        <ConfirmPopUp 
+          title={"Delete Commission?"} 
+          message={"Are you sure you want to delete this Commission?"} 
+          onCancel={()=>setDeletePopUp(false)} 
+          onConfirm={()=>{
+            setDeletePopUp(false);
+            deleteCommission(selectedCommissionId!);
+          }}
+        />
+      }
+
+      {
+        isLoading && <LoadingEffect/>
+      }
     </div>
   );
 };
