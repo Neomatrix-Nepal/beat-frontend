@@ -23,6 +23,11 @@ import { barColors, baseLabels, months } from "../constants/salesChart";
 
 const currentMonth = new Date().getMonth() + 1;
 const currentYear = new Date().getFullYear();
+const startYear = 2025;
+const years : number[] = [];
+for (let year = startYear; year <= currentYear; year++) {
+  years.push(year);
+}
 
 export function SalesChart({
   barGraphData: initialData,
@@ -77,12 +82,12 @@ export function SalesChart({
   }
 
   return (
-    <Card className="bg-[#1a1a2e] border-[#2d2d44] flex flex-col w-full h-full">
+    <Card className="bg-[#1a1a2e] border-[#2d2d44] flex flex-col w-full h-full relative">
       <CardHeader>
         <CardTitle className="text-white">Sales Performance</CardTitle>
-        <div className="flex gap-4 w-full flex-row justify-center md:justify-between items-center flex-wrap">
+        <div className="flex gap-2 md:gap-4 w-full flex-row justify-center md:justify-between items-center shrink">
           <select
-            className="bg-[#3b3b5c] text-white px-4 py-1 rounded-md outline-none"
+            className="bg-[#3b3b5c] text-white px-2 py-1 rounded-md outline-none"
             value={filterBarGraph.type}
             onChange={(e) => {
               setFilterBarGraph({
@@ -95,9 +100,9 @@ export function SalesChart({
             <option value="drip">Drips</option>
           </select>
 
-          <div className="flex gap-4">
+          <div className="flex gap-2 md:gap-4">
             <select
-              className="bg-[#3b3b5c] text-white px-4 py-1 rounded-md outline-none"
+              className="bg-[#3b3b5c] text-white px-2 md:px-4 py-1 rounded-md outline-none"
               value={months.find(m => m.monthNumber === filterBarGraph.month)!.monthName}
               onChange={(e) =>{
                   const selectedMonth = months.find(m => m.monthName === e.target.value);
@@ -116,11 +121,20 @@ export function SalesChart({
             </select>
 
             <select
-              className="bg-[#3b3b5c] text-white px-4 py-1 rounded-md outline-none"
-              value={"selectedYear"}
-              onChange={() => {}}
+              className="bg-[#3b3b5c] text-white px-2 md:px-4 py-1 rounded-md outline-none"
+              value={filterBarGraph.year}
+              onChange={(e) => {
+              setFilterBarGraph({
+                  ...filterBarGraph,
+                  year: Number(e.target.value),
+                });
+              }}
             >
-              <option value="">2025</option>
+              {years.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
             </select>
           </div>
         </div>
@@ -149,16 +163,30 @@ export function SalesChart({
           </BarChart>
         </ResponsiveContainer>
 
+        {/* Overlay when there's no data */}
+        {(barGraphData.length === 1 && barGraphData[0]?.earning === 0) && (
+          <div className="absolute top-25 bottom-10 left-10 right-10 bg-black/50 bg-opacity-60 flex items-center justify-center text-white text-lg font-semibold">
+            No Data
+          </div>
+        )}
+
         <div className="flex flex-wrap justify-center gap-4 mt-4 text-sm text-gray-400">
-          {barGraphData.map((item, index) => (
-            <div key={index} className="flex items-center gap-2">
+          {
+          (barGraphData.length === 1 && barGraphData[0]?.earning === 0)?
+          ""
+          :
+          <>
+            {barGraphData.map((_, index) => (
+              <div key={index} className="flex items-center gap-2">
               <div
-                className="w-3 h-3 rounded-sm"
-                style={{ backgroundColor: barColors[index] }}
+              className="w-3 h-3 rounded-sm"
+              style={{ backgroundColor: barColors[index] }}
               />
               <span>{labelsToShow[index]}</span>
-            </div>
-          ))}
+              </div>
+            ))}
+          </>
+          }
         </div>
       </CardContent>
     </Card>
