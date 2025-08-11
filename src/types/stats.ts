@@ -42,3 +42,35 @@ export interface StatsGridData {
 export interface StatsGridProps {
   data: StatsGridData;
 }
+
+export type FetchBarGraphParams = {
+  type?: "beats" | "drip";
+  year?: number;
+  month?: number;
+};
+
+export type BarGraphDataItem = {
+  creatorId: number;
+  creatorName: string;
+  sold: number;
+  earning: number;
+};
+
+export type BarGraphData = BarGraphDataItem[];
+
+export type PieChartData = {
+  beatsAmount: number;
+  dripsAmount: number;
+  commissionAmount: number;
+};
+
+export type ChartsSectionProps = {
+  barGraphData: BarGraphData;
+  pieChartData: PieChartData;
+  token:string;
+};
+
+export interface SalesChartProps {
+  barGraphData: BarGraphData;
+  passedToken: string;
+}

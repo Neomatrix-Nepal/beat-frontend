@@ -12,12 +12,12 @@ export default async function Dashboard() {
   let barGraphData = [];
   let pieChartData = [];
 
-  try{
+  try {
     gridData = await getStatGridData(session?.user?.tokens.accessToken!);
-    barGraphData = await getBarGraphData(session?.user?.tokens.accessToken!);
+    barGraphData = await getBarGraphData(session?.user?.tokens.accessToken!)
     pieChartData = await getPieChartData(session?.user?.tokens.accessToken!);
-  }catch(error){
-    console.error("Failed to fetch dashboard info: ", error)
+  } catch (error) {
+    console.error("Failed to fetch dashboard info: ", error);
   }
 
   console.log("gridData:", gridData);
@@ -27,8 +27,12 @@ export default async function Dashboard() {
   return (
     <AdminLayout>
       <div className="space-y-6">
-        <StatsGrid data={gridData}/>
-        <ChartsSection barGraphData={barGraphData} pieChartData={pieChartData}/>
+        <StatsGrid data={gridData} />
+        <ChartsSection
+          barGraphData={barGraphData}
+          pieChartData={pieChartData}
+          token={session?.user?.tokens.accessToken!}
+        />
         <LatestUploads />
       </div>
     </AdminLayout>
