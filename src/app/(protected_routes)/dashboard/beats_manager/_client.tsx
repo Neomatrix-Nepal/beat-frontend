@@ -14,6 +14,7 @@ import {
 import { Product, Genre } from "@/src/types";
 import toast from "react-hot-toast";
 import { deleteProduct } from "./action";
+import { useSession } from "next-auth/react";
 
 export default function _Client({
   genres,
@@ -32,13 +33,18 @@ export default function _Client({
   const totalPages = Math.ceil(beats.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
 
+  const { data: session } = useSession();
+
   const handleEditBeat = (beat: Product) => {
     setSelectedBeats(beat);
     setIsOpen(true);
   };
 
   const handleDeleteBeat = async (id: string) => {
-    const { message } = await deleteProduct(id);
+    const { message } = await deleteProduct(
+      id,
+      session?.user?.tokens?.accessToken as string
+    );
     if (!message) return toast.error("Failed to delete beat");
     setBeats(beats.filter((beat) => beat.id.toString() !== id));
     toast.success("Beat deleted successfully");

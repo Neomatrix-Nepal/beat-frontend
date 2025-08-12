@@ -54,7 +54,6 @@ export default function _Client({
     };
 
     if (editing) {
-      console.log(newCoupon, form);
       const { id } = await updateDiscountCoupon(
         form.id!.toString(),
         {

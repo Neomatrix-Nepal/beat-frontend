@@ -1,5 +1,4 @@
 import api from "@/src/hooks/useApi";
-import { FetchCreatorsResponse } from "@/src/types/creator";
 
 export const fetchBookings = async (token: string) => {
   try {

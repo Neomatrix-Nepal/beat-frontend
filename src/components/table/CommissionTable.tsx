@@ -31,7 +31,9 @@ export const CommissionTable: React.FC<CommissionTableProps> = ({
   const [selectedEntry, setSelectedEntry] = useState<Commission | null>(null);
   const [deletePopUp, setDeletePopUp] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [selectedCommissionId, setSelectedCommissionId] = useState<string|null>();
+  const [selectedCommissionId, setSelectedCommissionId] = useState<
+    string | null
+  >();
 
   const handleViewClick = (entry: Commission) => {
     setSelectedEntry(entry);
@@ -43,17 +45,17 @@ export const CommissionTable: React.FC<CommissionTableProps> = ({
     setSelectedEntry(null);
   };
 
-  const deleteCommission = async(id: string) =>{
+  const deleteCommission = async (id: string) => {
     setIsLoading(true);
-    try{
+    try {
       await Promise.resolve(onDeleteEntry(id));
-    }catch(error){
-      console.log(error);
-    }finally{
+    } catch (error) {
+      console.error(error);
+    } finally {
       setSelectedCommissionId(null);
       setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="bg-[#101828] rounded-xl border border-[#1D2939] overflow-hidden font-michroma">
@@ -113,9 +115,9 @@ export const CommissionTable: React.FC<CommissionTableProps> = ({
                     </button>
                     <button
                       onClick={() => {
-                          setSelectedCommissionId(entry.id.toString());
-                          setDeletePopUp(true);
-                        }}
+                        setSelectedCommissionId(entry.id.toString());
+                        setDeletePopUp(true);
+                      }}
                       className="cursor-pointer p-2 bg-black rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                     >
                       <Image
@@ -207,7 +209,7 @@ export const CommissionTable: React.FC<CommissionTableProps> = ({
           </div>
         ))}
       </div>
-      
+
       <PopupWrapper isOpen={isPopupOpen}>
         <CommissionDetails
           commission={selectedEntry}
@@ -215,22 +217,19 @@ export const CommissionTable: React.FC<CommissionTableProps> = ({
         />
       </PopupWrapper>
 
-      {
-        deletePopUp &&
-        <ConfirmPopUp 
-          title={"Delete Commission?"} 
-          message={"Are you sure you want to delete this Commission?"} 
-          onCancel={()=>setDeletePopUp(false)} 
-          onConfirm={()=>{
+      {deletePopUp && (
+        <ConfirmPopUp
+          title={"Delete Commission?"}
+          message={"Are you sure you want to delete this Commission?"}
+          onCancel={() => setDeletePopUp(false)}
+          onConfirm={() => {
             setDeletePopUp(false);
             deleteCommission(selectedCommissionId!);
           }}
         />
-      }
+      )}
 
-      {
-        isLoading && <LoadingEffect/>
-      }
+      {isLoading && <LoadingEffect />}
     </div>
   );
 };

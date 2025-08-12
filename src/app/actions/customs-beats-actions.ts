@@ -26,22 +26,26 @@ export const fetchCustomBeats = async (
 export const updateCustomBeatStatus = async (
   id: number,
   status: "pending" | "completed" | "in_progress",
-  callback?: (success: boolean) => void
+  token: string
 ) => {
   try {
-    const response = await api.patch(`/custom-beats/${id}`, { status });
-    if (callback) {
-      callback(true);
-    }
+    const response = await api.patch(
+      `/custom-beats/${id}`,
+      { status },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
     return {
       success: true,
       data: response.data,
     };
   } catch (error: any) {
     console.error("Failed to update custom beat status:", error);
-    if (callback) {
-      callback(false);
-    }
+
     return {
       success: false,
       error:
@@ -50,54 +54,24 @@ export const updateCustomBeatStatus = async (
   }
 };
 
-export const deleteCustomBeat = async (
-  id: number,
-  callback?: (success: boolean) => void
-) => {
+export const deleteCustomBeat = async (id: number, token: string) => {
   try {
-    const response = await api.delete(`/custom-beats/${id}`);
-    if (callback) {
-      callback(true);
-    }
+    const response = await api.delete(`/custom-beats/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
     return {
       success: true,
       data: response.data,
     };
   } catch (error: any) {
     console.error("Failed to delete custom beat:", error);
-    if (callback) {
-      callback(false);
-    }
+
     return {
       success: false,
       error: error.response?.data?.message || "Failed to delete custom beat",
-    };
-  }
-};
-
-export const deleteMultipleCustomBeats = async (
-  ids: number[],
-  callback?: (success: boolean) => void
-) => {
-  try {
-    const deletePromises = ids.map((id) => api.delete(`/custom-beats/${id}`));
-    await Promise.all(deletePromises);
-    if (callback) {
-      callback(true);
-    }
-    return {
-      success: true,
-    };
-  } catch (error: any) {
-    console.error("Failed to delete multiple custom beats:", error);
-    if (callback) {
-      callback(false);
-    }
-    return {
-      success: false,
-      error:
-        error.response?.data?.message ||
-        "Failed to delete multiple custom beats",
     };
   }
 };

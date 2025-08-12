@@ -6,6 +6,7 @@ import {
   uploadProduct,
 } from "@/src/app/(protected_routes)/dashboard/beats_manager/action";
 import { Product } from "@/src/types";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -36,6 +37,7 @@ export default function DripFormModal({
 }: DripFormModalProps) {
   const [loading, setLoading] = useState(false);
   const [previewCover, setPreviewCover] = useState<string | null>(null);
+  const { data: session } = useSession();
 
   const {
     register,
@@ -103,16 +105,26 @@ export default function DripFormModal({
       let result;
 
       if (initialData) {
-        result = await updateProduct(formData, initialData.id.toString());
+        result = await updateProduct(
+          formData,
+          initialData.id.toString(),
+          session?.user?.tokens?.accessToken as string
+        );
       } else {
-        result = await uploadProduct(formData);
+        result = await uploadProduct(
+          formData,
+          session?.user?.tokens?.accessToken as string
+        );
       }
 
       if (result?.id && data.audio instanceof File) {
         const audioFormData = new FormData();
         audioFormData.append("product_id", result.id.toString());
         audioFormData.append("audio", data.audio);
-        await uploadMusic(audioFormData);
+        await uploadMusic(
+          audioFormData,
+          session?.user?.tokens?.accessToken as string
+        );
       }
 
       toast.success(

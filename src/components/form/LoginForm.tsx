@@ -26,7 +26,6 @@ const LoginForm = () => {
         redirect: false,
         ...data,
       });
-      console.log(res);
 
       if (!res?.ok) {
         // setIsLoading(false);

@@ -2,7 +2,12 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { AddBlogFormType, Blog, BlogFormData, BlogFormErrorsType } from "@/src/types";
+import {
+  AddBlogFormType,
+  Blog,
+  BlogFormData,
+  BlogFormErrorsType,
+} from "@/src/types";
 import RichText from "@/src/components/ui/richText";
 import toast from "react-hot-toast";
 
@@ -15,7 +20,7 @@ type AddModeForm = {
 type EditModeForm = {
   mode: "edit";
   initialData: Blog; // must be passed
-  onSubmit: (formData: BlogFormData, image: File|string) => Promise<void>;
+  onSubmit: (formData: BlogFormData, image: File | string) => Promise<void>;
   onCancel: () => void;
 };
 
@@ -25,29 +30,29 @@ const getNormalizedImageUrl = (url: string | null) => {
   if (!url) return "";
   if (url.startsWith("http://") || url.startsWith("https://")) return url;
   // Make sure baseUrl has no trailing slash, url has no leading slash
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") || "http://localhost:8000";
+  const baseUrl =
+    process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ||
+    "http://localhost:8000";
   return `${baseUrl}/${url.replace(/^\/+/, "")}`;
 };
-
 
 export default function BlogForm(props: BlogFormProps) {
   const [touched, setTouched] = useState(false);
   const [blogForm, setBlogForm] = useState<AddBlogFormType | Blog>(
-    props.mode === "add" ?
-        {
+    props.mode === "add"
+      ? ({
           title: "",
           date: "",
           content: "",
           thumbnailUrl: null,
-        } as AddBlogFormType
-    :
-        {
+        } as AddBlogFormType)
+      : ({
           title: props.initialData.title,
           date: props.initialData.date,
           content: props.initialData.content,
           thumbnailUrl: props.initialData.thumbnailUrl,
-        } as Blog
-    );
+        } as Blog)
+  );
   const [errors, setErrors] = useState<BlogFormErrorsType>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -119,13 +124,11 @@ export default function BlogForm(props: BlogFormProps) {
     if (!thumbnailUrl) newErrors.image = "Image is required";
 
     setErrors(newErrors);
-    console.log(newErrors);
-    console.log(content);
+
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async () => {
-
     setIsSubmitting(true);
 
     if (!validateForm()) {
@@ -137,18 +140,17 @@ export default function BlogForm(props: BlogFormProps) {
     try {
       const { title, date, content, thumbnailUrl } = blogForm;
       const formData: BlogFormData = { title, date, content };
-    
-      if(!thumbnailUrl){
+
+      if (!thumbnailUrl) {
         showToast("Image is required", "error");
         return;
       }
 
-      if(props.mode === "add"){
-        await props.onSubmit(formData, thumbnailUrl as File)
-      }else{
-        await props.onSubmit(formData, thumbnailUrl as File|string)
+      if (props.mode === "add") {
+        await props.onSubmit(formData, thumbnailUrl as File);
+      } else {
+        await props.onSubmit(formData, thumbnailUrl as File | string);
       }
-
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Failed to publish blog";
@@ -159,7 +161,6 @@ export default function BlogForm(props: BlogFormProps) {
   };
 
   const handleContentChange = (value: string) => {
-    console.log("called");
     setBlogForm((prev) => ({
       ...prev,
       content: value,
@@ -172,8 +173,7 @@ export default function BlogForm(props: BlogFormProps) {
     <div className="w-full h-full font-michroma p-6 flex items-center justify-center">
       <div className="bg-[#0f172b] rounded-xl border-white border-2 shadow-sm p-2 md:p-6 w-full mx-auto space-y-6">
         <div className="w-full px-4 md:px-0 flex flex-col gap-5">
-          {props.mode === "add" &&
-          
+          {props.mode === "add" && (
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-lg md:text-xl font-medium text-white">
                 Add New News
@@ -185,7 +185,7 @@ export default function BlogForm(props: BlogFormProps) {
                 Back to Blogs
               </Link>
             </div>
-          }
+          )}
 
           <div>
             <label className="block text-sm md:text-base font-bold text-white mb-2">

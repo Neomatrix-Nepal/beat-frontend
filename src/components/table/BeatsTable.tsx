@@ -21,20 +21,20 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
 }) => {
   const [deletePopUp, setDeletePopUp] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [selectedBeatId, setSelectedBeatId] = useState<string|null>();
+  const [selectedBeatId, setSelectedBeatId] = useState<string | null>();
 
-  const deleteBeat = async(id: string) =>{
+  const deleteBeat = async (id: string) => {
     setIsLoading(true);
-    try{
+    try {
       await Promise.resolve(onDeleteBeat(id));
-    }catch(error){
-      console.log(error);
-    }finally{
+    } catch (error) {
+      console.error(error);
+    } finally {
       setSelectedBeatId(null);
       setIsLoading(false);
     }
-  }
-  
+  };
+
   if (beats.length === 0) return null;
   return (
     <div className="bg-[#101828] rounded-xl border border-[#1D2939] overflow-hidden font-michroma">
@@ -101,7 +101,7 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
                         }}
                         className="cursor-pointer p-2 text-white bg-black hover:bg-purple-700 rounded-lg transition-colors duration-300"
                       >
-                        <Edit size={16}/> 
+                        <Edit size={16} />
                       </button>
                       <button
                         onClick={() => {
@@ -186,22 +186,19 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
             </div>
           ))}
       </div>
-      {
-        deletePopUp &&
-        <ConfirmPopUp 
-          title={"Delete Beat?"} 
-          message={"Are you sure you want to delete this beat?"} 
-          onCancel={()=>setDeletePopUp(false)} 
-          onConfirm={()=>{
+      {deletePopUp && (
+        <ConfirmPopUp
+          title={"Delete Beat?"}
+          message={"Are you sure you want to delete this beat?"}
+          onCancel={() => setDeletePopUp(false)}
+          onConfirm={() => {
             setDeletePopUp(false);
             deleteBeat(selectedBeatId!);
           }}
         />
-      }
+      )}
 
-      {
-        isLoading && <LoadingEffect/>
-      }
+      {isLoading && <LoadingEffect />}
     </div>
   );
 };

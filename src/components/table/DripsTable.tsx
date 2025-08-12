@@ -20,20 +20,20 @@ export const DripsTable: React.FC<DripsTableProps> = ({
 }) => {
   const [deletePopUp, setDeletePopUp] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [selectedDripId, setSelectedDripId] = useState<number|null>();
+  const [selectedDripId, setSelectedDripId] = useState<number | null>();
 
-  const deleteDrip = async(id: number) =>{
+  const deleteDrip = async (id: number) => {
     setIsLoading(true);
-    try{
+    try {
       await Promise.resolve(onDeleteDrip(id));
-    }catch(error){
-      console.log(error);
-    }finally{
+    } catch (error) {
+      console.error(error);
+    } finally {
       setSelectedDripId(null);
       setIsLoading(false);
     }
-  }
-  
+  };
+
   return (
     <div className="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden font-michroma">
       {/* Desktop Table */}
@@ -154,22 +154,19 @@ export const DripsTable: React.FC<DripsTableProps> = ({
           </div>
         ))}
       </div>
-      {
-        deletePopUp &&
-        <ConfirmPopUp 
-          title={"Delete this Drip?"} 
-          message={"Are you sure you want to delete this Drip?"} 
-          onCancel={()=>setDeletePopUp(false)} 
-          onConfirm={()=>{
+      {deletePopUp && (
+        <ConfirmPopUp
+          title={"Delete this Drip?"}
+          message={"Are you sure you want to delete this Drip?"}
+          onCancel={() => setDeletePopUp(false)}
+          onConfirm={() => {
             setDeletePopUp(false);
             deleteDrip(selectedDripId!);
           }}
         />
-      }
+      )}
 
-      {
-        isLoading && <LoadingEffect/>
-      }
+      {isLoading && <LoadingEffect />}
     </div>
   );
 };

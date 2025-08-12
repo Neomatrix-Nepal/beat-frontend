@@ -37,7 +37,7 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
   );
   const [deletePopUp, setDeletePopUp] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [selectedEntryId, setSelectedEntryId] = useState<number|null>();
+  const [selectedEntryId, setSelectedEntryId] = useState<number | null>();
 
   const handleViewClick = (entry: MixingProEntry) => {
     setSelectedEntry(entry);
@@ -49,17 +49,17 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
     setSelectedEntry(null);
   };
 
-  const deleteEntry = async(id: number) =>{
+  const deleteEntry = async (id: number) => {
     setIsLoading(true);
-    try{
+    try {
       await Promise.resolve(onDeleteEntry(id));
-    }catch(error){
-      console.log(error);
-    }finally{
+    } catch (error) {
+      console.error(error);
+    } finally {
       setSelectedEntryId(null);
       setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="bg-[#101828] rounded-xl border border-[#1D2939] overflow-hidden font-michroma">
@@ -83,8 +83,9 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
                   index % 2 === 0 ? "bg-[#1C2433]" : "bg-[#1A1F2E]"
                 }`}
               >
-                
-                <td className="p-4 text-white font-medium max-w-50">{entry.name}</td>
+                <td className="p-4 text-white font-medium max-w-50">
+                  {entry.name}
+                </td>
                 <td className="p-4 text-blue-400">
                   <a
                     href={entry.referenceTrack}
@@ -125,8 +126,8 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
                     </button>
                     <button
                       onClick={() => {
-                      setSelectedEntryId(entry.id);
-                      setDeletePopUp(true);
+                        setSelectedEntryId(entry.id);
+                        setDeletePopUp(true);
                       }}
                       className="cursor-pointer p-2 bg-black rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                     >
@@ -196,9 +197,9 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
                 </button>
                 <button
                   onClick={() => {
-                      setSelectedEntryId(entry.id);
-                      setDeletePopUp(true);
-                    }}
+                    setSelectedEntryId(entry.id);
+                    setDeletePopUp(true);
+                  }}
                   className="p-2 rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                   title="Delete"
                 >
@@ -217,22 +218,19 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
         />
       </PopupWrapper>
 
-      {
-        deletePopUp &&
-        <ConfirmPopUp 
-          title={"Delete Customer order?"} 
-          message={"Are you sure you want to delete this order?"} 
-          onCancel={()=>setDeletePopUp(false)} 
-          onConfirm={()=>{
+      {deletePopUp && (
+        <ConfirmPopUp
+          title={"Delete Customer order?"}
+          message={"Are you sure you want to delete this order?"}
+          onCancel={() => setDeletePopUp(false)}
+          onConfirm={() => {
             setDeletePopUp(false);
             deleteEntry(selectedEntryId!);
           }}
         />
-      }
+      )}
 
-      {
-        isLoading && <LoadingEffect/>
-      }
+      {isLoading && <LoadingEffect />}
     </div>
   );
 };

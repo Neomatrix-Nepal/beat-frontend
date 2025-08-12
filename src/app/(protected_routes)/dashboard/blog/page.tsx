@@ -1,13 +1,14 @@
 "use client";
-import NewsCard from "@/src/components/NewsCard";
-import Link from "next/link";
-import { useState, useEffect } from "react";
 import {
-  updateBlog,
-  fetchBlogs,
   deleteBlog,
+  fetchBlogs,
+  updateBlog,
 } from "@/src/app/actions/blog-actions";
+import NewsCard from "@/src/components/NewsCard";
 import { Blog, BlogFormData } from "@/src/types";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 export default function NewsManagement() {
@@ -18,13 +19,13 @@ export default function NewsManagement() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  // Fetch blogs when component mounts or page changes
+  const { data: session } = useSession();
+
   useEffect(() => {
     const loadBlogs = async () => {
       try {
         setLoading(true);
         const response = await fetchBlogs(page, 5);
-        console.log(response.data)
         setBlogs(response.data);
         setTotalPages(response.meta.totalPages);
         setLoading(false);
@@ -45,17 +46,25 @@ export default function NewsManagement() {
     setEditingId(null);
   };
 
-  const handleSaveEdit = async ( updatedBlog: BlogFormData, imageFile: File|string) => {
+  const handleSaveEdit = async (
+    updatedBlog: BlogFormData,
+    imageFile: File | string
+  ) => {
     try {
-      const editedBlog = blogs.find((item) => item.id === editingId)
+      const editedBlog = blogs.find((item) => item.id === editingId);
 
-      if(!editedBlog)return;  
+      if (!editedBlog) return;
       // Placeholder for updateBlog action (you need to implement this in actions.ts)
-      const response = await updateBlog(editedBlog.id, {
-        title: updatedBlog.title,
-        date: updatedBlog.date,
-        content: updatedBlog.content,
-      }, typeof imageFile === "string" ? null : imageFile);
+      const response = await updateBlog(
+        editedBlog.id,
+        {
+          title: updatedBlog.title,
+          date: updatedBlog.date,
+          content: updatedBlog.content,
+        },
+        typeof imageFile === "string" ? null : imageFile,
+        session?.user?.tokens?.accessToken as string
+      );
       if (response.success) {
         setBlogs(
           blogs.map((blog) =>
@@ -83,7 +92,10 @@ export default function NewsManagement() {
   const handleDelete = async (id: number) => {
     try {
       // Placeholder for deleteBlog action (you need to implement this in actions.ts)
-      const response = await deleteBlog(id);
+      const response = await deleteBlog(
+        id,
+        session?.user?.tokens?.accessToken as string
+      );
       if (response.success) {
         setBlogs(blogs.filter((blog) => blog.id !== id));
         toast.success("Blog deleted successfully");

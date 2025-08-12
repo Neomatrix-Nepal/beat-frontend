@@ -5,7 +5,6 @@ import { authOptions } from "../../api/auth/option";
 
 const Index = async () => {
   const abc = await getServerSession(authOptions);
-  console.log(abc?.user);
   return (
     <div className="min-h-screen bg-foreground flex  justify-center items-center flex-col p-4">
       <h1 className=" -translate-y-[10vh] text-4xl md:text-5xl flex justify-center items-center font-bold text-white tracking-wide">

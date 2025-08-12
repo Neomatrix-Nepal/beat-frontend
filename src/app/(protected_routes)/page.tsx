@@ -26,10 +26,6 @@ export default async function Dashboard() {
     console.error("Failed to fetch dashboard info: ", error);
   }
 
-  console.log("gridData:", gridData);
-  console.log("barGraphData:", barGraphData);
-  console.log("pieChartData:", pieChartData);
-
   return (
     <AdminLayout>
       <div className="space-y-6">

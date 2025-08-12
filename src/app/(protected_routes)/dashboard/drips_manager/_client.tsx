@@ -12,8 +12,9 @@ import {
 } from "@/src/components/ui/pagination";
 import { Product } from "@/src/types";
 import toast from "react-hot-toast";
-import { deleteProduct } from "./action";
 import DripFormModal from "@/src/components/form/DripForm";
+import { deleteProduct } from "../beats_manager/action";
+import { useSession } from "next-auth/react";
 
 export default function _Client({ dripsData }: { dripsData: Product[] }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -26,13 +27,18 @@ export default function _Client({ dripsData }: { dripsData: Product[] }) {
   const totalPages = Math.ceil(beats.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
 
+  const { data: session } = useSession();
+
   const handleEditDrip = (beat: Product) => {
     setSelectedBeats(beat);
     setIsOpen(true);
   };
 
   const handleDeleteDrip = async (id: number) => {
-    const { message } = await deleteProduct(id);
+    const { message } = await deleteProduct(
+      id.toString(),
+      session?.user?.tokens?.accessToken as string
+    );
     if (!message) return toast.error("Failed to delete beat");
     setBeats(beats.filter((beat) => beat.id !== id));
     toast.success("Beat deleted successfully");

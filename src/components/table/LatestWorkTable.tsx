@@ -1,10 +1,10 @@
 "use client";
-import React, { useCallback, useState } from "react";
+import { showUpdateToast } from "@/src/lib/util";
 import { Edit, Trash } from "lucide-react";
-import { showDeleteToast, showUpdateToast } from "@/src/lib/util";
-
-import Image from "next/image";
+import React, { useCallback, useState } from "react";
 import { Platform } from "@/src/types/latest-work";
+import Image from "next/image";
+import toast from "react-hot-toast";
 import LoadingEffect from "../loadingEffect";
 import ConfirmPopUp from "../ui/confirmPopUp";
 
@@ -47,8 +47,8 @@ export const LatestWorkTable: React.FC<LatestWorkTableProps> = ({
 }) => {
   const [deletePopUp, setDeletePopUp] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [selectedWorkId, setSelectedWorkId] = useState<number|null>();
-  
+  const [selectedWorkId, setSelectedWorkId] = useState<number | null>();
+
   const getPlatformIcon = useCallback((platform: Platform) => {
     switch (platform) {
       case Platform.YOUTUBE:
@@ -116,17 +116,17 @@ export const LatestWorkTable: React.FC<LatestWorkTableProps> = ({
     }
   }, []);
 
-  const deleteWork = async(id: number) =>{
+  const deleteWork = async (id: number) => {
     setIsLoading(true);
-    try{
+    try {
       await Promise.resolve(onDeleteWork(id));
-    }catch(error){
-      console.log(error);
-    }finally{
+    } catch (error) {
+      console.error(error);
+    } finally {
       setSelectedWorkId(null);
       setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="bg-[#101828] rounded-xl border border-[#1D2939] overflow-hidden font-michroma">
@@ -149,7 +149,9 @@ export const LatestWorkTable: React.FC<LatestWorkTableProps> = ({
                   index % 2 === 0 ? "bg-[#1C2433]" : "bg-[#1A1F2E]"
                 }`}
               >
-                <td className="p-4 text-white font-medium max-w-50">{work.title}</td>
+                <td className="p-4 text-white font-medium max-w-50">
+                  {work.title}
+                </td>
                 <td className="p-4 text-center text-white max-w-40">
                   {work.description.slice(0, 10)}...
                 </td>
@@ -164,13 +166,7 @@ export const LatestWorkTable: React.FC<LatestWorkTableProps> = ({
                 <td className="p-4">
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={() =>
-                        showUpdateToast(
-                          "Updated",
-                          work.title,
-                          work.id.toString()
-                        )
-                      }
+                      onClick={() => toast.success("Updated")}
                       className="cursor-pointer p-2 text-white bg-foreground hover:bg-purple-700 rounded-lg transition-colors"
                     >
                       <Edit size={16} />
@@ -180,14 +176,9 @@ export const LatestWorkTable: React.FC<LatestWorkTableProps> = ({
                         setSelectedWorkId(work.id);
                         setDeletePopUp(true);
                       }}
-                        className="cursor-pointer p-2 bg-black rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
+                      className="cursor-pointer p-2 bg-black rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                     >
-                      <Image
-                        src={"/image/tablevector/bin.png"}
-                        alt="Delete"
-                        width={16}
-                        height={16}
-                      />
+                      <Trash size={16} className="text-red-500" />
                     </button>
                   </div>
                 </td>
@@ -271,22 +262,19 @@ export const LatestWorkTable: React.FC<LatestWorkTableProps> = ({
           </div>
         ))}
       </div>
-      {
-        deletePopUp &&
-        <ConfirmPopUp 
-          title={"Delete Work?"} 
-          message={"Are you sure you want to delete this Work?"} 
-          onCancel={()=>setDeletePopUp(false)} 
-          onConfirm={()=>{
+      {deletePopUp && (
+        <ConfirmPopUp
+          title={"Delete Work?"}
+          message={"Are you sure you want to delete this Work?"}
+          onCancel={() => setDeletePopUp(false)}
+          onConfirm={() => {
             setDeletePopUp(false);
             deleteWork(selectedWorkId!);
           }}
         />
-      }
+      )}
 
-      {
-        isLoading && <LoadingEffect/>
-      }
+      {isLoading && <LoadingEffect />}
     </div>
   );
 };

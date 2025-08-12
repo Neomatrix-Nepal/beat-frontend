@@ -4,10 +4,9 @@ import { X } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 import { FaCheckCircle } from "react-icons/fa";
-
 import { updateCustomBeatStatus } from "@/src/app/actions/customs-beats-actions";
-
 import { CustomBeat } from "@/src/types";
+import { useSession } from "next-auth/react";
 
 interface BeatsDialogDetailsProps {
   onClose: () => void;
@@ -19,6 +18,7 @@ export default function BeatsDialogDetails({
   beat,
 }: BeatsDialogDetailsProps) {
   if (!beat) return null;
+  const { data: session } = useSession();
 
   const totalPrice = beat.packages
     .reduce((sum, pkg) => {
@@ -139,11 +139,11 @@ export default function BeatsDialogDetails({
       <div>
         <button
           onClick={() => {
-            updateCustomBeatStatus(beat.id, "completed", (success) => {
-              if (success) {
-                onClose();
-              }
-            });
+            updateCustomBeatStatus(
+              beat.id,
+              "completed",
+              session?.user?.tokens?.accessToken as string
+            );
           }}
           className="bg-[#00e08f] hover:bg-[#00c97e] text-black px-5 py-2 rounded-md font-semibold text-sm flex items-center gap-2"
         >

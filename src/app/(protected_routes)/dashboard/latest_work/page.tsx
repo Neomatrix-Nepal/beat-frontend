@@ -1,10 +1,9 @@
-// page.tsx
 "use client";
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import {
+  deleteLatestWork,
+  fetchLatestWorks,
+} from "@/src/app/actions/work-action";
 import { LatestWorkTable } from "@/src/components/table/LatestWorkTable";
-import { Upload } from "lucide-react";
-import { RiDeleteBin6Line } from "react-icons/ri";
-import { useRouter } from "next/navigation";
 import {
   Pagination,
   PaginationContent,
@@ -12,13 +11,12 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/src/components/ui/pagination";
-import {
-  fetchLatestWorks,
-  deleteLatestWork,
-  deleteMultipleLatestWorks,
-} from "@/src/app/actions/work-action"; // Import new functions
-import { showDeleteToast } from "@/src/lib/util"; // Import toast utility
+import { showDeleteToast } from "@/src/lib/util";
 import { Platform } from "@/src/types/latest-work";
+import { Upload } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 interface Image {
   id: number;
@@ -61,6 +59,7 @@ const LatestWorkManager: React.FC = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { data: session } = useSession();
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -111,7 +110,10 @@ const LatestWorkManager: React.FC = () => {
 
       if (confirm(`Are you sure you want to delete "${work.title}"?`)) {
         try {
-          const result = await deleteLatestWork(id);
+          const result = await deleteLatestWork(
+            id,
+            session?.user?.tokens?.accessToken as string
+          );
           if (result.success) {
             setWorks((prevWorks) => prevWorks.filter((work) => work.id !== id));
             showDeleteToast("Deleted", work.title, id.toString());
@@ -125,34 +127,6 @@ const LatestWorkManager: React.FC = () => {
     },
     [works]
   );
-
-  const handleBatchDelete = useCallback(async () => {
-    const selectedWorks = works.filter((work) => work.selected);
-    const selectedIds = selectedWorks.map((work) => work.id);
-
-    if (selectedIds.length === 0) return;
-
-    if (
-      confirm(
-        `Are you sure you want to delete ${selectedIds.length} selected work(s)?`
-      )
-    ) {
-      try {
-        const result = await deleteMultipleLatestWorks(selectedIds);
-        if (result.success) {
-          setWorks((prevWorks) => prevWorks.filter((work) => !work.selected));
-          setSelectAll(false);
-          selectedWorks.forEach((work) => {
-            showDeleteToast("Deleted", work.title, work.id.toString());
-          });
-        } else {
-          setError(result.error);
-        }
-      } catch (err: any) {
-        setError(err.message || "Failed to delete selected works");
-      }
-    }
-  }, [works]);
 
   const goToPreviousPage = useCallback(() => {
     setCurrentPage((prev) => Math.max(prev - 1, 1));
@@ -175,23 +149,12 @@ const LatestWorkManager: React.FC = () => {
         {loading && <p className="text-white font-michroma">Loading...</p>}
         {error && <p className="text-red-500 font-michroma">{error}</p>}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
-          <div className="flex flex-wrap items-center gap-2">
-            {selectedCount > 0 && ( // Changed to show button when at least one is selected
-              <button
-                onClick={handleBatchDelete}
-                className="flex items-center gap-2 font-michroma text-white px-5 py-3 text-sm font-semibold rounded-lg bg-custom transition-transform transform hover:scale-105"
-              >
-                <RiDeleteBin6Line size={20} />
-                Delete Selected
-              </button>
-            )}
-          </div>
           <button
             onClick={() => router.push("/dashboard/latest_work/add_work")}
             className="flex items-center gap-2 cursor-pointer py-3 px-5 text-sm font-semibold rounded-lg bg-purple-700 text-white hover:bg-purple-800 transition-transform transform hover:scale-105 appearance-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50"
           >
             <Upload size={20} />
-              <span className="font-michroma font-semibold">Upload</span>
+            <span className="font-michroma font-semibold">Upload</span>
           </button>
         </div>
         <div className="overflow-x-auto rounded-lg border border-slate-700">

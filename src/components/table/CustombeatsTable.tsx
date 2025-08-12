@@ -1,16 +1,17 @@
-"use state";
+"use client";
 import { updateCustomBeatStatus } from "@/src/app/actions/customs-beats-actions";
 import { CustomBeat } from "@/src/types";
-import Image from "next/image";
+import { Check, Trash2 } from "lucide-react";
+import { useSession } from "next-auth/react";
 import React, { useState } from "react";
 import { IoMdEye } from "react-icons/io";
 import { showDeleteToast } from "../../lib/util";
 import BeatsDialogDetails from "../dialog/beatsDialog";
-import PopupWrapper from "../shared/PopupWrapper";
 import LoadingEffect from "../loadingEffect";
+import PopupWrapper from "../shared/PopupWrapper";
 import ConfirmPopUp from "../ui/confirmPopUp";
 
-interface CustombeatsTableProps {
+interface CustomBeatsTableProps {
   entries: CustomBeat[];
   selectAll: boolean;
   onSelectAll: () => void;
@@ -21,10 +22,10 @@ interface CustombeatsTableProps {
 const statusStyles = {
   pending: "bg-yellow-700/20 text-yellow-400 border-yellow-700/30",
   sent: "bg-orange-800/20 text-orange-400 border-orange-800/30",
-  completed: "bg-green-800/20 text-green-400 border-green-800/30"
+  completed: "bg-green-800/20 text-green-400 border-green-800/30",
 };
 
-export const CustombeatsTable: React.FC<CustombeatsTableProps> = ({
+export const CustombeatsTable: React.FC<CustomBeatsTableProps> = ({
   entries,
   onSelectEntry,
   onDeleteEntry,
@@ -33,7 +34,8 @@ export const CustombeatsTable: React.FC<CustombeatsTableProps> = ({
   const [selectedEntry, setSelectedEntry] = useState<CustomBeat | null>(null);
   const [deletePopUp, setDeletePopUp] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [selectedEntryId, setSelectedEntryId] = useState<string|null>();
+  const [selectedEntryId, setSelectedEntryId] = useState<string | null>();
+  const { data: session } = useSession();
 
   const handleViewClick = (entry: CustomBeat) => {
     setSelectedEntry(entry);
@@ -45,17 +47,17 @@ export const CustombeatsTable: React.FC<CustombeatsTableProps> = ({
     setSelectedEntry(null);
   };
 
-  const deleteBeat = async(id: string) =>{
+  const deleteBeat = async (id: string) => {
     setIsLoading(true);
-    try{
+    try {
       await Promise.resolve(onDeleteEntry(id));
-    }catch(error){
-      console.log(error);
-    }finally{
+    } catch (error) {
+      console.error(error);
+    } finally {
       setSelectedEntryId(null);
       setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="bg-[#101828] rounded-xl border border-[#1D2939] overflow-hidden font-michroma">
@@ -79,7 +81,9 @@ export const CustombeatsTable: React.FC<CustombeatsTableProps> = ({
                   index % 2 === 0 ? "bg-[#1C2433]" : "bg-[#1A1F2E]"
                 }`}
               >
-                <td className="p-4 text-white font-medium max-w-50">{entry.name}</td>
+                <td className="p-4 text-white font-medium max-w-50">
+                  {entry.name}
+                </td>
                 <td className="p-4 text-blue-400">
                   <a
                     href={entry.referenceTrack}
@@ -115,26 +119,12 @@ export const CustombeatsTable: React.FC<CustombeatsTableProps> = ({
                         updateCustomBeatStatus(
                           entry.id,
                           "completed",
-                          (success) => {
-                            if (success) {
-                              // showUpdateToast(
-                              //   "Custom beat",
-                              //   "status updated",
-                              //   "success"
-                              // );
-                            }
-                          }
+                          session?.user.tokens.accessToken as string
                         );
                       }}
                       className="cursor-pointer p-2 bg-foreground hover:bg-purple-700 rounded-lg transition-colors"
                     >
-                      <Image
-                        src={"/image/tablevector/whitecheck.png"}
-                        alt="check"
-                        width={14}
-                        height={14}
-                        className="m-0.5 my-1"
-                      />
+                      <Check size={16} className="text-white" />
                     </button>
                     <button
                       onClick={() => {
@@ -143,12 +133,7 @@ export const CustombeatsTable: React.FC<CustombeatsTableProps> = ({
                       }}
                       className="cursor-pointer p-2 text-red-400 bg-foreground hover:bg-purple-600/20 rounded-lg transition-colors"
                     >
-                      <Image
-                        src={"/image/tablevector/bin.png"}
-                        alt="Delete"
-                        width={16}
-                        height={16}
-                      />
+                      <Trash2 size={16} className="text-red-500" />
                     </button>
                   </div>
                 </td>
@@ -209,25 +194,16 @@ export const CustombeatsTable: React.FC<CustombeatsTableProps> = ({
                 </button>
                 <button
                   onClick={() => {
-                    updateCustomBeatStatus(entry.id, "completed", (success) => {
-                      if (success) {
-                        // showUpdateToast(
-                        //   "Custom beat",
-                        //   "status updated",
-                        //   "success"
-                        // );
-                      }
-                    });
+                    updateCustomBeatStatus(
+                      entry.id,
+                      "completed",
+                      session?.user.tokens.accessToken as string
+                    );
                   }}
                   className="p-2 rounded-lg text-green-400 hover:bg-green-600/20 transition-colors"
                   title="Mark Sent"
                 >
-                  <Image
-                    src={"/image/tablevector/whitecheck.png"}
-                    alt="Check"
-                    width={16}
-                    height={16}
-                  />
+                  <Check size={16} className="text-white" />
                 </button>
                 <button
                   onClick={() => {
@@ -237,12 +213,7 @@ export const CustombeatsTable: React.FC<CustombeatsTableProps> = ({
                   className="p-2 rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                   title="Delete"
                 >
-                  <Image
-                    src={"/image/tablevector/bin.png"}
-                    alt="Delete"
-                    width={16}
-                    height={16}
-                  />
+                  <Trash2 size={16} className="text-red-500" />
                 </button>
               </div>
             </div>
@@ -253,22 +224,19 @@ export const CustombeatsTable: React.FC<CustombeatsTableProps> = ({
         <BeatsDialogDetails onClose={handleClosePopup} beat={selectedEntry} />
       </PopupWrapper>
 
-      {
-        deletePopUp &&
-        <ConfirmPopUp 
-          title={"Delete Custom beat?"} 
-          message={"Are you sure you want to delete this custom beat?"} 
-          onCancel={()=>setDeletePopUp(false)} 
-          onConfirm={()=>{
+      {deletePopUp && (
+        <ConfirmPopUp
+          title={"Delete Custom beat?"}
+          message={"Are you sure you want to delete this custom beat?"}
+          onCancel={() => setDeletePopUp(false)}
+          onConfirm={() => {
             setDeletePopUp(false);
             deleteBeat(selectedEntryId!);
           }}
         />
-      }
+      )}
 
-      {
-        isLoading && <LoadingEffect/>
-      }
+      {isLoading && <LoadingEffect />}
     </div>
   );
 };

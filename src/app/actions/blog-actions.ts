@@ -3,7 +3,8 @@ import { BlogFormData, FetchBlogsResponse } from "@/src/types";
 
 export const createBlog = async (
   formData: BlogFormData,
-  imageFile: File | null
+  imageFile: File | null,
+  token: string
 ) => {
   try {
     const formDataToSend = new FormData();
@@ -17,6 +18,7 @@ export const createBlog = async (
 
     const response = await api.post("/blogs", formDataToSend, {
       headers: {
+        Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",
       },
     });
@@ -49,12 +51,11 @@ export const fetchBlogs = async (
   }
 };
 
-// actions.ts
-
 export const updateBlog = async (
   id: number,
   formData: BlogFormData,
-  imageFile: File | null = null
+  imageFile: File | null = null,
+  token: string
 ) => {
   try {
     const formDataToSend = new FormData();
@@ -68,6 +69,7 @@ export const updateBlog = async (
 
     const response = await api.put(`/blogs/${id}`, formDataToSend, {
       headers: {
+        Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",
       },
     });
@@ -85,9 +87,13 @@ export const updateBlog = async (
   }
 };
 
-export const deleteBlog = async (id: number) => {
+export const deleteBlog = async (id: number, token: string) => {
   try {
-    await api.delete(`/blogs/${id}`);
+    await api.delete(`/blogs/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return {
       success: true,
     };

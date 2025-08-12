@@ -14,6 +14,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { deleteMixingOrder } from "./action";
 import toast from "react-hot-toast";
+import { useSession } from "next-auth/react";
 
 const BUTTON_CLASSES =
   "flex items-center gap-2 text-white px-5 py-3 font-michroma text-sm font-semibold rounded-lg bg-custom transition-transform transform hover:scale-105";
@@ -26,8 +27,8 @@ const MixingProPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const itemsPerPage = 10;
+  const { data: session } = useSession();
 
-  // Fetch mixing orders from API
   const fetchMixingOrders = useCallback(async (page: number) => {
     setIsLoading(true);
     setError(null);
@@ -38,9 +39,7 @@ const MixingProPage = () => {
       let data: MixingProEntry[] = [];
       let total = 0;
 
-      // Handle different API response structures
       if (Array.isArray(response.data)) {
-        // Flat array response
         data = response.data;
         total = response.data.length; // Approximate total; adjust if API provides total
       } else if (response.data?.data && Array.isArray(response.data.data)) {
@@ -99,7 +98,7 @@ const MixingProPage = () => {
 
   const handleDeleteEntry = async (id: number) => {
     try {
-      await deleteMixingOrder(id);
+      await deleteMixingOrder(id, session?.user.tokens.accessToken as string);
       setUploads((prev) => prev.filter((entry) => entry.id !== id));
       toast.success("Mixing order deleted successfully");
     } catch (err) {

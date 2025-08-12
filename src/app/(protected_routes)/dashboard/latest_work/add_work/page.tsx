@@ -11,6 +11,8 @@ import { FaUpload } from "react-icons/fa6";
 
 import { createLatestWork } from "@/src/app/actions/work-action";
 import { Platform } from "@/src/types/latest-work";
+import toast from "react-hot-toast";
+import { useSession } from "next-auth/react";
 
 export interface FormData {
   title: string;
@@ -23,6 +25,7 @@ const AddWorkForm: React.FC = () => {
   const [coverImage, setCoverImage] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const platformOptions = Object.values(Platform);
+  const { data: session } = useSession();
 
   const {
     register,
@@ -58,16 +61,19 @@ const AddWorkForm: React.FC = () => {
   };
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
-    const result = await createLatestWork(data, selectedFile);
+    const result = await createLatestWork(
+      data,
+      selectedFile,
+      session?.user?.tokens?.accessToken as string
+    );
 
     if (result.success) {
-      console.log("Successfully created latest work:", result.data);
+      toast.success("Successfully created latest work:");
       reset();
-      setCoverImage(null); // reset to default logo
+      setCoverImage(null);
       setSelectedFile(null);
     } else {
       console.error("Error:", result.error);
-      // You might want to show an error message to the user here
     }
   };
 

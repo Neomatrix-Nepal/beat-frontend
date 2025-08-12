@@ -9,7 +9,8 @@ export interface FormData {
 
 export const createLatestWork = async (
   formData: FormData,
-  imageFile: File | null
+  imageFile: File | null,
+  token: string
 ) => {
   try {
     const formDataToSend = new FormData();
@@ -24,6 +25,7 @@ export const createLatestWork = async (
 
     const response = await api.post("/latest-works", formDataToSend, {
       headers: {
+        Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",
       },
     });
@@ -58,29 +60,13 @@ export const fetchLatestWorks = async (
   }
 };
 
-// work-action.ts
-export const deleteMultipleLatestWorks = async (ids: number[]) => {
+export const deleteLatestWork = async (id: number, token: string) => {
   try {
-    const deletePromises = ids.map((id) => api.delete(`/latest-works/${id}`));
-    await Promise.all(deletePromises);
-    return {
-      success: true,
-    };
-  } catch (error: any) {
-    console.error("Failed to delete latest works:", error);
-    return {
-      success: false,
-      error:
-        error.response?.data?.message ||
-        "Failed to delete multiple latest works",
-    };
-  }
-};
-
-// work-action.ts
-export const deleteLatestWork = async (id: number) => {
-  try {
-    const response = await api.delete(`/latest-works/${id}`);
+    const response = await api.delete(`/latest-works/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return {
       success: true,
       data: response.data,

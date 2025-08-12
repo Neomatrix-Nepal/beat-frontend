@@ -14,22 +14,23 @@ import {
 import { CustombeatsTable } from "@/src/components/table/CustombeatsTable";
 import {
   deleteCustomBeat,
-  deleteMultipleCustomBeats,
   fetchCustomBeats,
 } from "@/src/app/actions/customs-beats-actions";
 import { CustomBeat } from "@/src/types/custom-beats";
+import { useSession } from "next-auth/react";
 
 const BUTTON_CLASSES =
   "flex items-center gap-2 text-white font-michroma px-5 py-3 text-sm font-semibold rounded-lg bg-custom transition-transform transform hover:scale-105";
 
 const CustomBeatsPage = () => {
-  const router = useRouter();
   const itemsPerPage = 10;
   const [beats, setBeats] = useState<CustomBeat[]>([]);
   const [selectAll, setSelectAll] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+
+  const { data: session } = useSession();
 
   const fetchBeatsCallback = useCallback((response: any) => {
     setBeats(
@@ -68,18 +69,7 @@ const CustomBeatsPage = () => {
     // );
   };
 
-  const deleteSelectedEntries = () => {
-    const selectedIds = beats
-      .filter((entry) => entry.selected)
-      .map((entry) => entry.id);
-
-    deleteMultipleCustomBeats(selectedIds, (success) => {
-      if (success) {
-        fetchCustomBeats(currentPage, itemsPerPage, fetchBeatsCallback);
-        setSelectAll(false);
-      }
-    });
-  };
+  const deleteSelectedEntries = () => {};
 
   const goToPreviousPage = () => {
     setCurrentPage((prev) => Math.max(prev - 1, 1));
@@ -122,13 +112,10 @@ const CustomBeatsPage = () => {
               onSelectAll={toggleSelectAll}
               onSelectEntry={toggleSelectEntry}
               onDeleteEntry={(id: string) => {
-                deleteCustomBeat(Number(id), () => {
-                  fetchCustomBeats(
-                    currentPage,
-                    itemsPerPage,
-                    fetchBeatsCallback
-                  );
-                });
+                deleteCustomBeat(
+                  Number(id),
+                  session?.user.tokens.accessToken as string
+                );
               }}
             />
           )}

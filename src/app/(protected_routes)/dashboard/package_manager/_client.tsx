@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { Package } from "@/src/types";
 import { updatePackage, uploadPackage } from "./action";
 import toast from "react-hot-toast";
+import { useSession } from "next-auth/react";
 
 const defaultFormData = {
   id: 0,
@@ -19,7 +20,7 @@ export default function _client({
 }: {
   packages: Package[];
 }) {
-  const router = useRouter();
+  const { data: session } = useSession();
   const [packages, setPackages] = useState<Package[]>(packagesData);
   const [form, setForm] = useState(defaultFormData);
   const [loading, setLoading] = useState(false);
@@ -69,7 +70,11 @@ export default function _client({
 
     if (editing) {
       const { id, ...rest } = pkgData;
-      const response = await updatePackage(rest as Package, form.id.toString());
+      const response = await updatePackage(
+        rest as Package,
+        form.id.toString(),
+        session?.user.tokens.accessToken as string
+      );
       if (response.id) {
         setPackages((prev) =>
           prev.map((p) => (p.id === form.id ? pkgData : p))
@@ -81,7 +86,10 @@ export default function _client({
       }
     } else {
       const { id, ...rest } = pkgData;
-      const response = await uploadPackage(rest as Package);
+      const response = await uploadPackage(
+        rest as Package,
+        session?.user.tokens.accessToken as string
+      );
 
       if (response.id) {
         setPackages((prev) => [pkgData, ...prev]);

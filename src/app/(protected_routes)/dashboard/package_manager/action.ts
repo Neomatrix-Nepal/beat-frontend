@@ -15,9 +15,14 @@ export const fetchPackages = async () => {
   }
 };
 
-export const uploadPackage = async (dto: Package) => {
+export const uploadPackage = async (dto: Package, token: string) => {
   try {
-    const response = await api.post("/packages", dto);
+    const response = await api.post("/packages", dto, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
     const data = response.data;
 
     return data;
@@ -29,9 +34,18 @@ export const uploadPackage = async (dto: Package) => {
   }
 };
 
-export const updatePackage = async (dto: Package, id: string) => {
+export const updatePackage = async (
+  dto: Package,
+  id: string,
+  token: string
+) => {
   try {
-    const response = await api.patch("/packages/" + id, dto);
+    const response = await api.patch("/packages/" + id, dto, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
     const data = response.data;
 
     return data;
