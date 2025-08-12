@@ -20,7 +20,7 @@ export const authOptions: NextAuthOptions = {
           password: credentials.password,
         });
 
-        if (!res || !res?.user) return null;
+        if (!res || !res?.user || res?.user?.roles !== "admin") return null;
 
         return {
           id: res.user.id,

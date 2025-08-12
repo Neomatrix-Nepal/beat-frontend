@@ -1,13 +1,12 @@
 "use client";
-import React, { useState } from "react";
 import { Check, Trash } from "lucide-react";
+import React, { useState } from "react";
 import { IoMdEye } from "react-icons/io";
-import Image from "next/image";
-import PopupWrapper from "../shared/PopupWrapper";
 import MixingProSubmissionDetails, {
   MixingProEntry,
 } from "../dialog/mixingProDialog";
 import LoadingEffect from "../loadingEffect";
+import PopupWrapper from "../shared/PopupWrapper";
 import ConfirmPopUp from "../ui/confirmPopUp";
 
 interface MixingProTableProps {
@@ -131,12 +130,7 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
                       }}
                       className="cursor-pointer p-2 bg-black rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                     >
-                      <Image
-                        src={"/image/tablevector/bin.png"}
-                        alt="Delete"
-                        width={16}
-                        height={16}
-                      />
+                      <Trash size={16} className="text-red-500" />
                     </button>
                   </div>
                 </td>
@@ -146,7 +140,6 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
         </table>
       </div>
 
-      {/* Mobile Cards */}
       <div className="lg:hidden space-y-4 p-4">
         {entries.map((entry) => (
           <div

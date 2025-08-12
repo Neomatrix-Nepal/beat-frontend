@@ -2,13 +2,12 @@
 import PopupWrapper from "@/src/components/shared/PopupWrapper";
 import { formatDateTime } from "@/src/lib/utils";
 import { Order } from "@/src/types";
-import { Check, Eye } from "lucide-react";
-import Image from "next/image";
+import { Check, Eye, Trash } from "lucide-react";
 import React, { useState } from "react";
 import { IoMdEye } from "react-icons/io";
 import CustomerOrderDetails from "../dialog/customerOrderDialog";
-import ConfirmPopUp from "../ui/confirmPopUp";
 import LoadingEffect from "../loadingEffect";
+import ConfirmPopUp from "../ui/confirmPopUp";
 
 interface CustomerOrderTableProps {
   entries: Order[];
@@ -118,12 +117,7 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
                       }}
                       className="cursor-pointer p-2 bg-black rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                     >
-                      <Image
-                        src={"/image/tablevector/bin.png"}
-                        alt="Delete"
-                        width={16}
-                        height={16}
-                      />
+                      <Trash size={16} className="text-red-500" />
                     </button>
                   </div>
                 </td>
@@ -195,12 +189,7 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
                   className="cursor-pointer p-2 bg-black rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                   title="Delete"
                 >
-                  <Image
-                    src={"/image/tablevector/bin.png"}
-                    alt="Delete"
-                    width={16}
-                    height={16}
-                  />
+                  <Trash size={16} className="text-red-500" />
                 </button>
               </div>
             </div>

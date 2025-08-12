@@ -4,10 +4,9 @@ import { Commission } from "@/src/types";
 import { Check, Eye, Trash } from "lucide-react";
 import React, { useState } from "react";
 import { IoMdEye } from "react-icons/io";
-import PopupWrapper from "../shared/PopupWrapper";
 import CommissionDetails from "../dialog/commissionDialog";
-import Image from "next/image";
 import LoadingEffect from "../loadingEffect";
+import PopupWrapper from "../shared/PopupWrapper";
 import ConfirmPopUp from "../ui/confirmPopUp";
 
 interface CommissionTableProps {
@@ -120,12 +119,7 @@ export const CommissionTable: React.FC<CommissionTableProps> = ({
                       }}
                       className="cursor-pointer p-2 bg-black rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                     >
-                      <Image
-                        src={"/image/tablevector/bin.png"}
-                        alt="Delete"
-                        width={16}
-                        height={16}
-                      />
+                      <Trash size={16} className="text-red-500" />
                     </button>
                   </div>
                 </td>
@@ -197,12 +191,7 @@ export const CommissionTable: React.FC<CommissionTableProps> = ({
                   className="cursor-pointer p-2 bg-black rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                   title="Delete"
                 >
-                  <Image
-                    src={"/image/tablevector/bin.png"}
-                    alt="Delete"
-                    width={16}
-                    height={16}
-                  />
+                  <Trash size={16} className="text-red-500" />
                 </button>
               </div>
             </div>

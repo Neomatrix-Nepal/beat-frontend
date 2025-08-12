@@ -1,10 +1,8 @@
 "use client";
 
+import { Blend, X } from "lucide-react";
 import React from "react";
-import { X } from "lucide-react";
 import { FaCheckCircle } from "react-icons/fa";
-
-import Image from "next/image";
 
 export interface MixingProEntry {
   id: number;
@@ -61,13 +59,7 @@ export default function MixingProSubmissionDetails({
       {/* Header */}
       <div className="flex justify-between items-center">
         <h2 className="text-lg md:text-xl font-semibold flex items-center gap-2">
-          <Image
-            src={"/image/verctor/icon.png"}
-            alt="icon"
-            className="w-5 h-5"
-            width={200}
-            height={200}
-          />
+          <Blend className="w-5 h-5" />
           Mixing Pro Submission Details
         </h2>
         <button

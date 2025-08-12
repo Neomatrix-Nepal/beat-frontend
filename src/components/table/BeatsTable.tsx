@@ -110,12 +110,7 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
                         }}
                         className="cursor-pointer p-2 bg-black rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                       >
-                        <Image
-                          src={"/image/tablevector/bin.png"}
-                          alt="Delete"
-                          width={16}
-                          height={16}
-                        />
+                        <Trash size={16} />
                       </button>
                     </div>
                   </td>

@@ -1,9 +1,7 @@
 "use client";
-import React, { useState } from "react";
-import { Edit, Trash } from "lucide-react";
-import { showDeleteToast, showUpdateToast } from "../../lib/util";
-import Image from "next/image";
 import { Product } from "@/src/types";
+import { Edit, Trash } from "lucide-react";
+import React, { useState } from "react";
 import LoadingEffect from "../loadingEffect";
 import ConfirmPopUp from "../ui/confirmPopUp";
 
@@ -93,12 +91,7 @@ export const DripsTable: React.FC<DripsTableProps> = ({
                       }}
                       className="cursor-pointer p-2 bg-foreground hover:bg-purple-600/20 rounded-lg transition-colors"
                     >
-                      <Image
-                        src={"/image/tablevector/bin.png"}
-                        alt="Delete"
-                        width={16}
-                        height={16}
-                      />
+                      <Trash size={16} className="text-red-500" />
                     </button>
                   </div>
                 </td>
