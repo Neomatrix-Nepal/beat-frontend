@@ -12,7 +12,7 @@ export default async function Commission() {
       await getAllCommissions(session?.user.tokens.accessToken as string)
     ).data;
   } catch (error) {
-    console.error("Failed to fetch orders:", error);
+    console.error("Failed to fetch commission:", error);
   }
   return <CommissionClient commissions={commissions} />;
 }

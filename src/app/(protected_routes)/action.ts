@@ -3,14 +3,11 @@ import { FetchBarGraphParams } from "@/src/types/stats";
 import { getServerSession } from "next-auth";
 
 export const getStatGridData = async (token: string) => {
-  const response = await api.get(
-    "https://bsvzmwz3-8000.inc1.devtunnels.ms/dashboard/stats",
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const response = await api.get("/dashboard/stats", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   return response.data;
 };
 
@@ -23,7 +20,7 @@ export const getBarGraphData = async (
   }: FetchBarGraphParams = {}
 ) => {
   const response = await api.get(
-    `https://bsvzmwz3-8000.inc1.devtunnels.ms/dashboard/sales-performance?productType=${type}&year=${year}&month=${month}`,
+    `/dashboard/sales-performance?productType=${type}&year=${year}&month=${month}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -34,14 +31,11 @@ export const getBarGraphData = async (
 };
 
 export const getPieChartData = async (token: string) => {
-  const response = await api.get(
-    "https://bsvzmwz3-8000.inc1.devtunnels.ms/dashboard/earning-breakdown",
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const response = await api.get("/dashboard/earning-breakdown", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   return response.data;
 };
 
@@ -60,7 +54,9 @@ export async function GET(req: Request) {
     !monthParam ||
     !yearParam
   ) {
-    return new Response(JSON.stringify({ error: "Invalid parameters" }), { status: 400 });
+    return new Response(JSON.stringify({ error: "Invalid parameters" }), {
+      status: 400,
+    });
   }
 
   const type = typeParam as "beats" | "drip";
@@ -69,7 +65,10 @@ export async function GET(req: Request) {
 
   // If parsing failed
   if (isNaN(month) || isNaN(year)) {
-    return new Response(JSON.stringify({ error: "Month and year must be numbers" }), { status: 400 });
+    return new Response(
+      JSON.stringify({ error: "Month and year must be numbers" }),
+      { status: 400 }
+    );
   }
 
   const data = await getBarGraphData(session!.user.tokens.accessToken, {
@@ -80,5 +79,3 @@ export async function GET(req: Request) {
 
   return Response.json(data);
 }
-
-

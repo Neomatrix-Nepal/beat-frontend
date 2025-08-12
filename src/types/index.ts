@@ -10,3 +10,4 @@ export * from "./package.type";
 export * from "./genres.type";
 export * from "./coupon.type";
 export * from "./payment.type";
+export * from "./dashboard.type";

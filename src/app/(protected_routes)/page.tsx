@@ -13,9 +13,15 @@ export default async function Dashboard() {
   let pieChartData = [];
 
   try {
-    gridData = await getStatGridData(session?.user?.tokens.accessToken!);
-    barGraphData = await getBarGraphData(session?.user?.tokens.accessToken!)
-    pieChartData = await getPieChartData(session?.user?.tokens.accessToken!);
+    gridData = await getStatGridData(
+      session?.user?.tokens.accessToken as string
+    );
+    barGraphData = await getBarGraphData(
+      session?.user?.tokens.accessToken as string
+    );
+    pieChartData = await getPieChartData(
+      session?.user?.tokens.accessToken as string
+    );
   } catch (error) {
     console.error("Failed to fetch dashboard info: ", error);
   }
