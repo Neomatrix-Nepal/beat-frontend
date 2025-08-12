@@ -38,7 +38,7 @@ export function SalesChart({
     month: currentMonth,
     year: currentYear,
   });
-  const [barGraphData, setBarGraphData] = useState<BarGraphData>(initialData);
+  const [barGraphData, setBarGraphData] = useState<BarGraphData>(initialData ?? []);
   const [animationKey,setAnimationKey] = useState(0);
   const labelsToShow = baseLabels.slice(0,barGraphData.length);
 

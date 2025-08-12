@@ -37,7 +37,7 @@ export interface Blog {
   title: string;
   date: string;
   content: string;
-  thumbnailUrl: string;
+  thumbnailUrl: string | File;
 }
 
 export interface FetchBlogsResponse {
@@ -54,7 +54,7 @@ export type AddBlogFormType = {
   title: string;
   date: string;
   content: string;
-  image: File | null;
+  thumbnailUrl: File | null;
 };
 
 export type BlogFormErrorsType = {

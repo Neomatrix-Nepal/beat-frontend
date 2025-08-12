@@ -1,128 +1,66 @@
 "use client";
 import Image from "next/image";
 
-import { NewsRoomProps, Propsdata } from "@/src/types";
+import { Blog, BlogFormData, NewsRoomProps, Propsdata } from "@/src/types";
 import { Card, CardContent } from "./ui/card";
 import enhanceHtmlWithTailwind from "../utils/richTextStyleApply";
+import BlogForm from "./form/BlogForm";
+import { useState, useEffect } from "react";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
+export interface test {
+  news: Blog;
+  index: number;
+  editingId: number | null;
+  onEditClick: (index: number, news: Blog) => void;
+  onCancelEdit: () => void;
+  onSaveEdit: (updatedBlog: BlogFormData, imageFile: File|string) => Promise<void>;
+  onDelete: (index: number) => void;
+}
 
 export default function NewsCard({
   news,
   index,
   editingId,
-  editableTitle,
-  editableDate,
-  editableContent,
-  editableImage,
   onEditClick,
   onCancelEdit,
   onSaveEdit,
   onDelete,
-  onImageChange,
-  onTitleChange,
-  onDateChange,
-  onContentChange,
-}: Propsdata) {
+}: test) {
   const isEditing = editingId === index;
+
+  const [objectUrl, setObjectUrl] = useState<string | null>(null);
+
+  //Prevent memory leak
+  useEffect(() => {
+    if (typeof news.thumbnailUrl !== "string") {
+      const url = URL.createObjectURL(news.thumbnailUrl);
+      setObjectUrl(url);
+
+      return () => {
+        URL.revokeObjectURL(url);
+        setObjectUrl(null);
+      };
+    } else {
+      // If thumbnailUrl is a string, clear any previous object URL
+      setObjectUrl(null);
+    }
+  }, [news.thumbnailUrl]);
 
   return (
     <Card className="bg-[#1a1a2e] border-[#2d2d44] p-4">
       <CardContent className="p-0">
         {isEditing ? (
           <>
-            <div className="mb-4">
-              <label className="block text-sm font-bold text-white mb-1">
-                Title
-              </label>
-              <input
-                type="text"
-                value={editableTitle}
-                onChange={(e) => onTitleChange(e.target.value)}
-                className="w-full border border-white   rounded-lg px-3 py-2 outline-none"
-              />
-            </div>
-
-            <div className="mb-4">
-              <label className="block text-sm font-bold text-white mb-1">
-                Datesalxalmsxaksm
-              </label>
-              <input
-                type="date"
-                value={editableDate}
-                onChange={(e) => onDateChange(e.target.value)}
-                className="w-full   border-white border-2 rounded-lg px-3 py-2 outline-none"
-              />
-            </div>
-
-            <div className="mb-4">
-              <label className="block text-sm font-bold text-white mb-1">
-                Image
-              </label>
-              <label
-                htmlFor={`edit-image-upload-${index}`}
-                className="  border-dashed border-white border-2 rounded-lg h-40 flex flex-col items-center justify-center cursor-pointer transition-colors text-gray-400"
-              >
-                {editableImage ? (
-                  <Image
-                    src={`${baseUrl}/${news.img}`} // Use base URL and normalize path
-                    alt="Preview"
-                    width={200}
-                    height={150}
-                    className="max-h-full max-w-full object-contain"
-                  />
-                ) : (
-                  <>
-                    <span className="mb-2">
-                      Click to upload or drag and drop
-                    </span>
-                    <span className="text-xs text-white">
-                      PNG, JPG, GIF up to 5MB
-                    </span>
-                  </>
-                )}
-                <input
-                  id={`edit-image-upload-${index}`}
-                  type="file"
-                  accept="image/*"
-                  onChange={onImageChange}
-                  className="hidden"
-                />
-              </label>
-            </div>
-
-            <div className="mb-4 ">
-              <label className="block text-sm font-bold text-white mb-1">
-                Content
-              </label>
-              <textarea
-                value={editableContent}
-                onChange={(e) => onContentChange(e.target.value)}
-                className="w-full border border-white  rounded-lg px-3 py-2 outline-none resize-y min-h-[100px]"
-              />
-            </div>
-
-            <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 justify-end">
-              <button
-                onClick={onCancelEdit}
-                className="px-3 py-2 bg-gray-200 text-white rounded-md hover:bg-gray-300 transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => onSaveEdit(index)}
-                className="px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-500 transition-colors"
-              >
-                Save
-              </button>
-            </div>
+           <BlogForm mode="edit" initialData={news} onSubmit={onSaveEdit} onCancel={onCancelEdit}/>
           </>
         ) : (
           <>
             <div className="md:hidden flex flex-col">
               <div className="w-full mb-3">
                 <Image
-                  src={`${baseUrl}/${news.img}`} // Use base URL and normalize path
+                  src={`${baseUrl}/${news.thumbnailUrl}`} // Use base URL and normalize path
                   alt={news.title}
                   width={400}
                   height={250}
@@ -133,7 +71,7 @@ export default function NewsCard({
               <h3 className="font-bold text-white text-lg mb-2">
                 {news.title}
               </h3>
-              <p className="text-white mb-4">{news.des}efwef</p>
+              <p className="text-white mb-4">{news.content}efwef</p>
               <div className="flex space-x-2 w-full">
                 <button
                   onClick={() => onEditClick(index, news)}
@@ -152,13 +90,24 @@ export default function NewsCard({
 
             <div className="hidden md:flex items-start gap-4 h-[200px]">
               <div className="w-1/3 h-full">
-                <Image
-                  src={"/image/cat.png"}
-                  alt={news.title}
-                  width={200}
-                  height={150}
-                  className="rounded-lg object-cover w-full h-full"
-                />
+                {typeof news.thumbnailUrl === "string" ? (
+                    <Image
+                      src={`${baseUrl}/${news.thumbnailUrl}`}
+                      alt={news.title}
+                      width={400}
+                      height={250}
+                      className="rounded-lg object-cover w-full h-full"
+                    />
+                  ) : objectUrl ? (
+                    <Image
+                      src={objectUrl}
+                      alt={news.title}
+                      width={400}
+                      height={250}
+                      className="rounded-lg object-cover w-full h-full"
+                    />
+                  ) : null
+                }
               </div>
 
               <div className="w-2/3 font-michroma flex flex-col justify-between h-full">
@@ -174,7 +123,7 @@ export default function NewsCard({
                 <div
                   className="text-white max-lines-2"
                   dangerouslySetInnerHTML={{
-                    __html: enhanceHtmlWithTailwind(news.des),
+                    __html: enhanceHtmlWithTailwind(news.content),
                   }}
                 />
 

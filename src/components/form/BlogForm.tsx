@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { AddBlogFormType, BlogFormData, BlogFormErrorsType } from "@/src/types";
+import { AddBlogFormType, Blog, BlogFormData, BlogFormErrorsType } from "@/src/types";
 import RichText from "@/src/components/ui/richText";
 import toast from "react-hot-toast";
 
@@ -14,21 +14,40 @@ type AddModeForm = {
 
 type EditModeForm = {
   mode: "edit";
-  initialData: AddBlogFormType; // must be passed
-  onSubmit: (formData: AddBlogFormType) => void;
+  initialData: Blog; // must be passed
+  onSubmit: (formData: BlogFormData, image: File|string) => Promise<void>;
   onCancel: () => void;
 };
 
 type BlogFormProps = AddModeForm | EditModeForm;
 
+const getNormalizedImageUrl = (url: string | null) => {
+  if (!url) return "";
+  if (url.startsWith("http://") || url.startsWith("https://")) return url;
+  // Make sure baseUrl has no trailing slash, url has no leading slash
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") || "http://localhost:8000";
+  return `${baseUrl}/${url.replace(/^\/+/, "")}`;
+};
+
+
 export default function BlogForm(props: BlogFormProps) {
   const [touched, setTouched] = useState(false);
-  const [blogForm, setBlogForm] = useState<AddBlogFormType>({
-    title: "",
-    date: "",
-    content: "",
-    image: null,
-  });
+  const [blogForm, setBlogForm] = useState<AddBlogFormType | Blog>(
+    props.mode === "add" ?
+        {
+          title: "",
+          date: "",
+          content: "",
+          thumbnailUrl: null,
+        } as AddBlogFormType
+    :
+        {
+          title: props.initialData.title,
+          date: props.initialData.date,
+          content: props.initialData.content,
+          thumbnailUrl: props.initialData.thumbnailUrl,
+        } as Blog
+    );
   const [errors, setErrors] = useState<BlogFormErrorsType>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -56,7 +75,7 @@ export default function BlogForm(props: BlogFormProps) {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      setBlogForm((prev) => ({ ...prev, image: file }));
+      setBlogForm((prev) => ({ ...prev, thumbnailUrl: file }));
       validateField("image", file);
     }
   };
@@ -85,7 +104,7 @@ export default function BlogForm(props: BlogFormProps) {
   };
 
   const validateForm = () => {
-    const { title, date, content, image } = blogForm;
+    const { title, date, content, thumbnailUrl } = blogForm;
     const newErrors: BlogFormErrorsType = {};
 
     if (!title.trim()) newErrors.title = "Title is required";
@@ -97,7 +116,7 @@ export default function BlogForm(props: BlogFormProps) {
 
     if (!plainTextContent.trim()) newErrors.content = "Content is required";
 
-    if (!image) newErrors.image = "Image is required";
+    if (!thumbnailUrl) newErrors.image = "Image is required";
 
     setErrors(newErrors);
     console.log(newErrors);
@@ -116,18 +135,18 @@ export default function BlogForm(props: BlogFormProps) {
     }
 
     try {
-      const { title, date, content, image } = blogForm;
+      const { title, date, content, thumbnailUrl } = blogForm;
       const formData: BlogFormData = { title, date, content };
     
-      if(!image){
+      if(!thumbnailUrl){
         showToast("Image is required", "error");
         return;
       }
 
       if(props.mode === "add"){
-        await props.onSubmit(formData, image)
+        await props.onSubmit(formData, thumbnailUrl as File)
       }else{
-
+        await props.onSubmit(formData, thumbnailUrl as File|string)
       }
 
     } catch (err) {
@@ -153,17 +172,20 @@ export default function BlogForm(props: BlogFormProps) {
     <div className="w-full h-full font-michroma p-6 flex items-center justify-center">
       <div className="bg-[#0f172b] rounded-xl border-white border-2 shadow-sm p-2 md:p-6 w-full mx-auto space-y-6">
         <div className="w-full px-4 md:px-0 flex flex-col gap-5">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-lg md:text-xl font-medium text-white">
-              Add New News
-            </h1>
-            <Link
-              href="/dashboard/blog"
-              className="cursor-pointer px-5 py-3 text-sm font-semibold rounded-lg bg-purple-700 text-white hover:bg-purple-800 transition-transform transform hover:scale-105 appearance-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50"
-            >
-              Back to Blogs
-            </Link>
-          </div>
+          {props.mode === "add" &&
+          
+            <div className="flex justify-between items-center mb-6">
+              <h1 className="text-lg md:text-xl font-medium text-white">
+                Add New News
+              </h1>
+              <Link
+                href="/dashboard/blog"
+                className="cursor-pointer px-5 py-3 text-sm font-semibold rounded-lg bg-purple-700 text-white hover:bg-purple-800 transition-transform transform hover:scale-105 appearance-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50"
+              >
+                Back to Blogs
+              </Link>
+            </div>
+          }
 
           <div>
             <label className="block text-sm md:text-base font-bold text-white mb-2">
@@ -214,9 +236,13 @@ export default function BlogForm(props: BlogFormProps) {
                 errors.image ? "border-2 border-red-500" : ""
               }`}
             >
-              {blogForm.image ? (
+              {blogForm.thumbnailUrl ? (
                 <Image
-                  src={URL.createObjectURL(blogForm.image)}
+                  src={
+                    typeof blogForm.thumbnailUrl === "string"
+                      ? getNormalizedImageUrl(blogForm.thumbnailUrl)
+                      : URL.createObjectURL(blogForm.thumbnailUrl)
+                  }
                   alt="Preview"
                   width={200}
                   height={150}
@@ -271,7 +297,7 @@ export default function BlogForm(props: BlogFormProps) {
 
           <div className="flex justify-end gap-2 items-center pt-4">
             <button
-            //   onClick={handleSubmit}
+              onClick={props.onCancel}
               className="cursor-pointer px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-700 transition-colors disabled:opacity-50"
               disabled={isSubmitting}
             >

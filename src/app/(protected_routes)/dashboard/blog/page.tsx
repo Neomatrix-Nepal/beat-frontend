@@ -7,15 +7,12 @@ import {
   fetchBlogs,
   deleteBlog,
 } from "@/src/app/actions/blog-actions";
-import { Blog } from "@/src/types";
+import { Blog, BlogFormData } from "@/src/types";
+import toast from "react-hot-toast";
 
 export default function NewsManagement() {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [editableTitle, setEditableTitle] = useState("");
-  const [editableDate, setEditableDate] = useState("");
-  const [editableContent, setEditableContent] = useState("");
-  const [editableImage, setEditableImage] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
@@ -27,6 +24,7 @@ export default function NewsManagement() {
       try {
         setLoading(true);
         const response = await fetchBlogs(page, 5);
+        console.log(response.data)
         setBlogs(response.data);
         setTotalPages(response.meta.totalPages);
         setLoading(false);
@@ -39,56 +37,46 @@ export default function NewsManagement() {
     loadBlogs();
   }, [page]);
 
-  const handleEditImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setEditableImage(URL.createObjectURL(e.target.files[0]));
-    }
-  };
-
   const handleEditClick = (id: number, blog: Blog) => {
     setEditingId(id);
-    setEditableTitle(blog.title);
-    setEditableDate(blog.date);
-    setEditableContent(blog.content);
-    setEditableImage(blog.thumbnailUrl);
   };
 
   const handleCancelEdit = () => {
     setEditingId(null);
-    setEditableTitle("");
-    setEditableDate("");
-    setEditableContent("");
-    setEditableImage("");
   };
 
-  const handleSaveEdit = async (id: number) => {
+  const handleSaveEdit = async ( updatedBlog: BlogFormData, imageFile: File|string) => {
     try {
+      const editedBlog = blogs.find((item) => item.id === editingId)
+
+      if(!editedBlog)return;  
       // Placeholder for updateBlog action (you need to implement this in actions.ts)
-      const response = await updateBlog(id, {
-        title: editableTitle,
-        date: editableDate,
-        content: editableContent,
-      });
+      const response = await updateBlog(editedBlog.id, {
+        title: updatedBlog.title,
+        date: updatedBlog.date,
+        content: updatedBlog.content,
+      }, typeof imageFile === "string" ? null : imageFile);
       if (response.success) {
         setBlogs(
           blogs.map((blog) =>
-            blog.id === id
+            blog.id === editedBlog.id
               ? {
                   ...blog,
-                  title: editableTitle,
-                  date: editableDate,
-                  content: editableContent,
+                  title: updatedBlog.title,
+                  date: updatedBlog.date,
+                  content: updatedBlog.content,
+                  thumbnailUrl: imageFile,
                 }
               : blog
           )
         );
         setEditingId(null);
-        ////toast.success("Blog updated successfully");
+        toast.success("Blog updated successfully");
       } else {
-        ////toast.error(response.error || "Failed to update blog");
+        toast.error(response.error || "Failed to update blog");
       }
     } catch (err) {
-      ////toast.error("Failed to update blog");
+      toast.error("Failed to update blog");
     }
   };
 
@@ -98,12 +86,12 @@ export default function NewsManagement() {
       const response = await deleteBlog(id);
       if (response.success) {
         setBlogs(blogs.filter((blog) => blog.id !== id));
-        ////toast.success("Blog deleted successfully");
+        toast.success("Blog deleted successfully");
       } else {
-        ////toast.error(response.error || "Failed to delete blog");
+        toast.error(response.error || "Failed to delete blog");
       }
     } catch (err) {
-      //toast.error("Failed to delete blog");
+      toast.error("Failed to delete blog");
     }
   };
 
@@ -140,26 +128,13 @@ export default function NewsManagement() {
             {blogs.map((blog) => (
               <NewsCard
                 key={blog.id}
-                news={{
-                  img: blog.thumbnailUrl,
-                  date: blog.date,
-                  title: blog.title,
-                  des: blog.content,
-                }}
-                index={blog.id}
+                news={blog}
                 editingId={editingId}
-                editableTitle={editableTitle}
-                editableDate={editableDate}
-                editableContent={editableContent}
-                editableImage={editableImage}
+                index={blog.id}
                 onEditClick={() => handleEditClick(blog.id, blog)}
                 onCancelEdit={handleCancelEdit}
-                onSaveEdit={() => handleSaveEdit(blog.id)}
+                onSaveEdit={handleSaveEdit}
                 onDelete={() => handleDelete(blog.id)}
-                onImageChange={handleEditImageChange}
-                onTitleChange={setEditableTitle}
-                onDateChange={setEditableDate}
-                onContentChange={setEditableContent}
               />
             ))}
           </div>
