@@ -15,7 +15,7 @@ const pieData = [
 
 export function EarningsChart() {
   return (
-    <Card className="bg-[#1a1a2e] border-[#2d2d44] h-full">
+    <Card className="bg-[#1a1a2e] border-[#2d2d44] h-full flex flex-col justify-between">
       <CardHeader>
         <CardTitle className="text-white">Earnings Breakdown</CardTitle>
       </CardHeader>
@@ -39,7 +39,7 @@ export function EarningsChart() {
             </PieChart>
           </ResponsiveContainer>
         </div>
-        <div className="flex justify-center gap-2 mt-4 shrink">
+        <div className="flex justify-center gap-2 mt-4 shrink flex-wrap">
           {
             pieData.map((item,index)=>{
               return(

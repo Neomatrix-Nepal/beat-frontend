@@ -68,7 +68,11 @@ const NewsPage = () => {
             {/* Display thumbnail image */}
             {blog.thumbnailUrl && (
               <Image
-                src={`${baseUrl}/${blog.thumbnailUrl.replace(/\\/g, "/")}`} // Use base URL and normalize path
+                src={
+                  typeof blog.thumbnailUrl === "string"
+                    ? `${baseUrl}/${blog.thumbnailUrl.replace(/\\/g, "/")}`
+                    : URL.createObjectURL(blog.thumbnailUrl)
+                }
                 alt={`${blog.title} thumbnail`}
                 width={800}
                 height={400}

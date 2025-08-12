@@ -1,0 +1,51 @@
+import { Download, Tag, DollarSign } from "lucide-react";
+export const statConfig = [
+  {
+    key: "totalBeatsUploaded",
+    title: "Total Beats Uploaded",
+    icon: Download,
+    iconColor: "bg-[#6c5ce7]",
+    valueColor: "text-[#6c5ce7]",
+    hasSubCount: true,
+  },
+  {
+    key: "beatsSoldThisMonth",
+    title: "Beats Sold This Month",
+    icon: Tag,
+    iconColor: "bg-[#fd79a8]",
+    valueColor: "text-[#fd79a8]",
+    hasSubCount: true,
+  },
+  {
+    key: "totalBeatsEarnings",
+    title: "Total Beats Earnings",
+    icon: DollarSign,
+    iconColor: "bg-[#fdcb6e]",
+    valueColor: "text-[#fdcb6e]",
+    hasSubCount: true,
+  },
+  {
+    key: "totalDripsAdded",
+    title: "Total Drips Added",
+    icon: Download,
+    iconColor: "bg-[#74b9ff]",
+    valueColor: "text-[#74b9ff]",
+    hasSubCount: false,
+  },
+  {
+    key: "dripsSoldThisMonth",
+    title: "Drips Sold This Month",
+    icon: Tag,
+    iconColor: "bg-[#a29bfe]",
+    valueColor: "text-[#a29bfe]",
+    hasSubCount: false,
+  },
+  {
+    key: "totalDripsEarnings",
+    title: "Total Drips Earnings",
+    icon: DollarSign,
+    iconColor: "bg-[#00b894]",
+    valueColor: "text-[#00b894]",
+    hasSubCount: false,
+  },
+];
