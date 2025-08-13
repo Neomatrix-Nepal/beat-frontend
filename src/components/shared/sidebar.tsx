@@ -17,6 +17,7 @@ import {
   Drum,
   Package,
   Blend,
+  Settings,
 } from "lucide-react";
 import Image from "next/image";
 
@@ -58,6 +59,7 @@ const sidebarItems: SidebarItem[] = [
     href: "/dashboard/studio_bookings",
   },
   { icon: Users, label: "Creators", href: "/dashboard/creators" },
+  { icon: Settings, label: "Settings", href: "/dashboard/settings" },
   { icon: Briefcase, label: "Latest Work", href: "/dashboard/latest_work" },
   { icon: Briefcase, label: "Blogs", href: "/dashboard/blog" },
 ];
