@@ -108,7 +108,9 @@ export function DashboardSidebar() {
         <nav className="p-4 font-michroma gap-2 flex flex-col">
           {sidebarItems.map((item, index) => {
             const Icon = item.icon;
-            const isActive = pathname === item.href;
+            const isActive = item.href === "/"
+              ? pathname === "/"
+              : pathname.startsWith(item.href);
 
             return (
               <Link href={item.href} key={index}>

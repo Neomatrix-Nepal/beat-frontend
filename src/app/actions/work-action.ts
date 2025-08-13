@@ -79,3 +79,41 @@ export const deleteLatestWork = async (id: number, token: string) => {
     };
   }
 };
+
+export const updateLatestWork = async (
+  id: number,
+  token: string,
+  formData: FormData,
+  imageFile: File | null
+) => {
+  try{
+    const formDataToSend = new FormData();
+    formDataToSend.append("title", formData.title);
+    formDataToSend.append("platform", formData.platform);
+    formDataToSend.append("workLink", formData.workLink);
+    formDataToSend.append("description", formData.description);
+
+    if (imageFile instanceof File) {// only append if a new file is uploaded and ignore if previous string url is passed
+      formDataToSend.append("images", imageFile);
+    }
+
+    const response = await api.patch(`/latest-works/${id}`, formDataToSend, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return {
+      success: true,
+      data: response.data,
+    };
+
+  }catch(error:any){
+    console.error("Failed to update latest work:", error);
+    return {
+      success: false,
+      error: error.response?.data?.message || "Failed to update latest work",
+    };
+  }
+};
