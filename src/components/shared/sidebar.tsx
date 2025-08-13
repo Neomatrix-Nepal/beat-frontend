@@ -20,6 +20,7 @@ import {
   Settings,
 } from "lucide-react";
 import Image from "next/image";
+import { RiFilePdfFill } from "react-icons/ri";
 
 interface SidebarItem {
   icon: React.ComponentType<{ className?: string }>;
@@ -59,6 +60,11 @@ const sidebarItems: SidebarItem[] = [
     href: "/dashboard/studio_bookings",
   },
   { icon: Users, label: "Creators", href: "/dashboard/creators" },
+  {
+    icon: RiFilePdfFill,
+    label: "License Agreement",
+    href: "/dashboard/license-agreement",
+  },
   { icon: Settings, label: "Settings", href: "/dashboard/settings" },
   { icon: Briefcase, label: "Latest Work", href: "/dashboard/latest_work" },
   { icon: Briefcase, label: "Blogs", href: "/dashboard/blog" },
