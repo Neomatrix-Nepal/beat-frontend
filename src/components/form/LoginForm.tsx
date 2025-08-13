@@ -84,24 +84,6 @@ const LoginForm = () => {
             {isSubmitting ? "Logging in..." : "Log in"}
             <LogIn className="ml-2 h-5 w-5" />
           </Button>
-          <a
-            href="#"
-            className="text-sm font-michroma text-blue-300 hover:text-purple-400 transition-colors block mt-2"
-          >
-            Forgot your password?
-          </a>
-        </div>
-
-        <div className="text-center">
-          <a className="text-gray-400 text-sm font-michroma">
-            Don't have an account?{" "}
-          </a>
-          <a
-            href="#"
-            className="text-blue-300 font-michroma hover:text-blue-300 text-sm font-medium transition-colors"
-          >
-            Sign Up
-          </a>
         </div>
       </form>
     </div>

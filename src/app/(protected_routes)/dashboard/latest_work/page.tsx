@@ -2,6 +2,7 @@
 import {
   deleteLatestWork,
   fetchLatestWorks,
+  updateLatestWork,
 } from "@/src/app/actions/work-action";
 import { LatestWorkTable } from "@/src/components/table/LatestWorkTable";
 import {
@@ -12,11 +13,14 @@ import {
   PaginationPrevious,
 } from "@/src/components/ui/pagination";
 import { showDeleteToast } from "@/src/lib/util";
-import { Platform } from "@/src/types/latest-work";
-import { Upload } from "lucide-react";
+import { FormData, Platform } from "@/src/types/latest-work";
+import { Upload, X } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import toast from "react-hot-toast";
+import { toDateInputValue } from "@/src/lib/utils";
+import AddWorkForm from "@/src/components/form/WorkForm";
 
 interface Image {
   id: number;
@@ -28,14 +32,13 @@ interface Image {
   updated_at: string;
 }
 
-interface Work {
+export interface Work {
   id: number;
   title: string;
   description: string;
   platform: Platform;
   workLink: string;
   uploadDate: string;
-  selected: boolean;
   images: Image[];
 }
 
@@ -49,7 +52,6 @@ interface Meta {
 const LatestWorkManager: React.FC = () => {
   const router = useRouter();
   const [works, setWorks] = useState<Work[]>([]);
-  const [selectAll, setSelectAll] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [meta, setMeta] = useState<Meta>({
     total: 0,
@@ -57,6 +59,7 @@ const LatestWorkManager: React.FC = () => {
     limit: 10,
     totalPages: 1,
   });
+  const [editingId, setEditingId] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { data: session } = useSession();
@@ -84,50 +87,66 @@ const LatestWorkManager: React.FC = () => {
     fetchData();
   }, [fetchData]);
 
-  const handleSelectAllWorks = useCallback(() => {
-    setSelectAll((prev) => {
-      const newSelectAll = !prev;
-      setWorks((prevWorks) =>
-        prevWorks.map((work) => ({ ...work, selected: newSelectAll }))
-      );
-      return newSelectAll;
-    });
-  }, []);
-
-  const handleSelectWork = useCallback((id: number) => {
-    setWorks((prevWorks) =>
-      prevWorks.map((work) =>
-        work.id === id ? { ...work, selected: !work.selected } : work
-      )
-    );
-  }, []);
-
-  // page.tsx
   const handleDeleteWork = useCallback(
     async (id: number) => {
       const work = works.find((w) => w.id === id);
       if (!work) return;
 
-      if (confirm(`Are you sure you want to delete "${work.title}"?`)) {
-        try {
-          const result = await deleteLatestWork(
-            id,
-            session?.user?.tokens?.accessToken as string
-          );
-          if (result.success) {
-            setWorks((prevWorks) => prevWorks.filter((work) => work.id !== id));
-            showDeleteToast("Deleted", work.title, id.toString());
-          } else {
-            setError(result.error);
-          }
-        } catch (err: any) {
-          setError(err.message || "Failed to delete work");
+      try {
+        const result = await deleteLatestWork(
+          id,
+          session?.user?.tokens?.accessToken as string
+        );
+        if (result.success) {
+          setWorks((prevWorks) => prevWorks.filter((work) => work.id !== id));
+          showDeleteToast("Deleted", work.title, id.toString());
+        } else {
+          setError(result.error);
         }
+      } catch (err: any) {
+        setError(err.message || "Failed to delete work");
       }
+      
     },
     [works]
   );
+  
+  const handleEditWork = (work : Work)=>{
+    setEditingId(work.id);
+  }
 
+  const handleSaveEdit = async( data:FormData, imageFile: File|null) =>{
+    if(!editingId){
+      console.log("id not defined");
+      return;
+    }
+
+    console.log(data);
+    const result = await updateLatestWork(
+      editingId,
+      session?.user?.tokens?.accessToken as string,
+      data,
+      imageFile,
+    );
+
+    if (result.success) {
+      const updatedWork: Work = {
+        id: result.data.id,
+        title: result.data.title,
+        description: result.data.description,
+        platform: result.data.platform,
+        workLink: result.data.workLink,
+        uploadDate: toDateInputValue(result.data.createdAt),
+        images: result.data.images,
+      };
+      
+      setWorks(prev => prev.map(w => (w.id === editingId ? updatedWork : w)));
+      toast.success("Successfully updated latest work:");
+      setEditingId(null);
+    } else {  
+      console.error("Error:", result.error);
+    }
+  }
   const goToPreviousPage = useCallback(() => {
     setCurrentPage((prev) => Math.max(prev - 1, 1));
   }, []);
@@ -137,11 +156,6 @@ const LatestWorkManager: React.FC = () => {
   }, [meta.totalPages]);
 
   const currentWorks = useMemo(() => works, [works]);
-
-  const selectedCount = useMemo(
-    () => works.filter((work) => work.selected).length,
-    [works]
-  );
 
   return (
     <div className="min-h-screen bg-slate-900 flex flex-col">
@@ -160,9 +174,7 @@ const LatestWorkManager: React.FC = () => {
         <div className="overflow-x-auto rounded-lg border border-slate-700">
           <LatestWorkTable
             works={currentWorks}
-            selectAll={selectAll}
-            onSelectAll={handleSelectAllWorks}
-            onSelectWork={handleSelectWork}
+            onEditWork={handleEditWork}
             onDeleteWork={handleDeleteWork}
           />
         </div>
@@ -223,6 +235,24 @@ const LatestWorkManager: React.FC = () => {
           </div>
         </div>
       </div>
+      {
+        editingId && 
+          <div className="fixed z-100 inset-0">
+            <div className="absolute inset-0 bg-black/70 z-90"/>
+            <div className="absolute z-100 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+              <div 
+                className="absolute z-100 top-20 right-10 cursor-pointer"
+                onClick={()=>setEditingId(null)}
+              >
+                <X color="white"/>
+              </div>
+            <AddWorkForm 
+              initialData={works.find((item) => item.id === editingId)} 
+              onSave={handleSaveEdit}
+            />
+            </div>
+          </div>
+      }
     </div>
   );
 };

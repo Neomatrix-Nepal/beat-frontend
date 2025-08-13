@@ -6,6 +6,7 @@ const nextConfig = {
       "images.unsplash.com",
       "localhost",
       "beats.neomatrix.live",
+      "bsvzmwz3-8000.inc1.devtunnels.ms"
     ],
   },
   eslint: {

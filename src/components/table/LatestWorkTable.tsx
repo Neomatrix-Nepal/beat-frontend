@@ -7,6 +7,7 @@ import Image from "next/image";
 import toast from "react-hot-toast";
 import LoadingEffect from "../loadingEffect";
 import ConfirmPopUp from "../ui/confirmPopUp";
+import { Work } from "@/src/app/(protected_routes)/dashboard/latest_work/page";
 
 interface Image {
   id: number;
@@ -18,31 +19,16 @@ interface Image {
   updated_at: string;
 }
 
-interface Work {
-  id: number;
-  title: string;
-  description: string;
-  platform: Platform;
-  workLink: string;
-  uploadDate: string;
-  selected: boolean;
-  images: Image[];
-}
-
 interface LatestWorkTableProps {
   works: Work[];
-  selectAll: boolean;
-  onSelectAll: () => void;
-  onSelectWork: (id: number) => void;
+  onEditWork: (work: Work) => void;
   onDeleteWork: (id: number) => void;
 }
 const baseURL = process.env.NEXT_PUBLIC_API_URL;
 
 export const LatestWorkTable: React.FC<LatestWorkTableProps> = ({
   works,
-  selectAll,
-  onSelectAll,
-  onSelectWork,
+  onEditWork,
   onDeleteWork,
 }) => {
   const [deletePopUp, setDeletePopUp] = useState<boolean>(false);
@@ -166,7 +152,7 @@ export const LatestWorkTable: React.FC<LatestWorkTableProps> = ({
                 <td className="p-4">
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={() => toast.success("Updated")}
+                      onClick={() =>onEditWork(work)}
                       className="cursor-pointer p-2 text-white bg-foreground hover:bg-purple-700 rounded-lg transition-colors"
                     >
                       <Edit size={16} />
@@ -195,12 +181,6 @@ export const LatestWorkTable: React.FC<LatestWorkTableProps> = ({
           >
             <div className="flex items-start justify-between mb-3">
               <div className="flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  checked={work.selected}
-                  onChange={() => onSelectWork(work.id)}
-                  className="w-4 h-4 text-purple-600 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
-                />
                 <div>
                   <h3 className="text-white font-medium">
                     Title: {work.title}
