@@ -1,11 +1,11 @@
 "use client";
-import React, { useState } from "react";
 import { formatDateTime } from "@/src/lib/utils";
 import { BeatsTableProps } from "@/src/types";
 import { Edit, Pencil, Play, Trash } from "lucide-react";
-import Image from "next/image";
-import ConfirmPopUp from "../ui/confirmPopUp";
+import React, { useState } from "react";
 import LoadingEffect from "../loadingEffect";
+import ConfirmPopUp from "../ui/confirmPopUp";
+import CustomAudioPlayer from "../HLSAudioPlayer";
 
 const genreColors: Record<string, string> = {
   chill: "bg-orange-500/20 text-orange-400 border-orange-500/30",
@@ -95,6 +95,14 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
                   </td>
                   <td className="p-4">
                     <div className="flex items-center gap-2">
+                      <button className="cursor-pointer px-1 text-white bg-black hover:bg-purple-700 rounded-lg transition-colors duration-300">
+                        <CustomAudioPlayer
+                          audioSrc={
+                            process.env.NEXT_PUBLIC_API_URL +
+                            beat.digital_assets[0].metadata.playlistUrl
+                          }
+                        />
+                      </button>
                       <button
                         onClick={() => {
                           onEditBeat(beat);
@@ -154,8 +162,13 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <button className="p-2 text-red-400 hover:bg-green-500/20 rounded-lg transition-colors">
-                    <Play size={16} />
+                  <button className="cursor-pointer px-1 text-white bg-black hover:bg-purple-700 rounded-lg transition-colors duration-300">
+                    <CustomAudioPlayer
+                      audioSrc={
+                        process.env.NEXT_PUBLIC_API_URL +
+                        beat.digital_assets[0].metadata.playlistUrl
+                      }
+                    />
                   </button>
 
                   <button

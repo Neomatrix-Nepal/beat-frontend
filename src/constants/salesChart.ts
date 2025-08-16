@@ -16,7 +16,6 @@ export const months = [
 ];
 
 export const baseLabels = [
-  "Lil Rock",
   "1st Highest",
   "2nd Highest",
   "3rd Highest",
@@ -26,7 +25,6 @@ export const baseLabels = [
 ];
 
 export const barColors = [
-  "#a29bfe", // Admin
   "#81ecec", // 1st Highest
   "#74b9ff", // 2nd Highest
   "#fab1a0", // 3rd Highest
