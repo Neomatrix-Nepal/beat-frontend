@@ -10,23 +10,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout repo
+      # Step 1: Checkout the code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Setup SSH with private key
+      # Step 2: Setup SSH with private key
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.8.0
         with:
           ssh-private-key: ${{ secrets.DEPLOY_KEY }}
 
-      # Deploy to server
+      # Step 3: Connect to server and deploy
       - name: Deploy to Contabo admin frontend
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+            # Navigate to app directory
             cd /var/www/admin.beatpasal.com || mkdir -p /var/www/admin.beatpasal.com && cd /var/www/admin.beatpasal.com
 
-            # Initialize git if not exists
+            # Initialize git if it doesn't exist
             if [ ! -d ".git" ]; then
               git init
               git remote add origin git@github.com:Neomatrix-Nepal/beat-frontend.git
@@ -36,12 +37,18 @@ jobs:
               git pull origin main
             fi
 
-            # Install dependencies
-            npm install --production
+            # Install all dependencies (needed for build)
+            npm install
 
-            # Build project
+            # Build frontend
             npm run build
+
+            # Optional: remove devDependencies to save space
+            npm prune --production
 
             # Start/restart with PM2
             pm2 restart admin-beatpasal || pm2 start npm --name admin-beatpasal -- start
+
+            # Restart Nginx 
+            sudo systemctl restart nginx
           EOF
