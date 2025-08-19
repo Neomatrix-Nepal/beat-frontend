@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
-    "start": "next start",
+    "start": "cross-env NODE_ENV=production node server.js",
     "lint": "next lint"
   },
   "dependencies": {
@@ -20,6 +20,8 @@
     "axios": "^1.9.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "cross-env": "^10.0.0",
+    "dotenv": "^17.2.1",
     "hls.js": "^1.6.7",
     "jspdf": "^3.0.1",
     "lucide-react": "^0.511.0",

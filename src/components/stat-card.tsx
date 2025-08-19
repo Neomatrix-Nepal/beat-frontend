@@ -34,15 +34,6 @@ export function StatCard({
             </p>
           </div>
         )}
-        {adminCount !== undefined && (
-          <div className="flex w-full gap-2 items-center mb-2">
-            <div className="w-4 h-3 rounded-xs bg-purple-300" />
-            <p className="flex w-full text-xs text-gray-500 items-center justify-between">
-              Lil Rock
-              <span className="text-black font-semibold">{adminCount}</span>
-            </p>
-          </div>
-        )}
       </div>
     );
   };
