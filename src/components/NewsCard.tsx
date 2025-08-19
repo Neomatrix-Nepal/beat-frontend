@@ -6,6 +6,8 @@ import { Card, CardContent } from "./ui/card";
 import enhanceHtmlWithTailwind from "../utils/richTextStyleApply";
 import BlogForm from "./form/BlogForm";
 import { useState, useEffect } from "react";
+import LoadingEffect from "./loadingEffect";
+import ConfirmPopUp from "./ui/confirmPopUp";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -31,6 +33,9 @@ export default function NewsCard({
   const isEditing = editingId === index;
 
   const [objectUrl, setObjectUrl] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [deletePopUp, setDeletePopUp] = useState<boolean>(false);
+  const [selected, setSelected] = useState<number|null>(null);
 
   //Prevent memory leak
   useEffect(() => {
@@ -48,7 +53,19 @@ export default function NewsCard({
     }
   }, [news.thumbnailUrl]);
 
+  const handleDelete = async(index: number) =>{
+    setIsLoading(true)
+    try{
+      await Promise.resolve(onDelete(index))
+    }catch(error){
+      console.log(error)
+    }finally{
+      setIsLoading(false)
+    }
+  }
+
   return (
+    <>
     <Card className="bg-[#1a1a2e] border-[#2d2d44] p-4">
       <CardContent className="p-0">
         {isEditing ? (
@@ -80,7 +97,7 @@ export default function NewsCard({
                   Edit
                 </button>
                 <button
-                  onClick={() => onDelete(index)}
+                  onClick={() => {setDeletePopUp(true);setSelected(index);}}
                   className="px-3 py-2 w-full bg-red-700 text-white rounded-md hover:bg-red-600 transition-colors"
                 >
                   Delete
@@ -136,7 +153,7 @@ export default function NewsCard({
                       Edit
                     </button>
                     <button
-                      onClick={() => onDelete(index)}
+                      onClick={() => {setDeletePopUp(true);setSelected(index);}}
                       className="cursor-pointer px-3 py-1 w-full bg-red-700 text-white rounded-md hover:bg-red-600 transition-colors"
                     >
                       Delete
@@ -149,5 +166,19 @@ export default function NewsCard({
         )}
       </CardContent>
     </Card>
+    {deletePopUp && (
+        <ConfirmPopUp
+          title={"Delete Blog?"}
+          message={"Are you sure you want to delete this Blog?"}
+          onCancel={() => setDeletePopUp(false)}
+          onConfirm={() => {
+            setDeletePopUp(false);
+            handleDelete(selected!);
+          }}
+        />
+      )}
+
+      {isLoading && <LoadingEffect />}
+    </>
   );
 }

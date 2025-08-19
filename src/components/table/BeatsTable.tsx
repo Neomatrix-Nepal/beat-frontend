@@ -108,7 +108,7 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
                           setSelectedBeatId(beat.id.toString());
                           setDeletePopUp(true);
                         }}
-                        className="cursor-pointer p-2 bg-black rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
+                        className="cursor-pointer p-2 bg-black rounded-lg text-red-500 hover:bg-red-600/20 transition-colors"
                       >
                         <Trash size={16} />
                       </button>
@@ -131,7 +131,7 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-3">
                   <div>
-                    <h3 className="text-white font-medium">{beat?.name}</h3>
+                    <h3 className="text-white font-medium break-all">{beat?.name}</h3>
                     <p className="text-slate-400 text-sm">{"Cute Boka"}</p>
                   </div>
                 </div>

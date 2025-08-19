@@ -128,7 +128,7 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
                         setSelectedEntryId(entry.id);
                         setDeletePopUp(true);
                       }}
-                      className="cursor-pointer p-2 bg-black rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
+                      className="cursor-pointer p-2 bg-black rounded-lg text-red-400 hover:bg-red-600/20 transition-colors"
                     >
                       <Trash size={16} className="text-red-500" />
                     </button>
@@ -140,25 +140,18 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
         </table>
       </div>
 
+      {/* Mobile Table */}
       <div className="lg:hidden space-y-4 p-4">
         {entries.map((entry) => (
           <div
             key={entry.id}
-            className="bg-[#1A1F2E] rounded-lg p-4 border border-[#2C3A4F]"
+            className="bg-[#1A1F2E] rounded-lg p-4 border border-[#2C3A4F] "
           >
             <div className="flex items-start justify-between mb-3">
-              <div className="flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  checked={entry.selected}
-                  onChange={() => onSelectEntry(entry.id)}
-                  className="w-4 h-4 text-purple-600 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
-                />
-                <div>
-                  <h3 className="text-white font-medium">{entry.name}</h3>
-                  <p className="text-white text-sm">{entry.email}</p>
-                  <p className="text-white text-sm">{entry.musicGenre}</p>
-                </div>
+              <div>
+                <h3 className="text-white font-medium">{entry.name}</h3>
+                <p className="text-white text-sm break-all">{entry.email}</p>
+                <p className="text-white text-sm">{entry.musicGenre}</p>
               </div>
               <span
                 className={`px-3 py-1 rounded-md text-xs font-medium border ${
@@ -193,10 +186,10 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
                     setSelectedEntryId(entry.id);
                     setDeletePopUp(true);
                   }}
-                  className="p-2 rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
+                  className="p-2 rounded-lg hover:bg-red-600/20 transition-colors"
                   title="Delete"
                 >
-                  <Trash size={16} />
+                  <Trash size={16} className="text-red-400"/>
                 </button>
               </div>
             </div>

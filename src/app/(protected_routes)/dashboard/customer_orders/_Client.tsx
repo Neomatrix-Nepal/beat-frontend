@@ -28,15 +28,6 @@ const CustomerOrdersClient = ({
 
   const { data: session } = useSession();
 
-  //   const handleFilter = (status: string) => {
-  //     if (status === "all") {
-  //       setOrders(initialOrders);
-  //     } else {
-  //       setOrders(initialOrders.filter((order) => order.status === status));
-  //     }
-  //     setCurrentPage(1);
-  //   };
-
   const handleChangeStatus = async (id: string) => {
     const { id: orderId } = await changeStatus(
       id,
@@ -78,36 +69,7 @@ const CustomerOrdersClient = ({
     <div className="min-h-screen bg-slate-900 flex">
       <div className="flex-1 flex flex-col">
         <div className="flex-1 p-6">
-          <div className="gap-2 pl-4 mb-2 h-16 p-4 flex items-center justify-end">
-            <div className="flex font-michroma gap-2">
-              <div className="relative inline-block">
-                {/* <select
-                  onChange={(e) => handleFilter(e.target.value)}
-                  className="cursor-pointer pl-10 pr-4 py-3 text-sm font-semibold rounded-lg bg-purple-700 text-white hover:bg-purple-800 transition-transform transform hover:scale-105 appearance-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50"
-                >
-                  <option value="beats">Beats</option>
-                  <option value="drips">Drips</option>
-                </select> */}
-                {/* <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                  <svg
-                    className="w-5 h-5 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M19 9l-7 7-7-7"
-                    ></path>
-                  </svg>
-                </div> */}
-              </div>
-            </div>
-          </div>
-
+          
           <CustomerOrderTable
             entries={orders}
             onDeleteEntry={deleteEntry}

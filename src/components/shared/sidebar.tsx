@@ -94,7 +94,7 @@ export function DashboardSidebar() {
 
       {/* Sidebar */}
       <aside
-        className={`fixed overflow-y-auto h-screen top-0 left-0 z-50 w-8/10 md:w-2/3 xl:w-80 bg-[#151515] transform transition-transform duration-300 ease-in-out
+        className={`fixed overflow-y-auto h-screen top-0 left-0 z-50 w-7/10 md:w-2/3 xl:w-80 bg-[#151515] transform transition-transform duration-300 ease-in-out
         ${
           isOpen ? "translate-x-0" : "-translate-x-full xl:translate-x-0"
         } min-h-[100dvh] xl:min-h-screen`}

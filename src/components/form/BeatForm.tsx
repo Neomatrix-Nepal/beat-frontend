@@ -181,7 +181,7 @@ export default function BeatFormModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+    <div className="fixed inset-0 mx-3 z-50 flex items-center justify-center bg-black/70">
       <div className="bg-[#1E293B] w-full max-w-4xl rounded-xl p-6 relative text-white overflow-y-auto max-h-[90vh] border border-gray-700">
         <button
           onClick={handleClose}
