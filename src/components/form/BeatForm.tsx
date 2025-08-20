@@ -127,6 +127,9 @@ export default function BeatFormModal({
     onClose();
   };
   const onSubmit = async (data: FormData) => {
+    if(!session){
+      return toast.error("session timeout please login again");
+    }
     setLoading(true);
 
     try {
@@ -136,7 +139,7 @@ export default function BeatFormModal({
       formData.append("description", data.description);
       formData.append("category_id", "1");
       formData.append("subCategory_id", selectedGenreId?.toString()!);
-      formData.append("user_id", "1");
+      formData.append("user_id", session?.user.id);
       formData.append("product_type", "digital-asset");
 
       if (data.cover instanceof File) {

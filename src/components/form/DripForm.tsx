@@ -5,10 +5,10 @@ import {
   uploadMusic,
   uploadProduct,
 } from "@/src/app/(protected_routes)/dashboard/beats_manager/action";
-import { Product } from "@/src/types";
+import { BeatImage, Product } from "@/src/types";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { FaUpload } from "react-icons/fa";
@@ -20,17 +20,21 @@ export type FormData = {
   price: string;
   size: string;
   description: string;
-  cover: File | null;
+  cover: File | string | null;
   audio: File | null;
 };
 
 type DripFormModalProps = {
+  allBeats: Product[];
+  setAllBeats: Dispatch<SetStateAction<Product[]>>;
   isOpen: boolean;
   onClose: () => void;
   initialData?: Product | null;
 };
 
 export default function DripFormModal({
+  allBeats,
+  setAllBeats,
   isOpen,
   onClose,
   initialData,
@@ -38,6 +42,8 @@ export default function DripFormModal({
   const [loading, setLoading] = useState(false);
   const [previewCover, setPreviewCover] = useState<string | null>(null);
   const { data: session } = useSession();
+
+  console.log(initialData?.images[0].url)
 
   const {
     register,
@@ -53,11 +59,14 @@ export default function DripFormModal({
       dripTitle: "",
       price: "",
       size: "",
-      description: "",
+      description:"",
       cover: null,
       audio: null,
     },
   });
+
+  // const values = watch();
+  // console.log("form values:",values)
 
   const coverInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -69,15 +78,15 @@ export default function DripFormModal({
       setPreviewCover(null);
       return;
     }
+    console.log(initialData)
 
     setValue("dripTitle", initialData.name);
     setValue("price", initialData.price);
     setValue("size", initialData.size ?? "");
     setValue("description", initialData.description ?? "");
 
-    console.log(initialData);
-
     if (typeof initialData.images[0].url === "string") {
+      setValue("cover", initialData.images[0].url)
       setPreviewCover(
         process.env.NEXT_PUBLIC_API_URL + "/" + initialData.images[0].url
       );
@@ -91,6 +100,7 @@ export default function DripFormModal({
     setPreviewCover(null);
     onClose();
   };
+
   const onSubmit = async (data: FormData) => {
     setLoading(true);
 
@@ -101,12 +111,17 @@ export default function DripFormModal({
       formData.append("description", data.description);
       formData.append("user_id", "1");
       formData.append("product_type", "drip");
+      formData.append("size", data.size);
 
       if (data.cover instanceof File) {
         formData.append("images", data.cover);
       }
 
-      let result;
+      formData.forEach((value, key) => {
+        console.log(key, value);
+      });
+
+      let result : Product;
 
       if (initialData) {
         result = await updateProduct(
@@ -114,21 +129,16 @@ export default function DripFormModal({
           initialData.id.toString(),
           session?.user?.tokens?.accessToken as string
         );
+        setAllBeats(prev =>
+          prev.map(item => (item.id === result.id ? result : item))
+        );
+
       } else {
         result = await uploadProduct(
           formData,
           session?.user?.tokens?.accessToken as string
         );
-      }
-
-      if (result?.id && data.audio instanceof File) {
-        const audioFormData = new FormData();
-        audioFormData.append("product_id", result.id.toString());
-        audioFormData.append("audio", data.audio);
-        await uploadMusic(
-          audioFormData,
-          session?.user?.tokens?.accessToken as string
-        );
+        setAllBeats([...allBeats, result])
       }
 
       toast.success(
@@ -136,6 +146,7 @@ export default function DripFormModal({
           ? "Drip updated successfully!"
           : "Drip uploaded successfully!"
       );
+
       handleClose();
     } catch (error) {
       console.error(error);
@@ -174,7 +185,7 @@ export default function DripFormModal({
                 {coverFile ? (
                   <>
                     <Image
-                      src={URL.createObjectURL(coverFile)}
+                      src={ typeof coverFile === "string" ? `${process.env.NEXT_PUBLIC_API_URL}/${coverFile}`: URL.createObjectURL(coverFile)}
                       alt="Cover"
                       className="object-cover w-full h-full rounded-lg"
                       width={200}
@@ -278,13 +289,16 @@ export default function DripFormModal({
               error={errors.price?.message}
               rules={{ required: "Price is required" }}
             />
-            <InputField
+            <SelectField
               label="Size"
-              placeholder="Size of Drip"
               name="size"
               register={register}
               error={errors.size?.message}
+              rules={{ required: "Size is required" }}
+              options={["XS", "S", "M", "L", "XL"]}
+              defaultValue={initialData?.size ?? ""} // preselect if editing
             />
+
           </div>
 
           <TextareaField
@@ -297,7 +311,7 @@ export default function DripFormModal({
           <button
             type="submit"
             disabled={loading}
-            className={`w-full bg-custom text-white py-3 rounded-lg flex items-center justify-center ${
+            className={`w-full font-michroma cursor-pointer bg-custom text-white py-3 rounded-lg flex items-center justify-center ${
               loading ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >
@@ -376,3 +390,42 @@ const TextareaField = ({
     />
   </div>
 );
+
+const SelectField = ({
+  label,
+  name,
+  register,
+  error,
+  rules,
+  options,
+  defaultValue,
+}: {
+  label: string;
+  name: keyof FormData;
+  register: ReturnType<typeof useForm<FormData>>["register"];
+  error?: string;
+  rules?: object;
+  options: string[];
+  defaultValue?: string;
+}) => {console.log(defaultValue); return(
+  <div>
+    <label className="block mb-2 text-sm font-medium text-gray-300">
+      {label}
+    </label>
+    <select
+      {...register(name, rules)}
+      defaultValue={defaultValue ?? ""}
+      className="w-full bg-[#162133] border border-gray-600 text-white py-2 px-3 rounded-lg focus:outline-none focus:border-purple-500"
+    >
+      <option value="" disabled hidden>
+        Select {label}
+      </option>
+      {options.map((option) => (
+        <option key={option} value={option}>
+          {option}
+        </option>
+      ))}
+    </select>
+    {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
+  </div>
+)};

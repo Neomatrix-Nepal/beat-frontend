@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Package } from "@/src/types";
-import { updatePackage, uploadPackage } from "./action";
+import { deletePackage, updatePackage, uploadPackage } from "./action";
 import toast from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { IoMdEye } from "react-icons/io";
@@ -96,7 +96,8 @@ export default function _client({
       );
 
       if (response.id) {
-        setPackages((prev) => [pkgData, ...prev]);
+        let updatedPkg = {...pkgData, id:response.id,}
+        setPackages((prev) => [updatedPkg, ...prev]);
         toast.success("Package added successfully!");
       } else {
         toast.error("Failed to add package. Please try again.");
@@ -121,9 +122,19 @@ export default function _client({
     setEditing(true);
   };
 
-  const handleDelete = (id: number) => {
-    setPackages((prev) => prev.filter((p) => p.id !== id));
-    setSelectedId(null);
+  const handleDelete = async (id: number) => {
+    setLoading(true)
+    try{
+      await deletePackage(id.toString(), session?.user.tokens.accessToken as string)
+      setPackages((prev) => prev.filter((p) => p.id !== id));
+      toast.success("package deleted")
+    }catch(error){
+      console.log(error);
+      toast.error("Failed to delete package")
+    }finally{
+      setSelectedId(null);
+      setLoading(false)
+    }
   };
 
   const exitEditMode = () => {
@@ -284,13 +295,19 @@ export default function _client({
                       <td className="px-4 py-2">
                         <div className="flex items-center justify-center h-full w-full gap-2">
                           <button
-                            className="cursor-pointer bg-blue-500 p-2 rounded-lg text-white hover:bg-slate-600/30 transition-colors"
+                            disabled={loading}
+                            className={`cursor-pointer bg-blue-500 p-2 rounded-lg text-white hover:bg-slate-600/30 transition-colors
+                                ${loading?"cursor-not-allowed" : ""}
+                              `}
                             onClick={() => setViewPackage(pkg)}
                           >
                             <IoMdEye size={16} />
                           </button>
                           <button
-                            className="bg-yellow-400 text-black cursor-pointer p-2 rounded-lg hover:bg-slate-600/30 transition-colors"
+                            disabled={loading}
+                            className={`bg-yellow-400 text-black cursor-pointer p-2 rounded-lg hover:bg-slate-600/30 transition-colors
+                                ${loading?"cursor-not-allowed" : ""}
+                              `}
                             onClick={() => {
                               handleEdit(pkg);
                               window.scrollTo({ top: 0, behavior: "smooth" });
@@ -299,7 +316,10 @@ export default function _client({
                             <Edit size={16} />
                           </button>
                           <button
-                            className="cursor-pointer bg-black p-2 rounded-lg text-white hover:bg-slate-600/30 transition-colors"
+                            disabled={loading}
+                            className={`cursor-pointer bg-black p-2 rounded-lg text-white hover:bg-slate-600/30 transition-colors
+                                ${loading?"cursor-not-allowed" : ""}
+                              `}
                             onClick={() => {setSelectedId(pkg.id); setDeletePopUp(true);}}
                           >
                             <Trash size={18} className="text-red-500" />
@@ -318,30 +338,35 @@ export default function _client({
       {/* View Modal */}
       {viewPackage && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-slate-800 text-white p-6 rounded-lg max-w-md w-full shadow-lg relative">
-            <button
-              onClick={() => setViewPackage(null)}
-              className="absolute top-2 right-3 text-xl text-white"
-            >
-              ×
-            </button>
-            <h2 className="text-lg font-bold  mb-3">{viewPackage.name}</h2>
-            <p>
-              <strong>Purpose:</strong> {viewPackage.purpose}
-            </p>
-            <p>
-              <strong>Price:</strong> ${viewPackage.price}
-            </p>
-            {viewPackage.description && (
+          <div className="p-5 bg-black rounded-lg">
+            <div className="bg-slate-800 text-white p-6 rounded-lg max-w-md w-full shadow-lg relative">
+              <button
+                onClick={() => setViewPackage(null)}
+                className="cursor-pointer absolute top-5 right-5 font-bold text-2xl text-[#00e08f]"
+              >
+                ×
+              </button>
+              <h2 className="text-lg font-bold text-[#00e08f] mb-3">{viewPackage.name}</h2>
               <p>
-                <strong>Description:</strong> {viewPackage.description}
+                <strong className="text-[#8f8f8f]">Purpose:</strong> {viewPackage.purpose}
               </p>
-            )}
-            {viewPackage.features && (
               <p>
-                <strong>Features:</strong> {viewPackage.features.join(", ")}
+                <strong className="text-[#8f8f8f]">Price:</strong> ${viewPackage.price}
               </p>
-            )}
+              {viewPackage.description && (
+                <p>
+                  <strong className="text-[#8f8f8f]">Description:</strong> {viewPackage.description}
+                </p>
+              )}
+              {viewPackage.features && (
+                <p className="flex flex-col">
+                  <strong className="text-[#8f8f8f]">Features:</strong>
+                  {viewPackage.features.map((feature, index)=>
+                    <span key={index}>- {feature}</span>
+                  )}
+                </p>
+              )}
+            </div>
           </div>
         </div>
       )}
