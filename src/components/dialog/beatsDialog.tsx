@@ -58,14 +58,14 @@ export default function BeatsDialogDetails({
             Submission Information
           </h3>
           <div className="flex items-center gap-4 mb-4">
-            <div className="w-12 h-12 rounded-full bg-gray-500 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full bg-gray-500 flex items-center justify-center shrink-0">
               <span className="text-xl">{beat.name[0]}</span>
             </div>
-            <div>
+            <div className="min-w-0">
               <p className="text-md font-semibold text-[#ff5f5f]">
                 {beat.name}
               </p>
-              <p className="text-xs text-gray-300">{beat.email}</p>
+              <p className="text-xs text-gray-300 break-words">{beat.email}</p>
             </div>
           </div>
           <InfoRow

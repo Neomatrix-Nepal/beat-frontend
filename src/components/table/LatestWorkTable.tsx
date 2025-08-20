@@ -116,6 +116,8 @@ export const LatestWorkTable: React.FC<LatestWorkTableProps> = ({
 
   return (
     <div className="bg-[#101828] rounded-xl border border-[#1D2939] overflow-hidden font-michroma">
+
+      {/* desktop View */}
       <div className="hidden lg:block overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="bg-[#1A2233] text-[#E4E4E7] border-b border-[#2C3A4F]">
@@ -173,6 +175,8 @@ export const LatestWorkTable: React.FC<LatestWorkTableProps> = ({
           </tbody>
         </table>
       </div>
+
+      {/* mobile view */}
       <div className="lg:hidden space-y-4 p-4">
         {works.map((work, index) => (
           <div

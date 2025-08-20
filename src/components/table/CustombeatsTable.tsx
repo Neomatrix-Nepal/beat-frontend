@@ -201,8 +201,8 @@ export const CustombeatsTable: React.FC<CustomBeatsTableProps> = ({
                 </button>
                 <button
                   onClick={() => {
-                    onDeleteEntry(entry.id.toString());
-                    showDeleteToast("Custom beat", "deleted", "success");
+                    setSelectedEntryId(entry.id.toString());
+                    setDeletePopUp(true)
                   }}
                   className="p-2 rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                   title="Delete"

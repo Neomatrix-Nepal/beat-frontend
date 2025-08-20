@@ -7,12 +7,12 @@ import LoadingEffect from "../loadingEffect";
 import ConfirmPopUp from "../ui/confirmPopUp";
 import CustomAudioPlayer from "../HLSAudioPlayer";
 
-const genreColors: Record<string, string> = {
-  chill: "bg-orange-500/20 text-orange-400 border-orange-500/30",
-  "R&B": "bg-blue-500/20 text-blue-400 border-blue-500/30",
-  "Hip Hop": "bg-purple-500/20 text-purple-400 border-purple-500/30",
-  Pop: "bg-pink-500/20 text-pink-400 border-pink-500/30",
-};
+  const genreColors: Record<string, string> = {
+    chill: "bg-orange-500/20 text-orange-400 border-orange-500/30",
+    "R&B": "bg-blue-500/20 text-blue-400 border-blue-500/30",
+    "Hip Hop": "bg-purple-500/20 text-purple-400 border-purple-500/30",
+    Pop: "bg-pink-500/20 text-pink-400 border-pink-500/30",
+  };
 
 export const BeatsTable: React.FC<BeatsTableProps> = ({
   beats,
@@ -95,14 +95,14 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
                   </td>
                   <td className="p-4">
                     <div className="flex items-center gap-2">
-                      <button className="cursor-pointer px-1 text-white bg-black hover:bg-purple-700 rounded-lg transition-colors duration-300">
+                      <div className="cursor-pointer px-1 text-white bg-black hover:bg-purple-700 rounded-lg transition-colors duration-300">
                         <CustomAudioPlayer
                           audioSrc={
                             process.env.NEXT_PUBLIC_API_URL +
                             beat.digital_assets[0].metadata.playlistUrl
                           }
                         />
-                      </button>
+                      </div>
                       <button
                         onClick={() => {
                           onEditBeat(beat);
@@ -146,8 +146,8 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
                 <span className="text-white font-semibold">${beat.price}</span>
               </div>
 
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
+              <div className="flex flex-col md:flex-row md:items-center justify-between">
+                <div className="flex items-center gap-3 mb-2 md:mb-0">
                   <span
                     className={`px-3 py-1 rounded-full text-xs font-medium border ${
                       genreColors[beat?.subCategory?.name] ||
@@ -162,33 +162,35 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <button className="cursor-pointer px-1 text-white bg-black hover:bg-purple-700 rounded-lg transition-colors duration-300">
+                  <div className="cursor-pointer px-1 text-white bg-black hover:bg-purple-700 rounded-lg transition-colors duration-300">
                     <CustomAudioPlayer
                       audioSrc={
                         process.env.NEXT_PUBLIC_API_URL +
                         beat.digital_assets[0].metadata.playlistUrl
                       }
                     />
-                  </button>
+                  </div>
 
-                  <button
-                    onClick={() => {
-                      onEditBeat(beat);
-                    }}
-                    className="p-2 text-purple-400 hover:bg-purple-500/20 rounded-lg transition-colors"
-                  >
-                    <Pencil size={16} />
-                  </button>
+                  <div>
+                    <button
+                      onClick={() => {
+                        onEditBeat(beat);
+                      }}
+                      className="p-2 text-purple-400 hover:bg-purple-500/20 rounded-lg transition-colors"
+                    >
+                      <Pencil size={16} />
+                    </button>
 
-                  <button
-                    onClick={() => {
-                      setSelectedBeatId(beat.id.toString());
-                      setDeletePopUp(true);
-                    }}
-                    className="p-2 text-red-400 hover:bg-red-500/20 rounded-lg transition-colors"
-                  >
-                    <Trash size={16} />
-                  </button>
+                    <button
+                      onClick={() => {
+                        setSelectedBeatId(beat.id.toString());
+                        setDeletePopUp(true);
+                      }}
+                      className="p-2 text-red-400 hover:bg-red-500/20 rounded-lg transition-colors"
+                    >
+                      <Trash size={16} />
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

@@ -64,7 +64,7 @@ export default function CustomerOrderDetails({
           {order.city && <OrderInfoRow label="Delivery City" value={order.city} />}
           {order.country && <OrderInfoRow label="Delivery Country" value={order.country} />}
           {order.phone && <OrderInfoRow label="Phone Number" value={order.phone} />}
-          {order.email && <OrderInfoRow label="Email" value={order.email} />}
+          {order.email && <OrderInfoRow label="Email" value={order.email}/>}
           {order.couponId && <OrderInfoRow label="Coupon Id" value={order.couponId} />}
           {order.discountPercentage !== null && order.discountPercentage !== undefined && (
             <OrderInfoRow label="Discount" value={order.discountPercentage.toString()} />
@@ -90,7 +90,7 @@ function OrderInfoRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="text-sm text-gray-300">
       <span className="text-[#8f8f8f]">{label}:</span>{" "}
-      <span className="text-white">{value}</span>
+      <span className="text-white break-words min-w-0">{value}</span>
     </div>
   );
 }
