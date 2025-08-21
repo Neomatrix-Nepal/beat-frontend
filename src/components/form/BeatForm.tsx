@@ -71,6 +71,10 @@ export default function BeatFormModal({
   const coverFile = watch("cover");
   const audioFile = watch("audio");
 
+  console.log("========================================")
+  console.log(session?.user.id)
+  console.log("========================================")
+
   useEffect(() => {
     if (!initialData) {
       reset();
@@ -123,6 +127,9 @@ export default function BeatFormModal({
     onClose();
   };
   const onSubmit = async (data: FormData) => {
+    if(!session){
+      return toast.error("session timeout please login again");
+    }
     setLoading(true);
 
     try {
@@ -132,7 +139,7 @@ export default function BeatFormModal({
       formData.append("description", data.description);
       formData.append("category_id", "1");
       formData.append("subCategory_id", selectedGenreId?.toString()!);
-      formData.append("user_id", "1");
+      formData.append("user_id", session?.user.id);
       formData.append("product_type", "digital-asset");
 
       if (data.cover instanceof File) {
@@ -181,7 +188,7 @@ export default function BeatFormModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+    <div className="fixed inset-0 mx-3 z-50 flex items-center justify-center bg-black/70">
       <div className="bg-[#1E293B] w-full max-w-4xl rounded-xl p-6 relative text-white overflow-y-auto max-h-[90vh] border border-gray-700">
         <button
           onClick={handleClose}

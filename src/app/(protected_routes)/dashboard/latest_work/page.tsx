@@ -162,7 +162,7 @@ const LatestWorkManager: React.FC = () => {
       <div className="flex-1 flex flex-col mx-auto w-full p-4 sm:p-6">
         {loading && <p className="text-white font-michroma">Loading...</p>}
         {error && <p className="text-red-500 font-michroma">{error}</p>}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+        <div className="flex justify-end gap-4 mb-4">
           <button
             onClick={() => router.push("/dashboard/latest_work/add_work")}
             className="flex items-center gap-2 cursor-pointer py-3 px-5 text-sm font-semibold rounded-lg bg-purple-700 text-white hover:bg-purple-800 transition-transform transform hover:scale-105 appearance-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50"

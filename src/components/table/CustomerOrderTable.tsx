@@ -115,7 +115,7 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
                         setSelectedEntryId(entry.id.toString());
                         setDeletePopUp(true);
                       }}
-                      className="cursor-pointer p-2 bg-black rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
+                      className="cursor-pointer p-2 bg-black rounded-lg text-red-400 hover:bg-red-600/20 transition-colors"
                     >
                       <Trash size={16} className="text-red-500" />
                     </button>
@@ -128,27 +128,18 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
       </div>
 
       {/* Mobile Cards */}
-      <div className="lg:hidden space-y-4 p-4">
+      <div className="lg:hidden space-y-4 p-4 max-w-full">
         {entries.map((entry) => (
           <div
             key={entry.id}
             className="bg-[#1A1F2E] rounded-lg p-4 border border-[#2C3A4F]"
           >
             <div className="flex items-start justify-between mb-3">
-              <div className="flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  // checked={entry.selected}
-                  // onChange={() => onSelectEntry(entry.id)}
-                  className="w-4 h-4 text-purple-600 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
-                />
-                <div>
-                  <h3 className="text-white font-medium">Id: {entry.id}</h3>
-                  <h3 className="text-white font-medium">
-                    {entry.user.fullname}
-                  </h3>
-                  {/* <p className="text-white text-sm">Product: {entry.product}</p> */}
-                </div>
+              <div>
+                <h3 className="text-white font-medium">Id: {entry.id}</h3>
+                <h3 className="text-white font-medium break-all">
+                  {entry.user.fullname}
+                </h3>
               </div>
               <span
                 className={`px-3 py-1 rounded-md text-xs font-medium border ${
@@ -161,7 +152,7 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
             <div className="flex flex-col gap-2 mt-2">
               <p className="text-white text-sm">Price: {entry.amount}</p>
               <p className="text-white text-sm">
-                Order Date: {entry.createdAt}
+                Order Date: {formatDateTime(entry.createdAt)}
               </p>
             </div>
             <div className="flex items-center justify-between mt-2">
@@ -186,7 +177,7 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
                     setSelectedEntryId(entry.id.toString());
                     setDeletePopUp(true);
                   }}
-                  className="cursor-pointer p-2 bg-black rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
+                  className="cursor-pointer p-2 bg-black rounded-lg hover:bg-red-600/20 transition-colors"
                   title="Delete"
                 >
                   <Trash size={16} className="text-red-500" />
@@ -198,10 +189,12 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
       </div>
 
       <PopupWrapper isOpen={isPopupOpen}>
-        <CustomerOrderDetails
-          order={selectedEntry}
-          onClose={handleClosePopup}
-        />
+        <div className="mx-5">
+          <CustomerOrderDetails
+            order={selectedEntry}
+            onClose={handleClosePopup}
+          />
+        </div>
       </PopupWrapper>
 
       {deletePopUp && (

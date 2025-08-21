@@ -1,10 +1,12 @@
 "use client";
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Package } from "@/src/types";
-import { updatePackage, uploadPackage } from "./action";
+import { deletePackage, updatePackage, uploadPackage } from "./action";
 import toast from "react-hot-toast";
 import { useSession } from "next-auth/react";
+import { IoMdEye } from "react-icons/io";
+import { Edit, Trash } from "lucide-react";
+import ConfirmPopUp from "@/src/components/ui/confirmPopUp";
 
 const defaultFormData = {
   id: 0,
@@ -23,6 +25,8 @@ export default function _client({
   const { data: session } = useSession();
   const [packages, setPackages] = useState<Package[]>(packagesData);
   const [form, setForm] = useState(defaultFormData);
+  const [deletePopUp, setDeletePopUp] = useState<boolean>(false);
+  const [selectedId, setSelectedId] =  useState<number|null>(null);
   const [loading, setLoading] = useState(false);
   const [editing, setEditing] = useState(false);
   const [filter, setFilter] = useState<string>("all");
@@ -92,7 +96,8 @@ export default function _client({
       );
 
       if (response.id) {
-        setPackages((prev) => [pkgData, ...prev]);
+        let updatedPkg = {...pkgData, id:response.id,}
+        setPackages((prev) => [updatedPkg, ...prev]);
         toast.success("Package added successfully!");
       } else {
         toast.error("Failed to add package. Please try again.");
@@ -117,11 +122,24 @@ export default function _client({
     setEditing(true);
   };
 
-  const handleDelete = (id: number) => {
-    const confirmed = confirm("Are you sure?");
-    if (confirmed) {
+  const handleDelete = async (id: number) => {
+    setLoading(true)
+    try{
+      await deletePackage(id.toString(), session?.user.tokens.accessToken as string)
       setPackages((prev) => prev.filter((p) => p.id !== id));
+      toast.success("package deleted")
+    }catch(error){
+      console.log(error);
+      toast.error("Failed to delete package")
+    }finally{
+      setSelectedId(null);
+      setLoading(false)
     }
+  };
+
+  const exitEditMode = () => {
+    setForm(defaultFormData);
+    setEditing(false);
   };
 
   const filteredPackages =
@@ -135,9 +153,19 @@ export default function _client({
 
       {/* Form */}
       <div className="bg-slate-800 p-4 rounded-lg mb-6">
-        <h2 className="text-lg font-semibold mb-3 ">
-          {editing ? "Edit Package" : "Add New Package"}
-        </h2>
+        <div className="flex justify-between w-full mb-2">
+          <h2 className="text-lg font-semibold mb-3 ">
+            {editing ? "Edit Package" : "Add New Package"}
+          </h2>
+          {editing && (
+            <button
+              onClick={exitEditMode}
+              className="px-4 py-2 text-white bg-custom cursor-pointer rounded-md"
+            >
+              Exit Edit Mode
+            </button>
+          )}
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           <input
             name="name"
@@ -188,13 +216,13 @@ export default function _client({
                     value={feature}
                     onChange={(e) => handleFeatureChange(index, e.target.value)}
                     placeholder={`Feature ${index + 1}`}
-                    className="flex-1 p-2 rounded bg-slate-700 placeholder:text-gray-400"
+                    className="flex-1 p-2 rounded bg-slate-700 placeholder:text-gray-400 max-w-full"
                   />
                   {form.features.length > 1 && (
                     <button
                       type="button"
                       onClick={() => removeFeatureField(index)}
-                      className="text-red-500 text-lg"
+                      className="cursor-pointer text-red-500 text-lg font-bold"
                     >
                       ✕
                     </button>
@@ -204,7 +232,7 @@ export default function _client({
               <button
                 type="button"
                 onClick={addFeatureField}
-                className="text-blue-400 text-sm underline mt-1"
+                className="cursor-pointer text-blue-400 text-sm mt-1"
               >
                 + Add Feature
               </button>
@@ -264,25 +292,39 @@ export default function _client({
                       <td className="px-4 py-2">{pkg.name}</td>
                       <td className="px-4 py-2 capitalize">{pkg.purpose}</td>
                       <td className="px-4 py-2">${pkg?.price}</td>
-                      <td className="px-4 py-2 text-center space-x-2">
-                        <button
-                          className="text-blue-400 underline text-sm"
-                          onClick={() => setViewPackage(pkg)}
-                        >
-                          View
-                        </button>
-                        <button
-                          className="text-yellow-400 underline text-sm"
-                          onClick={() => handleEdit(pkg)}
-                        >
-                          Edit
-                        </button>
-                        <button
-                          className="text-red-400 underline text-sm"
-                          onClick={() => handleDelete(pkg.id)}
-                        >
-                          Delete
-                        </button>
+                      <td className="px-4 py-2">
+                        <div className="flex items-center justify-center h-full w-full gap-2">
+                          <button
+                            disabled={loading}
+                            className={`cursor-pointer bg-blue-500 p-2 rounded-lg text-white hover:bg-slate-600/30 transition-colors
+                                ${loading?"cursor-not-allowed" : ""}
+                              `}
+                            onClick={() => setViewPackage(pkg)}
+                          >
+                            <IoMdEye size={16} />
+                          </button>
+                          <button
+                            disabled={loading}
+                            className={`bg-yellow-400 text-black cursor-pointer p-2 rounded-lg hover:bg-slate-600/30 transition-colors
+                                ${loading?"cursor-not-allowed" : ""}
+                              `}
+                            onClick={() => {
+                              handleEdit(pkg);
+                              window.scrollTo({ top: 0, behavior: "smooth" });
+                            }}
+                          >
+                            <Edit size={16} />
+                          </button>
+                          <button
+                            disabled={loading}
+                            className={`cursor-pointer bg-black p-2 rounded-lg text-white hover:bg-slate-600/30 transition-colors
+                                ${loading?"cursor-not-allowed" : ""}
+                              `}
+                            onClick={() => {setSelectedId(pkg.id); setDeletePopUp(true);}}
+                          >
+                            <Trash size={18} className="text-red-500" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))
@@ -296,33 +338,51 @@ export default function _client({
       {/* View Modal */}
       {viewPackage && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-slate-800 text-white p-6 rounded-lg max-w-md w-full shadow-lg relative">
-            <button
-              onClick={() => setViewPackage(null)}
-              className="absolute top-2 right-3 text-xl text-white"
-            >
-              ×
-            </button>
-            <h2 className="text-lg font-bold  mb-3">{viewPackage.name}</h2>
-            <p>
-              <strong>Purpose:</strong> {viewPackage.purpose}
-            </p>
-            <p>
-              <strong>Price:</strong> ${viewPackage.price}
-            </p>
-            {viewPackage.description && (
+          <div className="p-5 bg-black rounded-lg">
+            <div className="bg-slate-800 text-white p-6 rounded-lg max-w-md w-full shadow-lg relative">
+              <button
+                onClick={() => setViewPackage(null)}
+                className="cursor-pointer absolute top-5 right-5 font-bold text-2xl text-[#00e08f]"
+              >
+                ×
+              </button>
+              <h2 className="text-lg font-bold text-[#00e08f] mb-3">{viewPackage.name}</h2>
               <p>
-                <strong>Description:</strong> {viewPackage.description}
+                <strong className="text-[#8f8f8f]">Purpose:</strong> {viewPackage.purpose}
               </p>
-            )}
-            {viewPackage.features && (
               <p>
-                <strong>Features:</strong> {viewPackage.features.join(", ")}
+                <strong className="text-[#8f8f8f]">Price:</strong> ${viewPackage.price}
               </p>
-            )}
+              {viewPackage.description && (
+                <p>
+                  <strong className="text-[#8f8f8f]">Description:</strong> {viewPackage.description}
+                </p>
+              )}
+              {viewPackage.features && (
+                <p className="flex flex-col">
+                  <strong className="text-[#8f8f8f]">Features:</strong>
+                  {viewPackage.features.map((feature, index)=>
+                    <span key={index}>- {feature}</span>
+                  )}
+                </p>
+              )}
+            </div>
           </div>
         </div>
       )}
+
+      {
+        deletePopUp && 
+        <ConfirmPopUp
+          title={"Delete package?"}
+          message={"Are you sure you want to delete this package?"}
+          onCancel={() => setDeletePopUp(false)}
+          onConfirm={() => {
+            setDeletePopUp(false);
+            handleDelete(selectedId!)
+          }}
+        />
+      }
     </div>
   );
 }

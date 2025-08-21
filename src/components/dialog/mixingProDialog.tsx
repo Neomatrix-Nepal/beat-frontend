@@ -80,11 +80,11 @@ export default function MixingProSubmissionDetails({
           </h3>
           <div className="flex items-center gap-3 mb-4">
             <img src={avatar} alt="avatar" className="w-10 h-10 rounded-full" />
-            <div>
+            <div className="min-w-0">
               <p className="text-lg font-semibold text-[#e7625f]">
                 {entry.name}
               </p>
-              <p className="text-sm text-gray-300">{entry.email}</p>
+              <p className="text-sm text-gray-300 break-words">{entry.email}</p>
             </div>
           </div>
           <InfoRow

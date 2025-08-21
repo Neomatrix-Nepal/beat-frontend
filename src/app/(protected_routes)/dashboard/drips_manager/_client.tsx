@@ -63,10 +63,10 @@ export default function _Client({ dripsData }: { dripsData: Product[] }) {
               <div className="flex space-x-2">
                 <button
                   onClick={() => setIsOpen(true)}
-                  className="bg-custom cursor-pointer  text-white px-6 py-3 rounded-lg flex justify-center items-center gap-2 transition-all duration-200 transform hover:scale-105"
+                  className="flex items-center gap-2 cursor-pointer py-3 px-5 text-sm font-semibold rounded-lg bg-purple-700 text-white hover:bg-purple-800 transition-transform transform hover:scale-105 appearance-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50"
                 >
                   <Upload size={20} />
-                  <span>Upload</span>
+                  <span className="font-michroma font-semibold">Upload</span>
                 </button>
               </div>
             </div>
@@ -149,6 +149,8 @@ export default function _Client({ dripsData }: { dripsData: Product[] }) {
         </div>
       </div>
       <DripFormModal
+        allBeats={beats}
+        setAllBeats={setBeats}
         initialData={selectedBeats}
         isOpen={isOpen}
         onClose={() => {

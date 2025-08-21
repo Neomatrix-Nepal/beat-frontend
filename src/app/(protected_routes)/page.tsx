@@ -1,6 +1,5 @@
 import { StatsGrid } from "@/src/components/stats-grid";
 import { ChartsSection } from "@/src/components/charts-section";
-import { LatestUploads } from "@/src/components/latest-uploads";
 import AdminLayout from "./dashboard/layout";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/src/app/api/auth/option";
@@ -28,14 +27,13 @@ export default async function Dashboard() {
 
   return (
     <AdminLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 xl:pl-2">
         <StatsGrid data={gridData} />
         <ChartsSection
           barGraphData={barGraphData}
           pieChartData={pieChartData}
           token={session?.user?.tokens.accessToken!}
         />
-        <LatestUploads />
       </div>
     </AdminLayout>
   );

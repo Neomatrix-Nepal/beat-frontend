@@ -56,3 +56,26 @@ export const updatePackage = async (
     );
   }
 };
+
+export const deletePackage = async (
+  id: string,
+  token: string
+) => {
+  try {
+    const response = await api.delete("/packages/" + id,{
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    const data = response.data;
+
+    return data;
+  } catch (error: any) {
+    console.error("Failed to upload packages:", error);
+    throw new Error(
+      error.response?.data?.message || "Failed to upload packages"
+    );
+  }
+};
+

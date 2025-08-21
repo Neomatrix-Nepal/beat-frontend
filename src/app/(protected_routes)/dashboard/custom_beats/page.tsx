@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
 import { IoMdCheckmark } from "react-icons/io";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import {
@@ -83,24 +82,7 @@ const CustomBeatsPage = () => {
     <div className="min-h-screen bg-slate-900 flex">
       <div className="flex-1 flex flex-col">
         <div className="flex-1 p-6">
-          <div className="gap-2 pl-4 mb-2 h-16 p-4 flex items-center justify-between">
-            {selectedCount >= 2 && (
-              <div className="flex gap-2">
-                <button className={BUTTON_CLASSES}>
-                  <IoMdCheckmark size={20} />
-                  Sent
-                </button>
-                <button
-                  onClick={deleteSelectedEntries}
-                  className={BUTTON_CLASSES}
-                >
-                  <RiDeleteBin6Line size={20} />
-                  Delete
-                </button>
-              </div>
-            )}
-          </div>
-
+          
           {isLoading ? (
             <div className="text-white font-michroma text-center">
               Loading...

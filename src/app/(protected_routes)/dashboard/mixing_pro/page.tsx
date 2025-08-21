@@ -11,7 +11,6 @@ import {
 } from "@/src/components/ui/pagination";
 import api from "@/src/hooks/useApi";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { RiDeleteBin6Line } from "react-icons/ri";
 import { deleteMixingOrder } from "./action";
 import toast from "react-hot-toast";
 import { useSession } from "next-auth/react";
@@ -107,22 +106,6 @@ const MixingProPage = () => {
     }
   };
 
-  const handleDeleteSelectedEntries = useCallback(async () => {
-    const selectedIds = uploads
-      .filter((entry) => entry.selected)
-      .map((entry) => entry.id);
-    try {
-      await Promise.all(
-        selectedIds.map((id) => api.delete(`/mixing-order/${id}`))
-      );
-      setUploads((prev) => prev.filter((entry) => !entry.selected));
-      setSelectAll(false);
-    } catch (err) {
-      setError("Failed to delete selected mixing orders. Please try again.");
-      console.error("Error deleting selected entries:", err);
-    }
-  }, [uploads]);
-
   const handleMarkAsSent = useCallback(async (id: number) => {
     try {
       await api.patch(`/mixing-order/${id}`, { status: "completed" });
@@ -148,25 +131,10 @@ const MixingProPage = () => {
   return (
     <div className="min-h-screen bg-slate-900 flex">
       <div className="flex-1 flex flex-col">
-        <div className="flex-1 p-6">
+        <div className="flex-1 md:p-6">
           {/* Loading and Error States */}
           {isLoading && <p className="text-white font-michroma">Loading...</p>}
           {error && <p className="text-red-400 font-michroma">{error}</p>}
-
-          {/* Header Controls */}
-          <div className="gap-2 pl-4 mb-2 h-16 p-4 flex items-center justify-between">
-            <div className="flex gap-2 items-center">
-              {selectedCount >= 2 && (
-                <button
-                  onClick={handleDeleteSelectedEntries}
-                  className={BUTTON_CLASSES}
-                >
-                  <RiDeleteBin6Line size={20} />
-                  Delete
-                </button>
-              )}
-            </div>
-          </div>
 
           {/* Table Display */}
           <MixingProTable

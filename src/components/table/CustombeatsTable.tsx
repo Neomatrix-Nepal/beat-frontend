@@ -1,7 +1,7 @@
 "use client";
 import { updateCustomBeatStatus } from "@/src/app/actions/customs-beats-actions";
 import { CustomBeat } from "@/src/types";
-import { Check, Trash2 } from "lucide-react";
+import { Check, Trash } from "lucide-react";
 import { useSession } from "next-auth/react";
 import React, { useState } from "react";
 import { IoMdEye } from "react-icons/io";
@@ -133,7 +133,7 @@ export const CustombeatsTable: React.FC<CustomBeatsTableProps> = ({
                       }}
                       className="cursor-pointer p-2 text-red-400 bg-foreground hover:bg-purple-600/20 rounded-lg transition-colors"
                     >
-                      <Trash2 size={16} className="text-red-500" />
+                      <Trash size={16} className="text-red-500" />
                     </button>
                   </div>
                 </td>
@@ -152,14 +152,8 @@ export const CustombeatsTable: React.FC<CustomBeatsTableProps> = ({
           >
             <div className="flex items-start justify-between mb-3">
               <div className="flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  checked={entry.selected}
-                  onChange={() => onSelectEntry(entry.id)}
-                  className="w-4 h-4 text-purple-600 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
-                />
                 <div>
-                  <h3 className="text-white font-medium">{entry.name}</h3>
+                  <h3 className="text-white font-medium break-all">{entry.name}</h3>
                   <a
                     href={entry.referenceTrack}
                     target="_blank"
@@ -207,13 +201,13 @@ export const CustombeatsTable: React.FC<CustomBeatsTableProps> = ({
                 </button>
                 <button
                   onClick={() => {
-                    onDeleteEntry(entry.id.toString());
-                    showDeleteToast("Custom beat", "deleted", "success");
+                    setSelectedEntryId(entry.id.toString());
+                    setDeletePopUp(true)
                   }}
                   className="p-2 rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                   title="Delete"
                 >
-                  <Trash2 size={16} className="text-red-500" />
+                  <Trash size={16} className="text-red-500" />
                 </button>
               </div>
             </div>
