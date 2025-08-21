@@ -72,7 +72,7 @@ jobs:
             rm -rf .next dist build public
             tar -xzf /tmp/deploy.tar.gz -C /var/www/admin.beatpasal.com
 
-            npm ci --only=production
+            npm ci
 
             pm2 restart admin-beatpasal || pm2 start npm --name admin-beatpasal -- start
             sudo systemctl restart nginx
