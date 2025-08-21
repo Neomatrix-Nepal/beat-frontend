@@ -82,15 +82,12 @@ const AddWorkForm: React.FC<WorkFormProps> = ({ initialData, onSave }) => {
   const selectedPlatform = watch("platform");
 
   useEffect(() => {
-    // trigger validation on workLink when platform changes
     if (selectedPlatform !== undefined && startValidation) {
       trigger("workLink");
     }
   }, [selectedPlatform, trigger]);
 
-  // Cleanup on unmount to prevent memory leak
   useEffect(() => {
-    console.log(coverImagePreview);
     return () => {
       if (coverImagePreview) {
         URL.revokeObjectURL(coverImagePreview);
@@ -98,12 +95,10 @@ const AddWorkForm: React.FC<WorkFormProps> = ({ initialData, onSave }) => {
     };
   }, [coverImagePreview]);
 
-  // Handle file input change, update preview & react-hook-form value
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] ?? null;
     setPassedCoverImagePreview(null);
 
-    // Revoke previous object URL if it exists(to prevent memory leak)
     if (coverImagePreview) {
       URL.revokeObjectURL(coverImagePreview);
     }
@@ -116,7 +111,6 @@ const AddWorkForm: React.FC<WorkFormProps> = ({ initialData, onSave }) => {
     }
   };
 
-  // Delete image preview and reset input + RHF value
   const handleDeleteImage = () => {
     setCoverImagePreview(null);
     setPassedCoverImagePreview(null);

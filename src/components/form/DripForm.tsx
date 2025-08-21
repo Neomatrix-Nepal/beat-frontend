@@ -42,8 +42,6 @@ export default function DripFormModal({
   const [previewCover, setPreviewCover] = useState<string | null>(null);
   const { data: session } = useSession();
 
-  console.log(initialData?.images[0].url)
-
   const {
     register,
     handleSubmit,
@@ -53,19 +51,16 @@ export default function DripFormModal({
     formState: { errors },
     reset,
   } = useForm<FormData>({
-    mode:"onChange",
+    mode: "onChange",
     defaultValues: {
       dripTitle: "",
       price: "",
       size: "",
-      description:"",
+      description: "",
       cover: null,
       audio: null,
     },
   });
-
-  // const values = watch();
-  // console.log("form values:",values)
 
   const coverInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -77,7 +72,6 @@ export default function DripFormModal({
       setPreviewCover(null);
       return;
     }
-    console.log(initialData)
 
     setValue("dripTitle", initialData.name);
     setValue("price", initialData.price);
@@ -85,7 +79,7 @@ export default function DripFormModal({
     setValue("description", initialData.description ?? "");
 
     if (typeof initialData.images[0].url === "string") {
-      setValue("cover", initialData.images[0].url)
+      setValue("cover", initialData.images[0].url);
       setPreviewCover(
         process.env.NEXT_PUBLIC_API_URL + "/" + initialData.images[0].url
       );
@@ -120,7 +114,7 @@ export default function DripFormModal({
         console.log(key, value);
       });
 
-      let result : Product;
+      let result: Product;
 
       if (initialData) {
         result = await updateProduct(
@@ -128,16 +122,15 @@ export default function DripFormModal({
           initialData.id.toString(),
           session?.user?.tokens?.accessToken as string
         );
-        setAllBeats(prev =>
-          prev.map(item => (item.id === result.id ? result : item))
+        setAllBeats((prev) =>
+          prev.map((item) => (item.id === result.id ? result : item))
         );
-
       } else {
         result = await uploadProduct(
           formData,
           session?.user?.tokens?.accessToken as string
         );
-        setAllBeats([...allBeats, result])
+        setAllBeats([...allBeats, result]);
       }
 
       toast.success(
@@ -184,7 +177,11 @@ export default function DripFormModal({
                 {coverFile ? (
                   <>
                     <Image
-                      src={ typeof coverFile === "string" ? `${process.env.NEXT_PUBLIC_API_URL}/${coverFile}`: URL.createObjectURL(coverFile)}
+                      src={
+                        typeof coverFile === "string"
+                          ? `${process.env.NEXT_PUBLIC_API_URL}/${coverFile}`
+                          : URL.createObjectURL(coverFile)
+                      }
                       alt="Cover"
                       className="object-cover w-full h-full rounded-lg"
                       width={200}
@@ -240,7 +237,6 @@ export default function DripFormModal({
                     className="hidden"
                     onChange={(e) => {
                       const file = e.target.files?.[0] || null;
-                      console.log(file)
                       field.onChange(file);
                       if (file) setPreviewCover(URL.createObjectURL(file));
                       else setPreviewCover(null);
@@ -297,7 +293,6 @@ export default function DripFormModal({
               options={["XS", "S", "M", "L", "XL"]}
               defaultValue={initialData?.size ?? ""} // preselect if editing
             />
-
           </div>
 
           <TextareaField
@@ -406,25 +401,27 @@ const SelectField = ({
   rules?: object;
   options: string[];
   defaultValue?: string;
-}) => {console.log(defaultValue); return(
-  <div>
-    <label className="block mb-2 text-sm font-medium text-gray-300">
-      {label}
-    </label>
-    <select
-      {...register(name, rules)}
-      defaultValue={defaultValue ?? ""}
-      className="w-full bg-[#162133] border border-gray-600 text-white py-2 px-3 rounded-lg focus:outline-none focus:border-purple-500"
-    >
-      <option value="" disabled hidden>
-        Select {label}
-      </option>
-      {options.map((option) => (
-        <option key={option} value={option}>
-          {option}
+}) => {
+  return (
+    <div>
+      <label className="block mb-2 text-sm font-medium text-gray-300">
+        {label}
+      </label>
+      <select
+        {...register(name, rules)}
+        defaultValue={defaultValue ?? ""}
+        className="w-full bg-[#162133] border border-gray-600 text-white py-2 px-3 rounded-lg focus:outline-none focus:border-purple-500"
+      >
+        <option value="" disabled hidden>
+          Select {label}
         </option>
-      ))}
-    </select>
-    {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
-  </div>
-)};
+        {options.map((option) => (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
+      {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
+    </div>
+  );
+};
