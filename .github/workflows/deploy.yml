@@ -9,6 +9,12 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
+    env: # <-- inject environment variables here
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+      NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+      PORT: 3000 # optional, only if you need it at runtime
+
     steps:
       # Step 1: Checkout code
       - name: Checkout code
@@ -32,26 +38,20 @@ jobs:
         run: |
           mkdir deploy
 
-          # Detect build output folder
           if [ -d ".next" ]; then
             echo "Next.js project detected ✅"
             cp -r .next deploy/
-            cp -r public deploy/        # Needed for Next.js
+            cp -r public deploy/
           elif [ -d "dist" ]; then
-            echo "Vite/Other project detected ✅"
             cp -r dist deploy/
           elif [ -d "build" ]; then
-            echo "CRA project detected ✅"
             cp -r build deploy/
           else
             echo "❌ No build folder found!"
             exit 1
           fi
 
-          # Copy package.json for production deps
           cp package*.json deploy/
-
-          # Compress into tarball
           cd deploy && tar -czf ../deploy.tar.gz .
 
       # Step 5: Setup SSH
@@ -69,16 +69,11 @@ jobs:
             mkdir -p /var/www/admin.beatpasal.com
             cd /var/www/admin.beatpasal.com
 
-            # Cleanup old files and extract new build
             rm -rf .next dist build public
             tar -xzf /tmp/deploy.tar.gz -C /var/www/admin.beatpasal.com
 
-            # Install only production dependencies
             npm ci --only=production
 
-            # Restart app with PM2
             pm2 restart admin-beatpasal || pm2 start npm --name admin-beatpasal -- start
-
-            # Restart Nginx
             sudo systemctl restart nginx
           EOF

@@ -1,6 +1,3 @@
-// =============================
-// STANDARD LICENSE AGREEMENT
-// =============================
 export const standardTemplate = `
 [HEADING]STANDARD LICENSE AGREEMENT
 Effective Date: [EFFECTIVE_DATE]
@@ -77,9 +74,6 @@ Signature: [SIGNATURE_INITIALS]
 Date: [DATE_SIGNED]
 `;
 
-// =============================
-// PREMIUM LICENSE AGREEMENT
-// =============================
 export const premiumTemplate = `
 [HEADING]PREMIUM LICENSE AGREEMENT
 Effective Date: [EFFECTIVE_DATE]
@@ -154,9 +148,6 @@ Signature: [SIGNATURE_INITIALS]
 Date: [DATE_SIGNED]
 `;
 
-// =============================
-// EXCLUSIVE LICENSE AGREEMENT
-// =============================
 export const exclusiveTemplate = `
 [HEADING]EXCLUSIVE LICENSE AGREEMENT
 Effective Date: [EFFECTIVE_DATE]
