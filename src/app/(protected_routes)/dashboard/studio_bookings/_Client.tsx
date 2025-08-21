@@ -11,11 +11,21 @@ import { formatDateTime } from "@/src/lib/utils";
 import { StudioBooking } from "@/src/types/studio-booking";
 import { Check, Eye, Trash, X } from "lucide-react";
 import { useSession } from "next-auth/react";
-import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { changeBookingStatus, deleteBooking } from "./action";
+import { IoMdEye } from "react-icons/io";
+import ConfirmPopUp from "@/src/components/ui/confirmPopUp";
+import LoadingEffect from "@/src/components/loadingEffect";
+import PopupWrapper from "@/src/components/shared/PopupWrapper";
+import StudioBookingDetails from "@/src/components/dialog/studioBookingDialog";
+
+const statusStyles = {
+  confirmed: "bg-green-800/20 text-green-400 border-green-800/30",
+  pending: "bg-yellow-700/20 text-yellow-400 border-yellow-700/30",
+  cancelled: "bg-red-800/20 text-red-400 border-red-800/30",
+};
 
 export default function ManageBookings({
   bookings: initialBookings,
@@ -27,8 +37,9 @@ export default function ManageBookings({
   const [selectedBooking, setSelectedBooking] = useState<StudioBooking | null>(
     null
   );
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [deletePopUp, setDeletePopUp] = useState(false);
+  const [viewDetails, setViewDetails] = useState(false);
 
   const { data: session } = useSession();
   const token = session?.user?.tokens.accessToken;
@@ -38,14 +49,28 @@ export default function ManageBookings({
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentBookings = bookings.slice(startIndex, startIndex + itemsPerPage);
 
+  useEffect(()=>{
+    
+    setBookings(
+      bookings.map((booking) =>
+          booking = {
+              ...booking,
+              status: formatStatus(booking.status),
+          }
+      )
+    );
+  },[])
+
+  console.log(bookings)
+
   const openModal = (booking: StudioBooking) => {
     setSelectedBooking(booking);
-    setIsModalOpen(true);
+    setViewDetails(true);
   };
 
   const closeModal = () => {
-    setIsModalOpen(false);
     setSelectedBooking(null);
+    setViewDetails(false);
   };
 
   const goToPreviousPage = () => {
@@ -67,7 +92,7 @@ export default function ManageBookings({
             booking.id === bookingId
               ? {
                   ...booking,
-                  status: status as "pending" | "cancelled" | "confirmed",
+                  status: formatStatus(status),
                 }
               : booking
           )
@@ -83,6 +108,7 @@ export default function ManageBookings({
   };
 
   const handleDelete = async (id: number) => {
+    setLoading(true);
     try {
       const result = await deleteBooking(id, token!);
       if (result.success) {
@@ -93,13 +119,23 @@ export default function ManageBookings({
       }
     } catch (error) {
       toast.error("Failed to delete booking");
+    }finally{
+      setSelectedBooking(null);
+      setLoading(false)
     }
   };
 
+  const formatStatus = (status:string) : "pending" | "cancelled" | "confirmed" =>{
+    const statusMapping : Record<string,string> = {
+      "pending":"pending",
+      "reject":"cancelled",
+      "completed":"confirmed"
+    }
+    return status = statusMapping[status] as "pending" | "cancelled" | "confirmed"
+  }
+
   return (
     <div className="min-h-screen bg-[#0b0e1c] p-6 font-michroma text-white">
-      <h1 className="text-2xl md:text-3xl mb-6">Manage Bookings</h1>
-
       <div className="hidden lg:block overflow-auto rounded-lg bg-[#13172b]">
         <table className="min-w-full text-sm">
           <thead className="bg-[#1b1f33] text-[#8892b0]">
@@ -107,76 +143,78 @@ export default function ManageBookings({
               <th className="px-4 py-3 text-left">Booking ID</th>
               <th className="px-4 py-3 text-left">Client Name</th>
               <th className="px-4 py-3 text-left">Date & Time</th>
-              <th className="px-4 py-3 text-left">Duration</th>
               <th className="px-4 py-3 text-left">Beat File</th>
               <th className="px-4 py-3 text-left">Status</th>
               <th className="px-4 py-3 text-center">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {currentBookings.map((booking, index) => (
+            {currentBookings.map((booking, index) => {
+              return(
               <tr
                 key={`${booking.id}-${index}`}
                 className="border-t border-[#2d324a]"
               >
                 <td className="px-4 py-3">BEAT-{booking.id}</td>
-                <td className="px-4 py-3 flex items-center gap-2">
-                  <Image
-                    src={`https://i.pravatar.cc/150?img=${(index % 70) + 1}`}
-                    alt={booking.id.toString()}
-                    width={36}
-                    height={36}
-                    className="rounded-full"
-                  />
+                <td className="px-4 py-3 break-words">
                   {booking.user.fullname}
                 </td>
                 <td className="px-4 py-3">
-                  {formatDateTime(booking.createdAt)}
+                  {formatDateTime(booking.date)}
                 </td>
-                <td className="px-4 py-3">{booking.duration} hr</td>
                 <td className="px-4 py-3 text-blue-400 hover:underline cursor-pointer">
                   <Link href={booking.googleDriveLink} target="_blank">
                     View File
                   </Link>
                 </td>{" "}
-                <td
-                  className={`px-4 py-3 font-medium cursor-pointer  ${
-                    booking.status === "pending"
-                      ? "text-yellow-500"
-                      : booking.status === "confirmed"
-                      ? "text-green-500"
-                      : booking.status === "cancelled"
-                      ? "text-red-500"
-                      : "text-gray-500"
-                  }`}
-                >
-                  {booking.status}
+                <td className="px-4 py-3">
+                  {/* dont display till status value formatting is completed */}
+                  {booking.status === "cancelled" || booking.status === "confirmed" || booking.status === "pending" ?
+                  <div className={`border-2 font-medium p-2 rounded-md text-center
+                    ${statusStyles[booking.status]}
+                  `}>
+                    {booking.status}
+                  </div>
+                  :
+                  null
+                  }
                 </td>
                 <td className="px-4 flex justify-center py-3 gap-2">
-                  <button disabled={loading} onClick={() => openModal(booking)}>
-                    <Eye size={16} className="text-purple-400" />
-                  </button>
                   <button
-                    disabled={loading}
+                      onClick={() => {
+                        openModal(booking);
+                      }}
+                      className="cursor-pointer p-2 text-white bg-foreground hover:bg-purple-700 rounded-lg transition-colors"
+                    >
+                      <IoMdEye size={16} />
+                    </button>
+                  <button
+                    disabled={loading || booking.status === "confirmed"}
                     onClick={() => handleChangeStatus(booking.id, "completed")}
+                    className={`${booking.status === "confirmed"? "cursor-not-allowed" : ""}`}
                   >
                     <Check size={16} className="text-purple-400" />
                   </button>
                   <button
-                    disabled={loading}
+                    disabled={loading || booking.status === "cancelled"}
                     onClick={() => handleChangeStatus(booking.id, "reject")}
+                    className={`${booking.status === "cancelled"? "cursor-not-allowed" : ""}`}
                   >
                     <X size={16} className="text-purple-400" />
                   </button>
                   <button
                     disabled={loading}
-                    onClick={() => handleDelete(booking.id)}
+                    onClick={() => {
+                      setSelectedBooking(booking);
+                      setDeletePopUp(true);
+                    }}className="cursor-pointer p-2 text-red-400 bg-black hover:bg-red-500/20 rounded-lg transition-colors"
                   >
                     <Trash size={16} className="text-red-500" />
                   </button>
                 </td>
               </tr>
-            ))}
+            )})
+          }
           </tbody>
         </table>
       </div>
@@ -190,42 +228,55 @@ export default function ManageBookings({
           >
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-3">
-                <Image
-                  src={`https://i.pravatar.cc/150?img=${(index % 70) + 1}`}
-                  alt={booking.user.fullname}
-                  width={40}
-                  height={40}
-                  className="rounded-full"
-                />
                 <div>
                   <p className="font-semibold">{booking.user.fullname}</p>
                   <p className="text-gray-400 text-sm">{booking.id}</p>
                 </div>
               </div>
-              <button disabled={loading} onClick={() => openModal(booking)}>
-                <Eye size={18} className="text-purple-400" />
-              </button>
-            </div>
-            <div className="text-sm text-gray-400">
-              <button
-                disabled={loading}
-                onClick={() => handleDelete(booking.id)}
-                className="flex items-center gap-1"
-              >
-                <Trash size={16} />
-                <span>{formatDateTime(booking.createdAt)}</span>
-              </button>
               <div>
-                Duration:{" "}
-                <span className="font-semibold text-white">
-                  {booking.duration} hrs
-                </span>
+                <button
+                  disabled={loading}
+                  onClick={() => {
+                    setSelectedBooking(booking);
+                    setDeletePopUp(true);
+                  }}
+                  className="flex items-center gap-1"
+                >
+                  <Trash size={16} className="text-red-400"/>
+                </button>
               </div>
             </div>
-            <div>
-              <Link href={booking.googleDriveLink} target="_blank">
-                <span className="text-blue-400 underline">View File</span>
-              </Link>
+            <div className="text-sm text-gray-400">
+              <div className="flex gap-2 mb-2">
+                  <button 
+                    disabled={loading} 
+                    onClick={() => {
+                        openModal(booking);
+                      }}
+                    className="p-2 bg-black shrink-0 rounded-md"
+                  >
+                  <Eye size={18} className="text-purple-400" />
+                </button>
+                <button
+                    disabled={loading || booking.status === "confirmed"}
+                    onClick={() => handleChangeStatus(booking.id, "completed")}
+                    className="p-2 shrink-0  rounded-md"
+                  >
+                    <Check size={16} className="text-green-400 " />
+                  </button>
+                  <button
+                    disabled={loading || booking.status === "cancelled"}
+                    onClick={() => handleChangeStatus(booking.id, "reject")}
+                    className="p-2 shrink-0  rounded-md"
+                  >
+                    <X size={16} className="text-red-400" />
+                  </button>
+              </div>
+              <div className={`border-2 font-medium p-2 rounded-md text-center
+                    ${statusStyles[booking.status]}
+                  `}>
+                    {booking.status}
+              </div>
             </div>
           </div>
         ))}
@@ -265,55 +316,31 @@ export default function ManageBookings({
       </div>
 
       {/* Modal */}
-      {isModalOpen && selectedBooking && (
-        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center">
-          <div className="bg-[#1C2433] w-full max-w-md p-6 rounded-lg text-white relative border border-[#2C3A4F] shadow-lg">
-            <button
-              onClick={closeModal}
-              className="absolute top-2 right-2 text-gray-400 hover:text-red-500 text-lg"
-            >
-              <X size={20} />
-            </button>
-            <h2 className="text-xl font-bold mb-4">Booking Details</h2>
-            <div className="space-y-2 text-sm">
-              <p>
-                <span className="font-semibold">Client:</span>{" "}
-                {selectedBooking.user.fullname}
-              </p>
-              <p>
-                <span className="font-semibold">Email:</span>{" "}
-                {selectedBooking.user.email}
-              </p>
-              <p>
-                <span className="font-semibold">Phone:</span>{" "}
-                {selectedBooking.phoneNumber}
-              </p>
-              <p>
-                <span className="font-semibold">Duration:</span>{" "}
-                {selectedBooking.duration} hr
-              </p>
-              <p>
-                <span className="font-semibold">Booking Date:</span>{" "}
-                {formatDateTime(selectedBooking.date)}
-              </p>
-              <p>
-                <span className="font-semibold">Google Drive File:</span>{" "}
-                <Link
-                  href={selectedBooking.googleDriveLink}
-                  target="_blank"
-                  className="text-blue-400 underline"
-                >
-                  Open File
-                </Link>
-              </p>
-              <p>
-                <span className="font-semibold">Status:</span>{" "}
-                {selectedBooking.status}
-              </p>
-            </div>
-          </div>
-        </div>
+      {selectedBooking && viewDetails &&
+        <PopupWrapper isOpen={!!selectedBooking}>
+          <StudioBookingDetails
+            booking={selectedBooking}
+            onClose={()=>closeModal()}
+          />
+        </PopupWrapper>
+      }
+
+      {deletePopUp && (
+        <ConfirmPopUp
+          title={"Delete this booking?"}
+          message={"Are you sure you want to delete this booking?"}
+          onCancel={() => setDeletePopUp(false)}
+          onConfirm={() => {
+            setDeletePopUp(false);
+            handleDelete(selectedBooking!.id);
+          }}
+        />
       )}
+    
+      {loading && <LoadingEffect/>}
+      
     </div>
+
+
   );
 }

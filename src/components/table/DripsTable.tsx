@@ -22,7 +22,7 @@ export const DripsTable: React.FC<DripsTableProps> = ({
   const [deletePopUp, setDeletePopUp] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedDripId, setSelectedDripId] = useState<number | null>();
-  const [selectedDrip, setSelectedDrip] = useState<Product|null>(null);
+  const [selectedDrip, setSelectedDrip] = useState<Product | null>(null);
 
   const deleteDrip = async (id: number) => {
     setIsLoading(true);
@@ -36,10 +36,10 @@ export const DripsTable: React.FC<DripsTableProps> = ({
     }
   };
 
-  const handleViewClick = (drip:Product) =>{
+  const handleViewClick = (drip: Product) => {
     setSelectedDrip(drip);
-    console.log(drip)
-  }
+    console.log(drip);
+  };
 
   return (
     <div className="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden font-michroma">
@@ -143,8 +143,14 @@ export const DripsTable: React.FC<DripsTableProps> = ({
               </div>
               <div className="flex items-center gap-2">
                 <button
+                  onClick={() => handleViewClick(drip)}
+                  className="cursor-pointer p-1 text-white hover:bg-purple-600/20 rounded-lg transition-colors"
+                >
+                  <IoMdEye size={16} />
+                </button>
+                <button
                   onClick={() => onEditDrip(drip)}
-                  className="cursor-pointer p-2 text-white hover:bg-purple-600/20 rounded-lg transition-colors"
+                  className="cursor-pointer text-white hover:bg-purple-600/20 rounded-lg transition-colors"
                 >
                   <Edit size={16} />
                 </button>
@@ -163,11 +169,14 @@ export const DripsTable: React.FC<DripsTableProps> = ({
         ))}
       </div>
 
-      {selectedDrip &&
+      {selectedDrip && (
         <PopupWrapper isOpen={!!selectedDrip} centered>
-          <DripDetails drip={selectedDrip} onClose={()=>setSelectedDrip(null)}/>
+          <DripDetails
+            drip={selectedDrip}
+            onClose={() => setSelectedDrip(null)}
+          />
         </PopupWrapper>
-      }
+      )}
 
       {deletePopUp && (
         <ConfirmPopUp
