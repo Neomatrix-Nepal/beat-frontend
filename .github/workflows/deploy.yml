@@ -9,12 +9,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
-    env: # <-- inject environment variables here
-      NODE_ENV: production
-      NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
-      NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-      PORT: 3000 # optional, only if you need it at runtime
-
     steps:
       # Step 1: Checkout code
       - name: Checkout code
@@ -26,41 +20,36 @@ jobs:
         with:
           node-version: "18"
 
-      # Step 3: Install dependencies and build
+      # Step 3: Install dependencies (dev + prod) for build
       - name: Install dependencies
         run: npm install
+        env:
+          NODE_ENV: development
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
 
+      # Step 4: Build project
       - name: Build project
         run: npm run build
+        env:
+          NODE_ENV: development
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
 
-      # Step 4: Prepare artifact (dist + public if Next.js)
+      # Step 5: Prepare artifact
       - name: Archive production files
         run: |
           mkdir deploy
-
-          if [ -d ".next" ]; then
-            echo "Next.js project detected ✅"
-            cp -r .next deploy/
-            cp -r public deploy/
-          elif [ -d "dist" ]; then
-            cp -r dist deploy/
-          elif [ -d "build" ]; then
-            cp -r build deploy/
-          else
-            echo "❌ No build folder found!"
-            exit 1
-          fi
-
-          cp package*.json deploy/
+          cp -r .next public package*.json deploy/
           cd deploy && tar -czf ../deploy.tar.gz .
 
-      # Step 5: Setup SSH
+      # Step 6: Setup SSH
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.8.0
         with:
           ssh-private-key: ${{ secrets.DEPLOY_KEY }}
 
-      # Step 6: Upload and deploy
+      # Step 7: Upload and deploy to VPS
       - name: Deploy to server
         run: |
           scp -o StrictHostKeyChecking=no deploy.tar.gz ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/tmp/deploy.tar.gz
@@ -69,11 +58,16 @@ jobs:
             mkdir -p /var/www/admin.beatpasal.com
             cd /var/www/admin.beatpasal.com
 
-            rm -rf .next dist build public
+            # Remove old build and extract new one
+            rm -rf .next public
             tar -xzf /tmp/deploy.tar.gz -C /var/www/admin.beatpasal.com
 
-            npm ci
+            # Install only production dependencies
+            NODE_ENV=production npm ci --only=production
 
+            # Restart app
             pm2 restart admin-beatpasal || pm2 start npm --name admin-beatpasal -- start
+
+            # Restart Nginx
             sudo systemctl restart nginx
           EOF
