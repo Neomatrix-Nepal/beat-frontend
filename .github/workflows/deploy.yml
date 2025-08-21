@@ -10,64 +10,43 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout code
+      # Step 1: Checkout the code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Setup Node.js
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "18"
-
-      # Step 3: Install dependencies (dev + prod) for build
-      - name: Install dependencies
-        run: npm install
-        env:
-          NODE_ENV: development
-          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
-          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-
-      # Step 4: Build project
-      - name: Build project
-        run: npm run build
-        env:
-          NODE_ENV: development
-          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
-          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-
-      # Step 5: Prepare artifact
-      - name: Archive production files
-        run: |
-          mkdir deploy
-          cp -r .next public package*.json deploy/
-          cd deploy && tar -czf ../deploy.tar.gz .
-
-      # Step 6: Setup SSH
+      # Step 2: Setup SSH with private key
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.8.0
         with:
           ssh-private-key: ${{ secrets.DEPLOY_KEY }}
 
-      # Step 7: Upload and deploy to VPS
-      - name: Deploy to server
+      # Step 3: Connect to server and deploy
+      - name: Deploy to Contabo admin frontend
         run: |
-          scp -o StrictHostKeyChecking=no deploy.tar.gz ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/tmp/deploy.tar.gz
-
           ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-            mkdir -p /var/www/admin.beatpasal.com
-            cd /var/www/admin.beatpasal.com
+            # Navigate to app directory
+            cd /var/www/admin.beatpasal.com || mkdir -p /var/www/admin.beatpasal.com && cd /var/www/admin.beatpasal.com
 
-            # Remove old build and extract new one
-            rm -rf .next public
-            tar -xzf /tmp/deploy.tar.gz -C /var/www/admin.beatpasal.com
+            # Initialize git if it doesn't exist
+            if [ ! -d ".git" ]; then
+              git init
+              git remote add origin git@github.com:Neomatrix-Nepal/beat-frontend.git
+              git fetch
+              git checkout -t origin/main
+            else
+              git pull origin main
+            fi
 
-            # Install only production dependencies
-            NODE_ENV=production npm ci --only=production
+            # Install all dependencies (needed for build)
+            npm install
 
-            # Restart app
+            # Build frontend
+            npm run build
+
+
+            # Start/restart with PM2
             pm2 restart admin-beatpasal || pm2 start npm --name admin-beatpasal -- start
 
-            # Restart Nginx
+            # Restart Nginx 
             sudo systemctl restart nginx
           EOF
