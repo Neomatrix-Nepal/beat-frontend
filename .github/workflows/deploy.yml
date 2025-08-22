@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout repo
+      # Checkout repo (GitHub Actions side, not server)
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -20,7 +20,7 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.DEPLOY_KEY }}
 
-      # Deploy to server
+      # Deploy to Contabo admin frontend
       - name: Deploy to Contabo admin frontend
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
@@ -29,15 +29,17 @@ jobs:
             # Initialize git if not exists
             if [ ! -d ".git" ]; then
               git init
-              git remote add origin git@github.com:Neomatrix-Nepal/beat-frontend.git
-              git fetch
+              git remote add origin git@github-admin:Neomatrix-Nepal/beat-frontend.git
+              git fetch origin main
               git checkout -t origin/main
             else
-              git pull origin main
+              git remote set-url origin git@github-admin:Neomatrix-Nepal/beat-frontend.git
+              git fetch origin main
+              git reset --hard origin/main   # force overwrite all files
             fi
 
             # Install dependencies
-            npm install 
+            npm install --legacy-peer-deps
 
             # Build project
             npm run build
