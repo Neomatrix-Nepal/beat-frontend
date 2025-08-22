@@ -109,11 +109,6 @@ export default function DripFormModal({
       if (data.cover instanceof File) {
         formData.append("images", data.cover);
       }
-
-      formData.forEach((value, key) => {
-        console.log(key, value);
-      });
-
       let result: Product;
 
       if (initialData) {

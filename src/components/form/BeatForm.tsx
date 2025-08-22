@@ -71,9 +71,6 @@ export default function BeatFormModal({
   const coverFile = watch("cover");
   const audioFile = watch("audio");
 
-  console.log("========================================")
-  console.log(session?.user.id)
-  console.log("========================================")
 
   useEffect(() => {
     if (!initialData) {

@@ -10,39 +10,39 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the code
+      # Checkout repo (GitHub Actions side, not server)
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Setup SSH with private key
+      # Setup SSH with private key
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.8.0
         with:
           ssh-private-key: ${{ secrets.DEPLOY_KEY }}
 
-      # Step 3: Connect to server and deploy
+      # Deploy to Contabo admin frontend
       - name: Deploy to Contabo admin frontend
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-            # Navigate to app directory
             cd /var/www/admin.beatpasal.com || mkdir -p /var/www/admin.beatpasal.com && cd /var/www/admin.beatpasal.com
 
-            # Initialize git if it doesn't exist
+            # Initialize git if not exists
             if [ ! -d ".git" ]; then
               git init
-              git remote add origin git@github.com:Neomatrix-Nepal/beat-frontend.git
-              git fetch
+              git remote add origin git@github-admin:Neomatrix-Nepal/beat-frontend.git
+              git fetch origin main
               git checkout -t origin/main
             else
-              git pull origin main
+              git remote set-url origin git@github-admin:Neomatrix-Nepal/beat-frontend.git
+              git fetch origin main
+              git reset --hard origin/main   # force overwrite all files
             fi
 
-            # Install all dependencies (needed for build)
-            npm install
+            # Install dependencies
+            npm install --legacy-peer-deps
 
-            # Build frontend
+            # Build project
             npm run build
-
 
             # Start/restart with PM2
             pm2 restart admin-beatpasal || pm2 start npm --name admin-beatpasal -- start
