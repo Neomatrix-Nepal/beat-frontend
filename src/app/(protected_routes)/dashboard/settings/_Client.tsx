@@ -1,16 +1,11 @@
 "use client";
 
-import { Setting } from "@/src/types/setting.type";
-import React, { useState, ChangeEvent } from "react";
-import toast from "react-hot-toast";
 import { uploadMusic } from "@/src/app/(protected_routes)/dashboard/beats_manager/action";
+import { Setting } from "@/src/types/setting.type";
 import { useSession } from "next-auth/react";
+import { ChangeEvent, useState } from "react";
+import toast from "react-hot-toast";
 import { updateSettings } from "./action";
-
-interface DigitalAsset {
-  id: number;
-  filename: string;
-}
 
 export default function SettingsUI({ settings }: { settings: Setting | null }) {
   const [form, setForm] = useState<Setting | null>(settings);
@@ -37,11 +32,6 @@ export default function SettingsUI({ settings }: { settings: Setting | null }) {
     const file = e.target.files[0];
     if (type === "before") setBeforeFile(file);
     else setAfterFile(file);
-  };
-
-  const handleRemoveFile = (type: "before" | "after") => {
-    if (type === "before") setBeforeFile(null);
-    else setAfterFile(null);
   };
 
   const handleSave = async () => {
@@ -78,6 +68,7 @@ export default function SettingsUI({ settings }: { settings: Setting | null }) {
         beforeMixingId: beforeAssetId ?? form.beforeMixingId,
         afterMixingId: afterAssetId ?? form.afterMixingId,
       };
+      console.log(updatedForm);
 
       const { id } = await updateSettings(
         settings?.id.toString() as string,
@@ -197,15 +188,19 @@ export default function SettingsUI({ settings }: { settings: Setting | null }) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="flex flex-col">
             <label>Before Mixing Asset</label>
-            {afterFile || form?.beforeMixing ? (
-              <div className="flex items-center space-x-2">
-                <span>{afterFile?.name ?? form?.beforeMixing?.id}</span>
-                <button
-                  className="text-yellow-400 underline"
-                  onClick={() => handleRemoveFile("before")}
-                >
-                  Remove
-                </button>
+            {form?.beforeMixing || beforeFile ? (
+              <div className=" items-center space-x-2">
+                <span>
+                  {beforeFile?.name ??
+                    form?.beforeMixing?.id ??
+                    "Existing file"}
+                </span>
+                <input
+                  type="file"
+                  accept="audio/*"
+                  onChange={(e) => handleFileSelect(e, "before")}
+                  className="p-2 rounded bg-slate-700"
+                />
               </div>
             ) : (
               <input
@@ -217,17 +212,20 @@ export default function SettingsUI({ settings }: { settings: Setting | null }) {
             )}
           </div>
 
+          {/* After Mixing Asset */}
           <div className="flex flex-col">
             <label>After Mixing Asset</label>
-            {afterFile || form?.afterMixing ? (
-              <div className="flex items-center space-x-2">
-                <span>{afterFile?.name ?? form?.afterMixing?.id}</span>
-                <button
-                  className="text-yellow-400 underline"
-                  onClick={() => handleRemoveFile("after")}
-                >
-                  Remove
-                </button>
+            {form?.afterMixing || afterFile ? (
+              <div className="items-center space-x-2">
+                <span>
+                  {afterFile?.name ?? form?.afterMixing?.id ?? "Existing file"}
+                </span>
+                <input
+                  type="file"
+                  accept="audio/*"
+                  onChange={(e) => handleFileSelect(e, "after")}
+                  className="p-2 rounded bg-slate-700"
+                />
               </div>
             ) : (
               <input
@@ -245,7 +243,7 @@ export default function SettingsUI({ settings }: { settings: Setting | null }) {
           disabled={loading}
           className="mt-6 bg-custom px-6 py-2 rounded hover:scale-105 transition-transform disabled:opacity-50"
         >
-          {loading ? "Saving..." : "Update Settings"}
+          {loading ? "Updating. Please Wait...." : "Update Settings"}
         </button>
       </div>
     </div>
