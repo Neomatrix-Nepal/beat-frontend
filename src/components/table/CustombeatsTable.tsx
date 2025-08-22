@@ -1,22 +1,18 @@
 "use client";
-import { updateCustomBeatStatus } from "@/src/app/actions/customs-beats-actions";
 import { CustomBeat } from "@/src/types";
 import { Check, Trash } from "lucide-react";
-import { useSession } from "next-auth/react";
 import React, { useState } from "react";
 import { IoMdEye } from "react-icons/io";
-import { showDeleteToast } from "../../lib/util";
 import BeatsDialogDetails from "../dialog/beatsDialog";
 import LoadingEffect from "../loadingEffect";
 import PopupWrapper from "../shared/PopupWrapper";
 import ConfirmPopUp from "../ui/confirmPopUp";
+import toast from "react-hot-toast";
 
 interface CustomBeatsTableProps {
   entries: CustomBeat[];
-  selectAll: boolean;
-  onSelectAll: () => void;
-  onSelectEntry: (id: number) => void;
-  onDeleteEntry: (id: string) => void;
+  onDeleteEntry: (id: number) => void;
+  onStatusChange: (id:number, status:string) => void;
 }
 
 const statusStyles = {
@@ -27,15 +23,15 @@ const statusStyles = {
 
 export const CustombeatsTable: React.FC<CustomBeatsTableProps> = ({
   entries,
-  onSelectEntry,
   onDeleteEntry,
+  onStatusChange,
 }) => {
+  const [beats, setBeats] = useState<CustomBeat[]>(entries)
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState<CustomBeat | null>(null);
   const [deletePopUp, setDeletePopUp] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [selectedEntryId, setSelectedEntryId] = useState<string | null>();
-  const { data: session } = useSession();
+  const [selectedEntryId, setSelectedEntryId] = useState<number | null>();
 
   const handleViewClick = (entry: CustomBeat) => {
     setSelectedEntry(entry);
@@ -47,18 +43,33 @@ export const CustombeatsTable: React.FC<CustomBeatsTableProps> = ({
     setSelectedEntry(null);
   };
 
-  const deleteBeat = async (id: string) => {
+  const handleStatusChange = async(id:number, status:"pending" | "sent" | "completed") =>{
+    try{
+      await Promise.resolve(onStatusChange(id, status));
+      setBeats(prev => prev.map((beat) => beat.id === id ? {...beat, status} : beat))
+      toast.success("Beat approved");
+    }catch(error){
+      console.log(error);
+      toast.error("Failed to approve beat");
+    }
+  }
+
+  const deleteBeat = async (id: number) => {
     setIsLoading(true);
     try {
       await Promise.resolve(onDeleteEntry(id));
+      setBeats(prev => prev.filter((beat)=>beat.id !== id))
+      toast.success("Beat deleted");
     } catch (error) {
       console.error(error);
+      toast.error("Failed to delete beat");
     } finally {
       setSelectedEntryId(null);
       setIsLoading(false);
     }
   };
 
+  console.log(entries)
   return (
     <div className="bg-[#101828] rounded-xl border border-[#1D2939] overflow-hidden font-michroma">
       {/* Desktop Table */}
@@ -74,7 +85,7 @@ export const CustombeatsTable: React.FC<CustomBeatsTableProps> = ({
             </tr>
           </thead>
           <tbody>
-            {entries.map((entry, index) => (
+            {beats.map((entry, index) => (
               <tr
                 key={entry.id}
                 className={`border-b border-[#2C3A4F] hover:bg-[#1A2233]/50 transition-colors ${
@@ -116,11 +127,7 @@ export const CustombeatsTable: React.FC<CustomBeatsTableProps> = ({
                     </button>
                     <button
                       onClick={() => {
-                        updateCustomBeatStatus(
-                          entry.id,
-                          "completed",
-                          session?.user.tokens.accessToken as string
-                        );
+                        handleStatusChange(entry.id, "completed")
                       }}
                       className="cursor-pointer p-2 bg-foreground hover:bg-purple-700 rounded-lg transition-colors"
                     >
@@ -128,7 +135,7 @@ export const CustombeatsTable: React.FC<CustomBeatsTableProps> = ({
                     </button>
                     <button
                       onClick={() => {
-                        setSelectedEntryId(entry.id.toString());
+                        setSelectedEntryId(entry.id);
                         setDeletePopUp(true);
                       }}
                       className="cursor-pointer p-2 text-red-400 bg-foreground hover:bg-purple-600/20 rounded-lg transition-colors"
@@ -145,7 +152,7 @@ export const CustombeatsTable: React.FC<CustomBeatsTableProps> = ({
 
       {/* Mobile Cards */}
       <div className="lg:hidden space-y-4 p-4">
-        {entries.map((entry, index) => (
+        {beats.map((entry, index) => (
           <div
             key={entry.id}
             className="bg-[#1A1F2E] rounded-lg p-4 border border-[#2C3A4F]"
@@ -188,11 +195,7 @@ export const CustombeatsTable: React.FC<CustomBeatsTableProps> = ({
                 </button>
                 <button
                   onClick={() => {
-                    updateCustomBeatStatus(
-                      entry.id,
-                      "completed",
-                      session?.user.tokens.accessToken as string
-                    );
+                    handleStatusChange(entry.id, "completed")
                   }}
                   className="p-2 rounded-lg text-green-400 hover:bg-green-600/20 transition-colors"
                   title="Mark Sent"
@@ -201,7 +204,7 @@ export const CustombeatsTable: React.FC<CustomBeatsTableProps> = ({
                 </button>
                 <button
                   onClick={() => {
-                    setSelectedEntryId(entry.id.toString());
+                    setSelectedEntryId(entry.id);
                     setDeletePopUp(true)
                   }}
                   className="p-2 rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"

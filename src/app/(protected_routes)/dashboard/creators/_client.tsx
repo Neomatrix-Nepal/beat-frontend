@@ -13,6 +13,7 @@ import { useSession } from "next-auth/react";
 import { useCallback, useState } from "react";
 import toast from "react-hot-toast";
 import { changeCreatorStatus, deleteCreator } from "./action";
+import LoadingEffect from "@/src/components/loadingEffect";
 
 export default function CreatorsClient({
   creators: initialCreators,
@@ -87,22 +88,12 @@ export default function CreatorsClient({
     <div className="min-h-screen bg-slate-900 flex">
       <div className="flex-1 flex flex-col">
         <div className="flex-1 p-6">
-          {isLoading ? (
-            <div className="text-white font-michroma text-center">
-              Loading...
-            </div>
-          ) : error ? (
-            <div className="text-red-400 font-michroma text-center">
-              {error}
-            </div>
-          ) : (
-            <CreatorTable
-              entries={creators}
-              onDeleteEntry={handleDeleteEntry}
-              onChangeStatus={handleChangeStatus}
-              isLoading={isLoading}
-            />
-          )}
+          <CreatorTable
+            entries={creators}
+            onDeleteEntry={handleDeleteEntry}
+            onChangeStatus={handleChangeStatus}
+            isLoading={isLoading}
+          />
 
           <div className="mt-6 w-full font-michroma text-white flex justify-end items-center">
             <div className="flex">
@@ -166,6 +157,7 @@ export default function CreatorsClient({
           </div>
         </div>
       </div>
+      {isLoading && <LoadingEffect/>}
     </div>
   );
 }

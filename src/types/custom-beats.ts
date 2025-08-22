@@ -10,7 +10,7 @@ export interface CustomBeat {
   instruments: string[];
   referenceTrack: string;
   additionalInstructions: string;
-  status: 'pending' | 'sent';
+  status: 'pending' | 'sent' | "completed";
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;

@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Eye, Check, Trash, Cross, X } from "lucide-react";
 import { CreatorEntry } from "@/src/types";
 import { formatDateTime } from "@/src/lib/utils";
+import ConfirmPopUp from "../ui/confirmPopUp";
+import PopupWrapper from "../shared/PopupWrapper";
+import CreatorsDialogDetails from "../dialog/creatorsDialog";
 
 interface CreatorTableProps {
   entries: CreatorEntry[];
@@ -9,6 +12,12 @@ interface CreatorTableProps {
   onChangeStatus: (producerRequestId: number, status: string) => void;
   isLoading: boolean;
 }
+
+const statusStyles = {
+  approved: "bg-green-800/20 text-green-400 border-green-800/30",
+  pending: "bg-yellow-700/20 text-yellow-400 border-yellow-700/30",
+  rejected: "bg-red-800/20 text-red-400 border-red-800/30",
+};
 
 export const CreatorTable: React.FC<CreatorTableProps> = ({
   entries,
@@ -18,6 +27,7 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
 }) => {
   const [selectedEntry, setSelectedEntry] = useState<CreatorEntry | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [deletingId, setDeletingId] = useState<number|null>(null);
 
   const openModal = (entry: CreatorEntry) => {
     setSelectedEntry(entry);
@@ -29,6 +39,29 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
     setSelectedEntry(null);
   };
 
+  const formatStatus = (
+    status: string
+  ): "pending" | "approved" | "rejected" => {
+    const statusMapping: Record<string, string> = {
+      pending: "pending",
+      reject: "rejected",
+      approved: "approved",
+    };
+    return (status = statusMapping[status] as
+      | "pending"
+      | "approved"
+      | "rejected");
+  };
+  
+  const handleDelete= async(id:number)=>{
+    try{
+      await Promise.resolve(onDeleteEntry(id));
+    }catch(error){
+      console.log(error)
+    }finally{
+      setDeletingId(null);
+    }
+  }
   return (
     <div className="bg-[#101828] rounded-xl border border-[#1D2939] overflow-hidden font-michroma">
       <div className="hidden lg:block overflow-x-auto">
@@ -40,7 +73,7 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
               <th className="text-left p-4">Social Media URL</th>
               <th className="text-center p-4">Demo Beat</th>
               <th className="text-center p-4">Status</th>
-              <th className="text-left p-4">Actions</th>
+              <th className="text-center p-4">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -52,7 +85,7 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
                 }`}
               >
                 <td className="p-4 text-white font-medium">{entry.name}</td>
-                <td className="p-4 pl-16 text-blue-400">{entry.style}</td>
+                <td className="p-4 text-white font-medium text-center">{entry.style}</td>
                 <td className="p-4 pl-12 text-blue-400 underline">
                   <a
                     href={entry.socialUrl}
@@ -72,15 +105,15 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
                   </a>
                 </td>
                 <td
-                  className={`p-4 text-center font-semibold ${
-                    entry.status === "approved"
-                      ? "text-green-500"
-                      : entry.status === "reject"
-                      ? "text-red-500"
-                      : "text-yellow-500"
-                  }`}
+                  className={`p-4 text-center font-semibold`}
                 >
-                  {entry.status.charAt(0).toUpperCase() + entry.status.slice(1)}
+                  <div
+                    className={`border-2 font-medium p-2 rounded-md text-center
+                    ${statusStyles[formatStatus(entry.status)]}
+                  `}
+                  >
+                    {formatStatus(entry.status)}
+                  </div>
                 </td>
 
                 <td className="p-4">
@@ -126,7 +159,7 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
                     </button>
 
                     <button
-                      onClick={() => onDeleteEntry(entry.id)}
+                      onClick={() => setDeletingId(entry.id)}
                       className="p-2 text-red-400 bg-foreground hover:bg-red-500/20 rounded-lg transition-colors"
                       title="Delete"
                       disabled={isLoading}
@@ -203,7 +236,9 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
                   <X size={16} className="text-white" />
                 </button>
                 <button
-                  onClick={() => onDeleteEntry(entry.id)}
+                  onClick={() => {
+                    setDeletingId(entry.id)
+                  }}
                   className="p-2 rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                   title="Delete"
                   disabled={isLoading}
@@ -217,50 +252,21 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
       </div>
 
       {/* Modal */}
-      {isModalOpen && selectedEntry && (
-        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center">
-          <div className="bg-[#1C2433] w-full max-w-md p-6 rounded-lg text-white relative shadow-lg border border-[#2C3A4F]">
-            <button
-              onClick={closeModal}
-              className="absolute top-2 right-2 text-gray-400 hover:text-red-500 text-lg"
-              disabled={isLoading}
-            >
-              ✕
-            </button>
-            <h2 className="text-xl font-bold mb-4">Payment Details</h2>
-            <div className="space-y-2 text-sm">
-              <p>
-                <span className="font-semibold">Method:</span>{" "}
-                {selectedEntry.paymentDetail.method}
-              </p>
-              <p>
-                <span className="font-semibold">Full Name:</span>{" "}
-                {selectedEntry.paymentDetail.fullName}
-              </p>
-              <p>
-                <span className="font-semibold">Email:</span>{" "}
-                {selectedEntry.paymentDetail.email}
-              </p>
-              {selectedEntry.paymentDetail.method === "khalti" && (
-                <p>
-                  <span className="font-semibold">Khalti Number:</span>{" "}
-                  {selectedEntry.paymentDetail.khaltiNumber || "N/A"}
-                </p>
-              )}
-              {selectedEntry.paymentDetail.method === "stripe" && (
-                <p>
-                  <span className="font-semibold">Stripe Account ID:</span>{" "}
-                  {selectedEntry.paymentDetail.stripeAccountId || "N/A"}
-                </p>
-              )}
-              <p>
-                <span className="font-semibold">Submitted At:</span>{" "}
-                {formatDateTime(selectedEntry.paymentDetail.createdAt)}
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
+      <PopupWrapper isOpen={!!selectedEntry}>
+        <CreatorsDialogDetails details={selectedEntry} onClose={closeModal}/>
+      </PopupWrapper>
+      
+      {
+        deletingId && 
+        <ConfirmPopUp
+          title={"Delete Custom beat?"}
+          message={"Are you sure you want to delete this custom beat?"}
+          onCancel={() => setDeletingId(null)}
+          onConfirm={() => {
+            handleDelete(deletingId);
+          }}
+        />
+      }
     </div>
   );
 };

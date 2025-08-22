@@ -14,6 +14,7 @@ import { CustombeatsTable } from "@/src/components/table/CustombeatsTable";
 import {
   deleteCustomBeat,
   fetchCustomBeats,
+  updateCustomBeatStatus,
 } from "@/src/app/actions/customs-beats-actions";
 import { CustomBeat } from "@/src/types/custom-beats";
 import { useSession } from "next-auth/react";
@@ -24,7 +25,6 @@ const BUTTON_CLASSES =
 const CustomBeatsPage = () => {
   const itemsPerPage = 10;
   const [beats, setBeats] = useState<CustomBeat[]>([]);
-  const [selectAll, setSelectAll] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -54,22 +54,6 @@ const CustomBeatsPage = () => {
     currentPage * itemsPerPage
   );
 
-  const toggleSelectAll = () => {
-    const newVal = !selectAll;
-    setSelectAll(newVal);
-    // setBeats(beats.map((entry) => ({ ...entry, selected: newVal })));
-  };
-
-  const toggleSelectEntry = (id: number) => {
-    // setBeats(
-    //   beats.map((entry) =>
-    //     entry.id === id ? { ...entry, selected: !entry.selected } : entry
-    //   )
-    // );
-  };
-
-  const deleteSelectedEntries = () => {};
-
   const goToPreviousPage = () => {
     setCurrentPage((prev) => Math.max(prev - 1, 1));
   };
@@ -90,12 +74,16 @@ const CustomBeatsPage = () => {
           ) : (
             <CustombeatsTable
               entries={visibleBeats}
-              selectAll={selectAll}
-              onSelectAll={toggleSelectAll}
-              onSelectEntry={toggleSelectEntry}
-              onDeleteEntry={(id: string) => {
+              onDeleteEntry={(id: number) => {
                 deleteCustomBeat(
-                  Number(id),
+                  id,
+                  session?.user.tokens.accessToken as string
+                );
+              }}
+              onStatusChange={(id:number, status:string)=>{
+                updateCustomBeatStatus(
+                  id,
+                  status as "pending" | "completed" | "in_progress",
                   session?.user.tokens.accessToken as string
                 );
               }}
