@@ -82,7 +82,7 @@ export function EarningsChart({
                 {/* Tooltip on hover */}
                 <Tooltip
                   formatter={(value: number, name: string) => [
-                    `${value}`,
+                    `$${value}`,
                     name,
                   ]}
                   contentStyle={{

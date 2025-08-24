@@ -51,7 +51,7 @@ const sidebarItems: SidebarItem[] = [
   },
   {
     icon: Ticket,
-    label: "Commission Manager",
+    label: "Payment Manager",
     href: "/dashboard/commission",
   },
   {

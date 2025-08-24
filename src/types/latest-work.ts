@@ -1,15 +1,11 @@
 export enum Platform {
   YOUTUBE = "youtube",
   SPOTIFY = "spotify",
-  VIMEO = "vimeo",
-  BEHANCE = "behance",
 }
 
 export const platformBaseUrls: Record<Platform, string> = {
   youtube: "https://www.youtube.com",
   spotify: "https://open.spotify.com",
-  vimeo: "https://vimeo.com",
-  behance:"https://www.behance.com"
 };
  
 export interface Image {
