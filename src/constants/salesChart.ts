@@ -16,6 +16,7 @@ export const months = [
 ];
 
 export const baseLabels = [
+  "Lil Rock Look",
   "1st Highest",
   "2nd Highest",
   "3rd Highest",

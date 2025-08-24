@@ -49,6 +49,7 @@ export function EarningsChart({
   pieChartData: PieChartData;
 }) {
   const transformedData = transformToPieData(pieChartData);
+  const hasData = transformedData.some((entry) => entry.value > 0);
 
   return (
     <Card className="bg-[#1a1a2e] border-[#2d2d44] h-full flex flex-col justify-between">
@@ -56,39 +57,52 @@ export function EarningsChart({
         <CardTitle className="text-white">Earnings Breakdown</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-[300px] flex items-center justify-center">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={transformedData}
-                cx="50%"
-                cy="50%"
-                innerRadius={0}
-                outerRadius={120}
-                paddingAngle={0}
-                dataKey="value"
-              >
-                {transformedData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={entry.color}
-                    name={entry.name}
-                  />
-                ))}
-              </Pie>
+        <div className="relative h-[300px] flex items-center justify-center">
+          {hasData ? (
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={transformedData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={0}
+                  outerRadius={120}
+                  paddingAngle={0}
+                  dataKey="value"
+                >
+                  {transformedData.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={entry.color}
+                      name={entry.name}
+                    />
+                  ))}
+                </Pie>
 
-              {/* Tooltip on hover */}
-              <Tooltip
-                formatter={(value: number, name: string) => [`${value}`, name]}
-                contentStyle={{
-                  backgroundColor: "#ffffff",
-                  border: "none",
-                  borderRadius: "4px",
-                  color: "#000",
-                }}
-              />
-            </PieChart>
-          </ResponsiveContainer>
+                {/* Tooltip on hover */}
+                <Tooltip
+                  formatter={(value: number, name: string) => [
+                    `$${value}`,
+                    name,
+                  ]}
+                  contentStyle={{
+                    backgroundColor: "#ffffff",
+                    border: "none",
+                    borderRadius: "4px",
+                    color: "#000",
+                  }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-[240px] h-[240px] rounded-full border-4 border-dashed border-gray-500 flex items-center justify-center">
+                <span className="text-gray-400 font-semibold text-lg">
+                  No Data
+                </span>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="flex justify-center gap-2 mt-4 shrink flex-wrap">

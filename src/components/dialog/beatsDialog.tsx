@@ -10,11 +10,13 @@ import { useSession } from "next-auth/react";
 
 interface BeatsDialogDetailsProps {
   onClose: () => void;
+  onStatusChange: (id:number, status:"pending" | "sent" | "completed") => void;
   beat: CustomBeat | null;
 }
 
 export default function BeatsDialogDetails({
   onClose,
+  onStatusChange,
   beat,
 }: BeatsDialogDetailsProps) {
   if (!beat) return null;
@@ -105,11 +107,13 @@ export default function BeatsDialogDetails({
               </a>
             }
           />
-          <InfoRow
-            icon={"/image/verctor/chat.png"}
-            label="Additional Instructions"
-            value={beat.additionalInstructions}
-          />
+          {beat.additionalInstructions &&
+            <InfoRow
+              icon={"/image/verctor/chat.png"}
+              label="Additional Instructions"
+              value={beat.additionalInstructions}
+            />
+          }
         </div>
 
         {/* Package Info Panel */}
@@ -139,11 +143,7 @@ export default function BeatsDialogDetails({
       <div>
         <button
           onClick={() => {
-            updateCustomBeatStatus(
-              beat.id,
-              "completed",
-              session?.user?.tokens?.accessToken as string
-            );
+            onStatusChange(beat.id, "completed")
           }}
           className="bg-[#00e08f] hover:bg-[#00c97e] text-black px-5 py-2 rounded-md font-semibold text-sm flex items-center gap-2"
         >

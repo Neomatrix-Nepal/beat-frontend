@@ -7,9 +7,11 @@ import { formatDateTime } from "@/src/lib/utils";
 export default function CommissionDetails({
   commission: initialCommission,
   onClose,
+  onStatusChange,
 }: {
   commission: Commission | null;
   onClose: () => void;
+  onStatusChange: (id: string) => void;
 }) {
   const [commission, setCommission] = useState<Commission | null>(initialCommission);
 
@@ -93,7 +95,12 @@ export default function CommissionDetails({
 
       {/* Action Button */}
       <div>
-        <button className="bg-[#00e08f] hover:bg-[#00c97e] text-black px-5 py-2 rounded-md font-semibold text-sm flex items-center gap-2">
+        <button
+          onClick={() => {
+            onStatusChange(commission.id.toString());
+            setCommission({ ...commission, status: "paid" });
+          }}
+          className="bg-[#00e08f] hover:bg-[#00c97e] text-black px-5 py-2 rounded-md font-semibold text-sm flex items-center gap-2">
           <FaCheck className="text-sm" />
           Mark as Delivered
         </button>

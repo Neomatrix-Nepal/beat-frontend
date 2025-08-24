@@ -376,7 +376,7 @@ export default function BeatFormModal({
             ) : (
               <FiSave className="mr-2" />
             )}
-            {loading ? "Saving..." : initialData ? "Update Beat" : "Save Beat"}
+            {loading ? "Saving...Please Wait." : initialData ? "Update Beat" : "Save Beat"}
           </button>
         </form>
       </div>

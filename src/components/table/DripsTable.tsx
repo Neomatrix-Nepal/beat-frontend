@@ -4,6 +4,9 @@ import { Edit, Trash } from "lucide-react";
 import React, { useState } from "react";
 import LoadingEffect from "../loadingEffect";
 import ConfirmPopUp from "../ui/confirmPopUp";
+import DripDetails from "../dialog/dripsDialog";
+import { IoMdEye } from "react-icons/io";
+import PopupWrapper from "../shared/PopupWrapper";
 
 interface DripsTableProps {
   drips: Product[];
@@ -19,6 +22,7 @@ export const DripsTable: React.FC<DripsTableProps> = ({
   const [deletePopUp, setDeletePopUp] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedDripId, setSelectedDripId] = useState<number | null>();
+  const [selectedDrip, setSelectedDrip] = useState<Product | null>(null);
 
   const deleteDrip = async (id: number) => {
     setIsLoading(true);
@@ -30,6 +34,11 @@ export const DripsTable: React.FC<DripsTableProps> = ({
       setSelectedDripId(null);
       setIsLoading(false);
     }
+  };
+
+  const handleViewClick = (drip: Product) => {
+    setSelectedDrip(drip);
+    console.log(drip);
   };
 
   return (
@@ -46,7 +55,7 @@ export const DripsTable: React.FC<DripsTableProps> = ({
               <th className="text-left p-4 text-slate-300 font-semibold">
                 Price
               </th>
-              <th className="text-left p-4 text-slate-300 font-semibold">
+              <th className="text-center p-4 text-slate-300 font-semibold">
                 Size
               </th>
               <th className="text-left p-4 text-slate-300 font-semibold">
@@ -68,7 +77,7 @@ export const DripsTable: React.FC<DripsTableProps> = ({
                 <td className="p-4 text-white font-medium">{drip.name}</td>
                 <td className="p-4 text-slate-300">{drip.id}</td>
                 <td className="p-4 text-white font-semibold">${drip.price}</td>
-                <td className="p-4">
+                <td className="p-4 flex justify-center">
                   <span className="px-3 py-1 rounded-full text-md font-medium bg-gray-500/20 text-white border-gray-500/30">
                     {drip.size}
                   </span>
@@ -78,6 +87,12 @@ export const DripsTable: React.FC<DripsTableProps> = ({
                 </td>
                 <td className="p-4">
                   <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleViewClick(drip)}
+                      className="cursor-pointer p-2 text-white bg-foreground hover:bg-purple-700 rounded-lg transition-colors"
+                    >
+                      <IoMdEye size={16} />
+                    </button>
                     <button
                       onClick={() => onEditDrip(drip)}
                       className="cursor-pointer p-2 text-white bg-foreground hover:bg-purple-700 rounded-lg duration-300 transition-colors"
@@ -128,8 +143,14 @@ export const DripsTable: React.FC<DripsTableProps> = ({
               </div>
               <div className="flex items-center gap-2">
                 <button
+                  onClick={() => handleViewClick(drip)}
+                  className="cursor-pointer p-1 text-white hover:bg-purple-600/20 rounded-lg transition-colors"
+                >
+                  <IoMdEye size={16} />
+                </button>
+                <button
                   onClick={() => onEditDrip(drip)}
-                  className="cursor-pointer p-2 text-white hover:bg-purple-600/20 rounded-lg transition-colors"
+                  className="cursor-pointer text-white hover:bg-purple-600/20 rounded-lg transition-colors"
                 >
                   <Edit size={16} />
                 </button>
@@ -147,6 +168,16 @@ export const DripsTable: React.FC<DripsTableProps> = ({
           </div>
         ))}
       </div>
+
+      {selectedDrip && (
+        <PopupWrapper isOpen={!!selectedDrip} centered>
+          <DripDetails
+            drip={selectedDrip}
+            onClose={() => setSelectedDrip(null)}
+          />
+        </PopupWrapper>
+      )}
+
       {deletePopUp && (
         <ConfirmPopUp
           title={"Delete this Drip?"}

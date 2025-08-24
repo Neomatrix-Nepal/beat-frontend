@@ -2,10 +2,9 @@
 
 import {
   updateProduct,
-  uploadMusic,
   uploadProduct,
 } from "@/src/app/(protected_routes)/dashboard/beats_manager/action";
-import { BeatImage, Product } from "@/src/types";
+import { Product } from "@/src/types";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
@@ -147,7 +146,7 @@ export default function DripFormModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 font-michroma">
       <div className="bg-[#1E293B] w-full max-w-4xl rounded-xl p-6 relative text-white overflow-y-auto max-h-[90vh] border border-gray-700">
         <button
           onClick={handleClose}

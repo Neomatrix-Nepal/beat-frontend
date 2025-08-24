@@ -1,10 +1,7 @@
 "use client";
-import { showUpdateToast } from "@/src/lib/util";
 import { Edit, Trash } from "lucide-react";
 import React, { useCallback, useState } from "react";
 import { Platform } from "@/src/types/latest-work";
-import Image from "next/image";
-import toast from "react-hot-toast";
 import LoadingEffect from "../loadingEffect";
 import ConfirmPopUp from "../ui/confirmPopUp";
 import { Work } from "@/src/app/(protected_routes)/dashboard/latest_work/page";
@@ -67,38 +64,6 @@ export const LatestWorkTable: React.FC<LatestWorkTableProps> = ({
             />
           </svg>
         );
-      case Platform.VIMEO:
-        return (
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm3.97 17.63c-1.45.84-3.76.84-5.21 0-1.45-.84-1.45-2.81 0-3.65 1.45-.84 3.76-.84 5.21 0 .84.49.84 1.65 0 2.14-.84.49-2.37.49-3.21 0-.84-.49-.84-1.65 0-2.14.84-.49 2.37-.49 3.21 0 .84.49.84 1.65 0 2.14zm-2.14-5.49c-1.45.84-3.76.84-5.21 0-1.45-.84-1.45-2.81 0-3.65 1.45-.84 3.76-.84 5.21 0 .84.49.84 1.65 0 2.14-.84.49-2.37.49-3.21 0-.84-.49-.84-1.65 0-2.14.84-.49 2.37-.49 3.21 0 .84.49.84 1.65 0 2.14z"
-              fill="#00ADEF"
-            />
-          </svg>
-        );
-      case Platform.BEHANCE:
-        return (
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm4.5 7.5h-3.75v1.5h3.75v-1.5zm-1.875 6c1.035 0 1.875-.84 1.875-1.875h-3.75c0 1.035.84 1.875 1.875 1.875zm-3.75-3.75c-1.035 0-1.875.84-1.875 1.875s.84 1.875 1.875 1.875c1.035 0 1.875-.84 1.875-1.875h-3.75zm-3.75 0c0-1.035.84-1.875 1.875-1.875h3.75v-1.5h-3.75c-1.035 0-1.875.84-1.875 1.875s.84 1.875 1.875 1.875c1.035 0 1.875-.84 1.875-1.875h-3.75zm3.75 3.75c-1.035 0-1.875.84-1.875 1.875h3.75c0-1.035-.84-1.875-1.875-1.875z"
-              fill="#1769FF"
-            />
-          </svg>
-        );
-      default:
-        return null;
     }
   }, []);
 
@@ -202,34 +167,10 @@ export const LatestWorkTable: React.FC<LatestWorkTableProps> = ({
             <div className="flex items-center justify-between mt-2">
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() =>
-                    showUpdateToast("Updated", work.title, work.id.toString())
-                  }
-                  className="p-2 rounded-lg text-white hover:bg-purple-600/20 transition-colors"
-                  title="Edit"
+                  onClick={() =>onEditWork(work)}
+                  className="cursor-pointer p-2 text-white bg-foreground hover:bg-purple-700 rounded-lg transition-colors"
                 >
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="m18.5 2.5 a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+                  <Edit size={16} />
                 </button>
                 <button
                   onClick={() => {
