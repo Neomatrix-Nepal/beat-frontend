@@ -37,9 +37,10 @@ export default function CreatorsDialogDetails({
           </div>
 
           {/* Info Rows */}
-          <InfoRow label="Method" value={payment.method} />
+          <InfoRow label="User Id" value={details.userId} />
           <InfoRow label="Full Name" value={payment.fullName} />
           <InfoRow label="Email" value={payment.email} />
+          <InfoRow label="Method" value={payment.method} />
 
           {payment.method === "khalti" && (
             <InfoRow label="Khalti Number" value={payment.khaltiNumber || "N/A"} />

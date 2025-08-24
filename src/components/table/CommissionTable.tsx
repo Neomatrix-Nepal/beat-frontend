@@ -16,8 +16,8 @@ interface CommissionTableProps {
 }
 
 const statusStyles = {
-  pending: "bg-green-800/20 text-green-400 border-green-800/30",
-  paid: "bg-yellow-700/20 text-yellow-400 border-yellow-700/30",
+  paid: "bg-green-800/20 text-green-400 border-green-800/30",
+  pending: "bg-yellow-700/20 text-yellow-400 border-yellow-700/30",
   failed: "bg-red-800/20 text-red-400 border-red-800/30",
 };
 
@@ -138,12 +138,6 @@ export const CommissionTable: React.FC<CommissionTableProps> = ({
           >
             <div className="flex items-start justify-between mb-3">
               <div className="flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  // checked={entry.selected}
-                  // onChange={() => onSelectEntry(entry.id)}
-                  className="w-4 h-4 text-purple-600 border-slate-600 rounded focus:ring-purple-500 focus:ring-2"
-                />
                 <div>
                   <h3 className="text-white font-medium">Id: {entry.id}</h3>
                   <h3 className="text-white font-medium">
@@ -203,6 +197,7 @@ export const CommissionTable: React.FC<CommissionTableProps> = ({
         <CommissionDetails
           commission={selectedEntry}
           onClose={handleClosePopup}
+          onStatusChange={handleChangeStatus}
         />
       </PopupWrapper>
 

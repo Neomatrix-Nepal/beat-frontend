@@ -79,7 +79,9 @@ export default function MixingProSubmissionDetails({
             Submission Information
           </h3>
           <div className="flex items-center gap-3 mb-4">
-            <img src={avatar} alt="avatar" className="w-10 h-10 rounded-full" />
+            <div className="w-12 h-12 rounded-full bg-gray-500 flex items-center justify-center shrink-0">
+              <span className="text-xl">{entry.name[0].toLocaleUpperCase()}</span>
+            </div>
             <div className="min-w-0">
               <p className="text-lg font-semibold text-[#e7625f]">
                 {entry.name}
@@ -91,11 +93,6 @@ export default function MixingProSubmissionDetails({
             icon={"/image/verctor/headset.png"}
             label="Music Genre"
             value={entry.musicGenre || "N/A"}
-          />
-          <InfoRow
-            icon={"/image/verctor/editor.png"}
-            label="Preferred Mixing Style"
-            value={entry.musicStyle || "N/A"}
           />
           <InfoRow
             icon={"/image/verctor/mic.png"}
@@ -114,11 +111,13 @@ export default function MixingProSubmissionDetails({
               </a>
             }
           />
-          <InfoRow
-            icon={"/image/verctor/chat.png"}
-            label="Additional Instructions"
-            value={entry.additionalInstructions}
-          />
+          {entry.additionalInstructions &&
+            <InfoRow
+              icon={"/image/verctor/chat.png"}
+              label="Additional Instructions"
+              value={entry.additionalInstructions}
+            />
+          }
         </div>
 
         {/* Package Info Panel */}

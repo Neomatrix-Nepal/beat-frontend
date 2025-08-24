@@ -68,6 +68,7 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
         <table className="w-full text-sm">
           <thead className="bg-[#1A2233] text-[#E4E4E7] border-b border-[#2C3A4F]">
             <tr>
+              <th className="text-center p-4">Creator Id</th>
               <th className="text-left p-4">Creator's Name</th>
               <th className="text-left p-4">Producer Style</th>
               <th className="text-left p-4">Social Media URL</th>
@@ -84,6 +85,7 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
                   index % 2 === 0 ? "bg-[#1C2433]" : "bg-[#1A1F2E]"
                 }`}
               >
+                <td className="p-4 text-white font-medium text-center">{entry.userId}</td>
                 <td className="p-4 text-white font-medium">{entry.name}</td>
                 <td className="p-4 text-white font-medium text-center">{entry.style}</td>
                 <td className="p-4 pl-12 text-blue-400 underline">
@@ -206,6 +208,13 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
               >
                 Demo Beat: Open Link
               </a>
+              <div
+                    className={`border-2 font-medium p-2 rounded-md text-center
+                    ${statusStyles[formatStatus(entry.status)]}
+                  `}
+                  >
+                    {formatStatus(entry.status)}
+                  </div>
             </div>
             <div className="flex items-center justify-between mt-2">
               <div className="flex items-center gap-2">

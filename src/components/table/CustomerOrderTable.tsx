@@ -16,8 +16,8 @@ interface CustomerOrderTableProps {
 }
 
 const statusStyles = {
-  pending: "bg-green-800/20 text-green-400 border-green-800/30",
-  completed: "bg-yellow-700/20 text-yellow-400 border-yellow-700/30",
+  completed: "bg-green-800/20 text-green-400 border-green-800/30",
+  pending: "bg-yellow-700/20 text-yellow-400 border-yellow-700/30",
   failed: "bg-red-800/20 text-red-400 border-red-800/30",
 };
 

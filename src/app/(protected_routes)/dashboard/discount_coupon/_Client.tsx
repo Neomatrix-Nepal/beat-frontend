@@ -9,6 +9,8 @@ import {
 } from "./action";
 import { formatDateTime, toDateInputValue } from "@/src/lib/utils";
 import toast from "react-hot-toast";
+import { Edit, Trash } from "lucide-react";
+import ConfirmPopUp from "@/src/components/ui/confirmPopUp";
 
 const defaultForm: Coupon = {
   code: "",
@@ -27,6 +29,7 @@ export default function _Client({
   const [coupons, setCoupons] = useState<Coupon[]>(initialCoupons || []);
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [deleteId, setDeleteId] = useState<number | null>(null);
 
   const { data: session } = useSession();
 
@@ -98,7 +101,7 @@ export default function _Client({
   };
 
   const handleDelete = async (id: number) => {
-    if (confirm("Are you sure you want to delete this coupon?")) {
+    try{
       const { message } = await deleteDiscountCoupon(
         id.toString(),
         session?.user?.tokens.accessToken!
@@ -108,6 +111,11 @@ export default function _Client({
       toast.success("Coupon deleted.");
       setForm(defaultForm);
       setEditing(false);
+    }catch(error){
+      console.error(error);
+      toast.error("An error occurred while deleting the coupon.");
+    }finally{
+      setDeleteId(null);
     }
   };
 
@@ -244,19 +252,25 @@ export default function _Client({
                     <td className="px-4 py-2">
                       {formatDateTime(coupon.validUntil)}
                     </td>
-                    <td className="px-4 py-2 text-center space-x-2">
+                    <td className="px-4 py-2 text-center flex items-center justify-center space-x-2">
                       <button
-                        className="text-yellow-400 underline text-sm"
-                        onClick={() => handleEdit(coupon)}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        className="text-red-400 underline text-sm"
-                        onClick={() => handleDelete(coupon.id!)}
-                      >
-                        Delete
-                      </button>
+                            disabled={loading}
+                            className={`bg-yellow-400 text-black cursor-pointer p-2 rounded-lg hover:bg-slate-600/30 transition-colors
+                                ${loading?"cursor-not-allowed" : ""}
+                              `}
+                            onClick={() => handleEdit(coupon)}
+                          >
+                            <Edit size={16} />
+                          </button>
+                          <button
+                            disabled={loading}
+                            className={`cursor-pointer bg-black p-2 rounded-lg text-white hover:bg-slate-600/30 transition-colors
+                                ${loading?"cursor-not-allowed" : ""}
+                              `}
+                            onClick={() => setDeleteId(coupon.id!)}
+                          >
+                            <Trash size={18} className="text-red-500" />
+                          </button>
                     </td>
                   </tr>
                 ))
@@ -265,6 +279,16 @@ export default function _Client({
           </table>
         </div>
       </div>
+      {deleteId && (
+        <ConfirmPopUp
+          title={"Delete Commission?"}
+          message={"Are you sure you want to delete this Commission?"}
+          onCancel={() => setDeleteId(null)}
+          onConfirm={() => {
+            handleDelete(deleteId);
+          }}
+        />
+      )}
     </div>
   );
 }

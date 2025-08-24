@@ -218,7 +218,7 @@ export const CustombeatsTable: React.FC<CustomBeatsTableProps> = ({
         ))}
       </div>
       <PopupWrapper isOpen={isPopupOpen}>
-        <BeatsDialogDetails onClose={handleClosePopup} beat={selectedEntry} />
+        <BeatsDialogDetails onClose={handleClosePopup} onStatusChange={handleStatusChange} beat={selectedEntry} />
       </PopupWrapper>
 
       {deletePopUp && (

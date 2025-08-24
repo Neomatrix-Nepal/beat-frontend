@@ -88,7 +88,6 @@ export default function NewsCard({
               <h3 className="font-bold text-white text-lg mb-2">
                 {news.title}
               </h3>
-              <p className="text-white mb-4">{news.content}efwef</p>
               <div className="flex space-x-2 w-full">
                 <button
                   onClick={() => onEditClick(index, news)}

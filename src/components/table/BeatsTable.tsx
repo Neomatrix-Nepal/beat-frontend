@@ -44,6 +44,9 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
         <table className="w-full">
           <thead className="bg-[#1A2233] text-[#E4E4E7] border-b border-[#2C3A4F]">
             <tr>
+              <th className="text-center p-4 text-slate-300 font-semibold">
+                Id
+              </th>
               <th className="text-left p-4 text-slate-300 font-semibold">
                 Title
               </th>
@@ -53,8 +56,8 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
               <th className="text-left p-4 text-slate-300 font-semibold">
                 Price
               </th>
-              <th className="text-left p-4 text-slate-300 font-semibold">
-                Producer
+              <th className="text-center p-4 text-slate-300 font-semibold">
+                Producer Id
               </th>
               <th className="text-left p-4 text-slate-300 font-semibold">
                 Upload Date
@@ -74,6 +77,9 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
                   }`}
                 >
                   <td className="p-4 text-white font-medium">
+                    {beat?.id || ""}
+                  </td>
+                  <td className="p-4 text-white font-medium">
                     {beat?.name || ""}
                   </td>
                   <td className="p-4">
@@ -89,7 +95,7 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
                   <td className="p-4 text-white font-semibold">
                     ${beat.price}
                   </td>
-                  <td className="p-4 text-slate-300">{"Cute Boka"}</td>
+                  <td className="p-4 text-slate-300 text-center">{beat.user_id}</td>
                   <td className="p-4 text-slate-400">
                     {formatDateTime(beat.updated_at)}
                   </td>
