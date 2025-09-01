@@ -4,7 +4,7 @@ import { StatCardData, StatsGridData, StatsGridProps } from "../types/stats";
 import { statConfig } from "../constants/statGrid";
 
 function mapStatsResponseToData(stats: StatsGridData): StatCardData[] {
-  return statConfig.map(cfg => {
+  return statConfig.map((cfg) => {
     const statItem = stats?.[cfg.key as keyof StatsGridData] as any;
 
     return {
@@ -21,7 +21,6 @@ function mapStatsResponseToData(stats: StatsGridData): StatCardData[] {
 
 export function StatsGrid({ data }: StatsGridProps) {
   const statsData = mapStatsResponseToData(data);
-  console.log(statsData)
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

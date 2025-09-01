@@ -68,7 +68,6 @@ export default function SettingsUI({ settings }: { settings: Setting | null }) {
         beforeMixingId: beforeAssetId ?? form.beforeMixingId,
         afterMixingId: afterAssetId ?? form.afterMixingId,
       };
-      console.log(updatedForm);
 
       const { id } = await updateSettings(
         settings?.id.toString() as string,

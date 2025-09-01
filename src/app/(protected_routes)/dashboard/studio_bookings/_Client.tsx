@@ -61,8 +61,6 @@ export default function ManageBookings({
     );
   }, []);
 
-  console.log(bookings);
-
   const openModal = (booking: StudioBooking) => {
     setSelectedBooking(booking);
     setViewDetails(true);

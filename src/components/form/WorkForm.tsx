@@ -144,7 +144,7 @@ const AddWorkForm: React.FC<WorkFormProps> = ({ initialData, onSave }) => {
         await onAddWork(data);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     } finally {
       setIsLoading(false);
     }

@@ -1,6 +1,7 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { loginAction } from "../../actions/form-actions";
+import { refreshAccessToken } from "@/src/lib/refreshToken";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -31,7 +32,7 @@ export const authOptions: NextAuthOptions = {
             accessToken: res.tokens.accessToken,
             refreshToken: res.tokens.refreshToken,
           },
-          accessTokenExpires: Date.now() + 15 * 60 * 1000, // 15 minutes
+          accessTokenExpires: Date.now() + 20 * 1000, // 15 minutes
         };
       },
     }),
@@ -57,10 +58,8 @@ export const authOptions: NextAuthOptions = {
       if (Date.now() < (token.accessTokenExpires as number)) {
         return token;
       }
-
-      // TODO – Refresh token logic
-      // return await refreshAccessToken(token);
-      return token;
+      const refreshedToken = await refreshAccessToken(token);
+      return { ...token, ...refreshedToken };
     },
 
     async session({ session, token }) {
