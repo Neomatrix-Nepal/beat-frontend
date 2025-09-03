@@ -35,6 +35,8 @@ const CustomerOrdersClient = ({
       session?.user.tokens.accessToken as string
     );
     if (!orderId) return toast.error("Failed to change status.");
+
+    toast.success("Order marked as delivered");
     const updatedOrders = orders.map((order) => {
       if (order.id.toString() === id) {
         return {

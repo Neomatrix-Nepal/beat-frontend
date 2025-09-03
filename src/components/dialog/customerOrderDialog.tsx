@@ -6,13 +6,30 @@ import { formatDateTime } from "@/src/lib/utils";
 
 export default function CustomerOrderDetails({
   order: initialOrder,
+  onStatusChange,
   onClose,
 }: {
   order: Order | null;
+  onStatusChange: (id:string) => void;
   onClose: () => void;
 }) {
   const [order, setOrder] = useState<Order | null>(initialOrder);
+  const [delivered, setDelivered] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
+  console.log(order)
+
+  const onMarkAsDelivered = async(order: Order) => {
+    setLoading(true);
+    try{
+      await Promise.resolve(onStatusChange((order.id).toString()));
+      setDelivered(true);
+    }catch(error){
+      console.error(error)
+    }finally{
+      setLoading(false);
+    }
+  }
   if (!order) return null;
 
   return (
@@ -76,12 +93,25 @@ export default function CustomerOrderDetails({
       </div>
 
       {/* Action Button */}
-      <div>
-        <button className="bg-[#00e08f] hover:bg-[#00c97e] text-black px-5 py-2 rounded-md font-semibold text-sm flex items-center gap-2">
-          <FaCheck className="text-sm" />
-          Mark as Delivered
-        </button>
-      </div>
+      {
+        (order.status !== "completed" && !delivered) &&
+        <div>
+          <button
+            onClick={()=>onMarkAsDelivered(order)} 
+            className={` hover:bg-[#00c97e] text-black px-5 py-2 rounded-md font-semibold text-sm flex items-center gap-2
+              ${loading ? "bg-[#00c97e]" : "bg-[#00e08f]"}
+            `}>
+              {loading ? (
+                  <div className="w-7 h-7 border-3 border-black border-t-transparent rounded-full animate-spin"></div>
+              ) : (
+                <>
+                  <FaCheck className="text-sm" />
+                  Mark as Delivered
+                </>
+              )}
+          </button>
+        </div>
+      }
     </div>
   );
 }
