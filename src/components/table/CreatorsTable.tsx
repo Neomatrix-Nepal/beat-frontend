@@ -27,7 +27,7 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
 }) => {
   const [selectedEntry, setSelectedEntry] = useState<CreatorEntry | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [deletingId, setDeletingId] = useState<number|null>(null);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
 
   const openModal = (entry: CreatorEntry) => {
     setSelectedEntry(entry);
@@ -52,16 +52,16 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
       | "approved"
       | "rejected");
   };
-  
-  const handleDelete= async(id:number)=>{
-    try{
+
+  const handleDelete = async (id: number) => {
+    try {
       await Promise.resolve(onDeleteEntry(id));
-    }catch(error){
-      console.log(error)
-    }finally{
+    } catch (error) {
+      console.error(error);
+    } finally {
       setDeletingId(null);
     }
-  }
+  };
   return (
     <div className="bg-[#101828] rounded-xl border border-[#1D2939] overflow-hidden font-michroma">
       <div className="hidden lg:block overflow-x-auto">
@@ -85,9 +85,13 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
                   index % 2 === 0 ? "bg-[#1C2433]" : "bg-[#1A1F2E]"
                 }`}
               >
-                <td className="p-4 text-white font-medium text-center">{entry.userId}</td>
+                <td className="p-4 text-white font-medium text-center">
+                  {entry.userId}
+                </td>
                 <td className="p-4 text-white font-medium">{entry.name}</td>
-                <td className="p-4 text-white font-medium text-center">{entry.style}</td>
+                <td className="p-4 text-white font-medium text-center">
+                  {entry.style}
+                </td>
                 <td className="p-4 pl-12 text-blue-400 underline">
                   <a
                     href={entry.socialUrl}
@@ -106,9 +110,7 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
                     Open Link
                   </a>
                 </td>
-                <td
-                  className={`p-4 text-center font-semibold`}
-                >
+                <td className={`p-4 text-center font-semibold`}>
                   <div
                     className={`border-2 font-medium p-2 rounded-md text-center
                     ${statusStyles[formatStatus(entry.status)]}
@@ -209,12 +211,12 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
                 Demo Beat: Open Link
               </a>
               <div
-                    className={`border-2 font-medium p-2 rounded-md text-center
+                className={`border-2 font-medium p-2 rounded-md text-center
                     ${statusStyles[formatStatus(entry.status)]}
                   `}
-                  >
-                    {formatStatus(entry.status)}
-                  </div>
+              >
+                {formatStatus(entry.status)}
+              </div>
             </div>
             <div className="flex items-center justify-between mt-2">
               <div className="flex items-center gap-2">
@@ -246,7 +248,7 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
                 </button>
                 <button
                   onClick={() => {
-                    setDeletingId(entry.id)
+                    setDeletingId(entry.id);
                   }}
                   className="p-2 rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                   title="Delete"
@@ -262,11 +264,10 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
 
       {/* Modal */}
       <PopupWrapper isOpen={!!selectedEntry}>
-        <CreatorsDialogDetails details={selectedEntry} onClose={closeModal}/>
+        <CreatorsDialogDetails details={selectedEntry} onClose={closeModal} />
       </PopupWrapper>
-      
-      {
-        deletingId && 
+
+      {deletingId && (
         <ConfirmPopUp
           title={"Delete Custom beat?"}
           message={"Are you sure you want to delete this custom beat?"}
@@ -275,7 +276,7 @@ export const CreatorTable: React.FC<CreatorTableProps> = ({
             handleDelete(deletingId);
           }}
         />
-      }
+      )}
     </div>
   );
 };

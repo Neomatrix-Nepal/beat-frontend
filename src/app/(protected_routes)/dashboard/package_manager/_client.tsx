@@ -26,7 +26,7 @@ export default function _client({
   const [packages, setPackages] = useState<Package[]>(packagesData);
   const [form, setForm] = useState(defaultFormData);
   const [deletePopUp, setDeletePopUp] = useState<boolean>(false);
-  const [selectedId, setSelectedId] =  useState<number|null>(null);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [editing, setEditing] = useState(false);
   const [filter, setFilter] = useState<string>("all");
@@ -96,7 +96,7 @@ export default function _client({
       );
 
       if (response.id) {
-        let updatedPkg = {...pkgData, id:response.id,}
+        let updatedPkg = { ...pkgData, id: response.id };
         setPackages((prev) => [updatedPkg, ...prev]);
         toast.success("Package added successfully!");
       } else {
@@ -123,17 +123,20 @@ export default function _client({
   };
 
   const handleDelete = async (id: number) => {
-    setLoading(true)
-    try{
-      await deletePackage(id.toString(), session?.user.tokens.accessToken as string)
+    setLoading(true);
+    try {
+      await deletePackage(
+        id.toString(),
+        session?.user.tokens.accessToken as string
+      );
       setPackages((prev) => prev.filter((p) => p.id !== id));
-      toast.success("package deleted")
-    }catch(error){
-      console.log(error);
-      toast.error("Failed to delete package")
-    }finally{
+      toast.success("package deleted");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to delete package");
+    } finally {
       setSelectedId(null);
-      setLoading(false)
+      setLoading(false);
     }
   };
 
@@ -297,7 +300,7 @@ export default function _client({
                           <button
                             disabled={loading}
                             className={`cursor-pointer bg-blue-500 p-2 rounded-lg text-white hover:bg-slate-600/30 transition-colors
-                                ${loading?"cursor-not-allowed" : ""}
+                                ${loading ? "cursor-not-allowed" : ""}
                               `}
                             onClick={() => setViewPackage(pkg)}
                           >
@@ -306,7 +309,7 @@ export default function _client({
                           <button
                             disabled={loading}
                             className={`bg-yellow-400 text-black cursor-pointer p-2 rounded-lg hover:bg-slate-600/30 transition-colors
-                                ${loading?"cursor-not-allowed" : ""}
+                                ${loading ? "cursor-not-allowed" : ""}
                               `}
                             onClick={() => {
                               handleEdit(pkg);
@@ -318,9 +321,12 @@ export default function _client({
                           <button
                             disabled={loading}
                             className={`cursor-pointer bg-black p-2 rounded-lg text-white hover:bg-slate-600/30 transition-colors
-                                ${loading?"cursor-not-allowed" : ""}
+                                ${loading ? "cursor-not-allowed" : ""}
                               `}
-                            onClick={() => {setSelectedId(pkg.id); setDeletePopUp(true);}}
+                            onClick={() => {
+                              setSelectedId(pkg.id);
+                              setDeletePopUp(true);
+                            }}
                           >
                             <Trash size={18} className="text-red-500" />
                           </button>
@@ -346,24 +352,29 @@ export default function _client({
               >
                 ×
               </button>
-              <h2 className="text-lg font-bold text-[#00e08f] mb-3">{viewPackage.name}</h2>
+              <h2 className="text-lg font-bold text-[#00e08f] mb-3">
+                {viewPackage.name}
+              </h2>
               <p>
-                <strong className="text-[#8f8f8f]">Purpose:</strong> {viewPackage.purpose}
+                <strong className="text-[#8f8f8f]">Purpose:</strong>{" "}
+                {viewPackage.purpose}
               </p>
               <p>
-                <strong className="text-[#8f8f8f]">Price:</strong> ${viewPackage.price}
+                <strong className="text-[#8f8f8f]">Price:</strong> $
+                {viewPackage.price}
               </p>
               {viewPackage.description && (
                 <p>
-                  <strong className="text-[#8f8f8f]">Description:</strong> {viewPackage.description}
+                  <strong className="text-[#8f8f8f]">Description:</strong>{" "}
+                  {viewPackage.description}
                 </p>
               )}
               {viewPackage.features && (
                 <p className="flex flex-col">
                   <strong className="text-[#8f8f8f]">Features:</strong>
-                  {viewPackage.features.map((feature, index)=>
+                  {viewPackage.features.map((feature, index) => (
                     <span key={index}>- {feature}</span>
-                  )}
+                  ))}
                 </p>
               )}
             </div>
@@ -371,18 +382,17 @@ export default function _client({
         </div>
       )}
 
-      {
-        deletePopUp && 
+      {deletePopUp && (
         <ConfirmPopUp
           title={"Delete package?"}
           message={"Are you sure you want to delete this package?"}
           onCancel={() => setDeletePopUp(false)}
           onConfirm={() => {
             setDeletePopUp(false);
-            handleDelete(selectedId!)
+            handleDelete(selectedId!);
           }}
         />
-      }
+      )}
     </div>
   );
 }

@@ -38,7 +38,6 @@ export const DripsTable: React.FC<DripsTableProps> = ({
 
   const handleViewClick = (drip: Product) => {
     setSelectedDrip(drip);
-    console.log(drip);
   };
 
   return (

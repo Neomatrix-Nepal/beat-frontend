@@ -27,7 +27,7 @@ export function DashboardHeader() {
   const handleLogout = async () => {
     setIsLoading(true);
     try {
-      await signOut();
+      await signOut({ callbackUrl: "/", redirect: true });
     } catch (error) {
       console.error("Logout error:", error);
     } finally {

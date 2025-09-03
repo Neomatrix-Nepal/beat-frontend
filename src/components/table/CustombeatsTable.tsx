@@ -12,7 +12,7 @@ import toast from "react-hot-toast";
 interface CustomBeatsTableProps {
   entries: CustomBeat[];
   onDeleteEntry: (id: number) => void;
-  onStatusChange: (id:number, status:string) => void;
+  onStatusChange: (id: number, status: string) => void;
 }
 
 const statusStyles = {
@@ -26,7 +26,7 @@ export const CustombeatsTable: React.FC<CustomBeatsTableProps> = ({
   onDeleteEntry,
   onStatusChange,
 }) => {
-  const [beats, setBeats] = useState<CustomBeat[]>(entries)
+  const [beats, setBeats] = useState<CustomBeat[]>(entries);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState<CustomBeat | null>(null);
   const [deletePopUp, setDeletePopUp] = useState<boolean>(false);
@@ -43,22 +43,27 @@ export const CustombeatsTable: React.FC<CustomBeatsTableProps> = ({
     setSelectedEntry(null);
   };
 
-  const handleStatusChange = async(id:number, status:"pending" | "sent" | "completed") =>{
-    try{
+  const handleStatusChange = async (
+    id: number,
+    status: "pending" | "sent" | "completed"
+  ) => {
+    try {
       await Promise.resolve(onStatusChange(id, status));
-      setBeats(prev => prev.map((beat) => beat.id === id ? {...beat, status} : beat))
+      setBeats((prev) =>
+        prev.map((beat) => (beat.id === id ? { ...beat, status } : beat))
+      );
       toast.success("Beat approved");
-    }catch(error){
-      console.log(error);
+    } catch (error) {
+      console.error(error);
       toast.error("Failed to approve beat");
     }
-  }
+  };
 
   const deleteBeat = async (id: number) => {
     setIsLoading(true);
     try {
       await Promise.resolve(onDeleteEntry(id));
-      setBeats(prev => prev.filter((beat)=>beat.id !== id))
+      setBeats((prev) => prev.filter((beat) => beat.id !== id));
       toast.success("Beat deleted");
     } catch (error) {
       console.error(error);
@@ -69,7 +74,6 @@ export const CustombeatsTable: React.FC<CustomBeatsTableProps> = ({
     }
   };
 
-  console.log(entries)
   return (
     <div className="bg-[#101828] rounded-xl border border-[#1D2939] overflow-hidden font-michroma">
       {/* Desktop Table */}
@@ -127,7 +131,7 @@ export const CustombeatsTable: React.FC<CustomBeatsTableProps> = ({
                     </button>
                     <button
                       onClick={() => {
-                        handleStatusChange(entry.id, "completed")
+                        handleStatusChange(entry.id, "completed");
                       }}
                       className="cursor-pointer p-2 bg-foreground hover:bg-purple-700 rounded-lg transition-colors"
                     >
@@ -160,7 +164,9 @@ export const CustombeatsTable: React.FC<CustomBeatsTableProps> = ({
             <div className="flex items-start justify-between mb-3">
               <div className="flex items-center gap-3">
                 <div>
-                  <h3 className="text-white font-medium break-all">{entry.name}</h3>
+                  <h3 className="text-white font-medium break-all">
+                    {entry.name}
+                  </h3>
                   <a
                     href={entry.referenceTrack}
                     target="_blank"
@@ -195,7 +201,7 @@ export const CustombeatsTable: React.FC<CustomBeatsTableProps> = ({
                 </button>
                 <button
                   onClick={() => {
-                    handleStatusChange(entry.id, "completed")
+                    handleStatusChange(entry.id, "completed");
                   }}
                   className="p-2 rounded-lg text-green-400 hover:bg-green-600/20 transition-colors"
                   title="Mark Sent"
@@ -205,7 +211,7 @@ export const CustombeatsTable: React.FC<CustomBeatsTableProps> = ({
                 <button
                   onClick={() => {
                     setSelectedEntryId(entry.id);
-                    setDeletePopUp(true)
+                    setDeletePopUp(true);
                   }}
                   className="p-2 rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
                   title="Delete"
@@ -218,7 +224,11 @@ export const CustombeatsTable: React.FC<CustomBeatsTableProps> = ({
         ))}
       </div>
       <PopupWrapper isOpen={isPopupOpen}>
-        <BeatsDialogDetails onClose={handleClosePopup} onStatusChange={handleStatusChange} beat={selectedEntry} />
+        <BeatsDialogDetails
+          onClose={handleClosePopup}
+          onStatusChange={handleStatusChange}
+          beat={selectedEntry}
+        />
       </PopupWrapper>
 
       {deletePopUp && (

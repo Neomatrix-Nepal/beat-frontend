@@ -17,7 +17,10 @@ export interface test {
   editingId: number | null;
   onEditClick: (index: number, news: Blog) => void;
   onCancelEdit: () => void;
-  onSaveEdit: (updatedBlog: BlogFormData, imageFile: File|string) => Promise<void>;
+  onSaveEdit: (
+    updatedBlog: BlogFormData,
+    imageFile: File | string
+  ) => Promise<void>;
   onDelete: (index: number) => void;
 }
 
@@ -35,7 +38,7 @@ export default function NewsCard({
   const [objectUrl, setObjectUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [deletePopUp, setDeletePopUp] = useState<boolean>(false);
-  const [selected, setSelected] = useState<number|null>(null);
+  const [selected, setSelected] = useState<number | null>(null);
 
   //Prevent memory leak
   useEffect(() => {
@@ -53,60 +56,68 @@ export default function NewsCard({
     }
   }, [news.thumbnailUrl]);
 
-  const handleDelete = async(index: number) =>{
-    setIsLoading(true)
-    try{
-      await Promise.resolve(onDelete(index))
-    }catch(error){
-      console.log(error)
-    }finally{
-      setIsLoading(false)
+  const handleDelete = async (index: number) => {
+    setIsLoading(true);
+    try {
+      await Promise.resolve(onDelete(index));
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <>
-    <Card className="bg-[#1a1a2e] border-[#2d2d44] p-4">
-      <CardContent className="p-0">
-        {isEditing ? (
-          <>
-           <BlogForm mode="edit" initialData={news} onSubmit={onSaveEdit} onCancel={onCancelEdit}/>
-          </>
-        ) : (
-          <>
-            <div className="md:hidden flex flex-col">
-              <div className="w-full mb-3">
-                <Image
-                  src={`${baseUrl}/${news.thumbnailUrl}`} // Use base URL and normalize path
-                  alt={news.title}
-                  width={400}
-                  height={250}
-                  className="rounded-lg object-cover w-full h-full"
-                />
+      <Card className="bg-[#1a1a2e] border-[#2d2d44] p-4">
+        <CardContent className="p-0">
+          {isEditing ? (
+            <>
+              <BlogForm
+                mode="edit"
+                initialData={news}
+                onSubmit={onSaveEdit}
+                onCancel={onCancelEdit}
+              />
+            </>
+          ) : (
+            <>
+              <div className="md:hidden flex flex-col">
+                <div className="w-full mb-3">
+                  <Image
+                    src={`${baseUrl}/${news.thumbnailUrl}`} // Use base URL and normalize path
+                    alt={news.title}
+                    width={400}
+                    height={250}
+                    className="rounded-lg object-cover w-full h-full"
+                  />
+                </div>
+                <div className="text-white text-sm mb-2">{news.date}</div>
+                <h3 className="font-bold text-white text-lg mb-2">
+                  {news.title}
+                </h3>
+                <div className="flex space-x-2 w-full">
+                  <button
+                    onClick={() => onEditClick(index, news)}
+                    className="px-3 py-2 w-full bg-black text-white rounded-md hover:bg-white transition-colors"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => {
+                      setDeletePopUp(true);
+                      setSelected(index);
+                    }}
+                    className="px-3 py-2 w-full bg-red-700 text-white rounded-md hover:bg-red-600 transition-colors"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
-              <div className="text-white text-sm mb-2">{news.date}</div>
-              <h3 className="font-bold text-white text-lg mb-2">
-                {news.title}
-              </h3>
-              <div className="flex space-x-2 w-full">
-                <button
-                  onClick={() => onEditClick(index, news)}
-                  className="px-3 py-2 w-full bg-black text-white rounded-md hover:bg-white transition-colors"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => {setDeletePopUp(true);setSelected(index);}}
-                  className="px-3 py-2 w-full bg-red-700 text-white rounded-md hover:bg-red-600 transition-colors"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
 
-            <div className="hidden md:flex items-start gap-4 h-[200px]">
-              <div className="w-1/3 h-full">
-                {typeof news.thumbnailUrl === "string" ? (
+              <div className="hidden md:flex items-start gap-4 h-[200px]">
+                <div className="w-1/3 h-full">
+                  {typeof news.thumbnailUrl === "string" ? (
                     <Image
                       src={`${baseUrl}/${news.thumbnailUrl}`}
                       alt={news.title}
@@ -122,50 +133,52 @@ export default function NewsCard({
                       height={250}
                       className="rounded-lg object-cover w-full h-full"
                     />
-                  ) : null
-                }
-              </div>
-
-              <div className="w-2/3 font-michroma flex flex-col justify-between h-full">
-                <div className="flex justify-between items-start">
-                  <h3 className="font-bold text-2xl capitalize text-white max-lines-2 overflow-hidden">
-                    {news.title}
-                  </h3>
-                  <div className="text-gray-300 text-xs text-end min-w-28">
-                    {news.date}
-                  </div>
+                  ) : null}
                 </div>
 
-                <div
-                  className="text-white max-lines-2"
-                  dangerouslySetInnerHTML={{
-                    __html: enhanceHtmlWithTailwind(news.content),
-                  }}
-                />
+                <div className="w-2/3 font-michroma flex flex-col justify-between h-full">
+                  <div className="flex justify-between items-start">
+                    <h3 className="font-bold text-2xl capitalize text-white max-lines-2 overflow-hidden">
+                      {news.title}
+                    </h3>
+                    <div className="text-gray-300 text-xs text-end min-w-28">
+                      {news.date}
+                    </div>
+                  </div>
 
-                <div className="flex space-x-2 justify-end w-full">
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => onEditClick(index, news)}
-                      className="cursor-pointer px-3 py-1 w-full bg-black text-white rounded-md hover:bg-slate-900 transition-colors"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => {setDeletePopUp(true);setSelected(index);}}
-                      className="cursor-pointer px-3 py-1 w-full bg-red-700 text-white rounded-md hover:bg-red-600 transition-colors"
-                    >
-                      Delete
-                    </button>
+                  <div
+                    className="text-white max-lines-2"
+                    dangerouslySetInnerHTML={{
+                      __html: enhanceHtmlWithTailwind(news.content),
+                    }}
+                  />
+
+                  <div className="flex space-x-2 justify-end w-full">
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => onEditClick(index, news)}
+                        className="cursor-pointer px-3 py-1 w-full bg-black text-white rounded-md hover:bg-slate-900 transition-colors"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => {
+                          setDeletePopUp(true);
+                          setSelected(index);
+                        }}
+                        className="cursor-pointer px-3 py-1 w-full bg-red-700 text-white rounded-md hover:bg-red-600 transition-colors"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </>
-        )}
-      </CardContent>
-    </Card>
-    {deletePopUp && (
+            </>
+          )}
+        </CardContent>
+      </Card>
+      {deletePopUp && (
         <ConfirmPopUp
           title={"Delete Blog?"}
           message={"Are you sure you want to delete this Blog?"}

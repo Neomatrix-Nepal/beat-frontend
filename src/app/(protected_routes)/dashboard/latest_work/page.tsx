@@ -106,27 +106,24 @@ const LatestWorkManager: React.FC = () => {
       } catch (err: any) {
         setError(err.message || "Failed to delete work");
       }
-      
     },
     [works]
   );
-  
-  const handleEditWork = (work : Work)=>{
-    setEditingId(work.id);
-  }
 
-  const handleSaveEdit = async( data:FormData, imageFile: File|null) =>{
-    if(!editingId){
-      console.log("id not defined");
+  const handleEditWork = (work: Work) => {
+    setEditingId(work.id);
+  };
+
+  const handleSaveEdit = async (data: FormData, imageFile: File | null) => {
+    if (!editingId) {
       return;
     }
 
-    console.log(data);
     const result = await updateLatestWork(
       editingId,
       session?.user?.tokens?.accessToken as string,
       data,
-      imageFile,
+      imageFile
     );
 
     if (result.success) {
@@ -139,14 +136,16 @@ const LatestWorkManager: React.FC = () => {
         uploadDate: toDateInputValue(result.data.createdAt),
         images: result.data.images,
       };
-      
-      setWorks(prev => prev.map(w => (w.id === editingId ? updatedWork : w)));
+
+      setWorks((prev) =>
+        prev.map((w) => (w.id === editingId ? updatedWork : w))
+      );
       toast.success("Successfully updated latest work:");
       setEditingId(null);
-    } else {  
+    } else {
       console.error("Error:", result.error);
     }
-  }
+  };
   const goToPreviousPage = useCallback(() => {
     setCurrentPage((prev) => Math.max(prev - 1, 1));
   }, []);
@@ -235,24 +234,23 @@ const LatestWorkManager: React.FC = () => {
           </div>
         </div>
       </div>
-      {
-        editingId && 
-          <div className="fixed z-100 inset-0">
-            <div className="absolute inset-0 bg-black/70 z-90"/>
-            <div className="absolute z-100 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-              <div 
-                className="absolute z-100 top-20 right-10 cursor-pointer"
-                onClick={()=>setEditingId(null)}
-              >
-                <X color="white"/>
-              </div>
-            <AddWorkForm 
-              initialData={works.find((item) => item.id === editingId)} 
+      {editingId && (
+        <div className="fixed z-100 inset-0">
+          <div className="absolute inset-0 bg-black/70 z-90" />
+          <div className="absolute z-100 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+            <div
+              className="absolute z-100 top-20 right-10 cursor-pointer"
+              onClick={() => setEditingId(null)}
+            >
+              <X color="white" />
+            </div>
+            <AddWorkForm
+              initialData={works.find((item) => item.id === editingId)}
               onSave={handleSaveEdit}
             />
-            </div>
           </div>
-      }
+        </div>
+      )}
     </div>
   );
 };
