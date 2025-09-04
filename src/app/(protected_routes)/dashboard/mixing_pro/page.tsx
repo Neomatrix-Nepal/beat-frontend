@@ -20,7 +20,6 @@ const BUTTON_CLASSES =
 
 const MixingProPage = () => {
   const [uploads, setUploads] = useState<MixingProEntry[]>([]);
-  const [selectAll, setSelectAll] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -74,34 +73,13 @@ const MixingProPage = () => {
     fetchMixingOrders(currentPage);
   }, [currentPage, fetchMixingOrders]);
 
-  // Memoize selected count
-  const selectedCount = useMemo(
-    () => uploads.filter((entry) => entry.selected).length,
-    [uploads]
-  );
-
-  // Handlers
-  const handleSelectAll = useCallback(() => {
-    const newVal = !selectAll;
-    setSelectAll(newVal);
-    setUploads((prev) => prev.map((entry) => ({ ...entry, selected: newVal })));
-  }, [selectAll]);
-
-  const handleSelectEntry = useCallback((id: number) => {
-    setUploads((prev) =>
-      prev.map((entry) =>
-        entry.id === id ? { ...entry, selected: !entry.selected } : entry
-      )
-    );
-  }, []);
-
   const handleDeleteEntry = async (id: number) => {
     try {
       await deleteMixingOrder(id, session?.user.tokens.accessToken as string);
       setUploads((prev) => prev.filter((entry) => entry.id !== id));
       toast.success("Mixing order deleted successfully");
     } catch (err) {
-      setError("Failed to delete mixing order. Please try again.");
+      toast.error("Failed to delete Mixing order");
       console.error("Error deleting entry:", err);
     }
   };
@@ -114,9 +92,10 @@ const MixingProPage = () => {
           entry.id === id ? { ...entry, status: "completed" } : entry
         )
       );
+      toast.success("Order marked as delivered")
     } catch (err) {
-      setError("Failed to update status. Please try again.");
       console.error("Error updating status:", err);
+      toast.error("Failed to update status. Please try again");
     }
   }, []);
 
@@ -139,9 +118,6 @@ const MixingProPage = () => {
           {/* Table Display */}
           <MixingProTable
             entries={uploads}
-            selectAll={selectAll}
-            onSelectAll={handleSelectAll}
-            onSelectEntry={handleSelectEntry}
             onDeleteEntry={handleDeleteEntry}
             onMarkAsSent={handleMarkAsSent}
           />

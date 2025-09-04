@@ -11,9 +11,6 @@ import ConfirmPopUp from "../ui/confirmPopUp";
 
 interface MixingProTableProps {
   entries: MixingProEntry[];
-  selectAll: boolean;
-  onSelectAll: () => void;
-  onSelectEntry: (id: number) => void;
   onDeleteEntry: (id: number) => void;
   onMarkAsSent: (id: number) => void;
 }
@@ -26,7 +23,6 @@ const statusStyles = {
 
 export const MixingProTable: React.FC<MixingProTableProps> = ({
   entries,
-  onSelectEntry,
   onDeleteEntry,
   onMarkAsSent,
 }) => {
@@ -201,6 +197,7 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
         <MixingProSubmissionDetails
           entry={selectedEntry}
           onClose={handleClosePopup}
+          onStatusChange={onMarkAsSent}
         />
       </PopupWrapper>
 

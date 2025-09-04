@@ -192,6 +192,7 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
         <div className="mx-5">
           <CustomerOrderDetails
             order={selectedEntry}
+            onStatusChange={handleChangeStatus}
             onClose={handleClosePopup}
           />
         </div>

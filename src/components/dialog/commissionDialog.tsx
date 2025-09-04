@@ -14,6 +14,21 @@ export default function CommissionDetails({
   onStatusChange: (id: string) => void;
 }) {
   const [commission, setCommission] = useState<Commission | null>(initialCommission);
+  const [delivered, setDelivered] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
+
+  const onMarkAsDelivered = async(commission: Commission) => {
+      setLoading(true);
+      try{
+        await Promise.resolve(onStatusChange((commission.id).toString()));
+        setCommission({ ...commission, status: "paid" })
+        setDelivered(true);
+      }catch(error){
+        console.error(error)
+      }finally{
+        setLoading(false);
+      }
+    }
 
   if (!commission) return null;
 
@@ -94,17 +109,25 @@ export default function CommissionDetails({
       </div>
 
       {/* Action Button */}
-      <div>
-        <button
-          onClick={() => {
-            onStatusChange(commission.id.toString());
-            setCommission({ ...commission, status: "paid" });
-          }}
-          className="bg-[#00e08f] hover:bg-[#00c97e] text-black px-5 py-2 rounded-md font-semibold text-sm flex items-center gap-2">
-          <FaCheck className="text-sm" />
-          Mark as Delivered
-        </button>
-      </div>
+      {
+        (commission.status !== "completed" && !delivered) &&
+        <div>
+          <button
+            onClick={()=>onMarkAsDelivered(commission)} 
+            className={` hover:bg-[#00c97e] text-black px-5 py-2 rounded-md font-semibold text-sm flex items-center gap-2
+              ${loading ? "bg-[#00c97e]" : "bg-[#00e08f]"}
+            `}>
+              {loading ? (
+                  <div className="w-7 h-7 border-3 border-black border-t-transparent rounded-full animate-spin"></div>
+              ) : (
+                <>
+                  <FaCheck className="text-sm" />
+                  Mark as Delivered
+                </>
+              )}
+          </button>
+        </div>
+      }
     </div>
   );
 }

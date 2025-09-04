@@ -9,9 +9,11 @@ import CustomAudioPlayer from "../HLSAudioPlayer";
 
   const genreColors: Record<string, string> = {
     chill: "bg-orange-500/20 text-orange-400 border-orange-500/30",
-    "R&B": "bg-blue-500/20 text-blue-400 border-blue-500/30",
-    "Hip Hop": "bg-purple-500/20 text-purple-400 border-purple-500/30",
-    Pop: "bg-pink-500/20 text-pink-400 border-pink-500/30",
+    "RnB": "bg-blue-500/20 text-blue-400 border-blue-500/30",
+    "Hip-hop": "bg-purple-500/20 text-purple-400 border-purple-500/30 text-center",
+    "Pop": "bg-pink-500/20 text-pink-400 border-pink-500/30",
+    "Others": "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
+    "rock": "bg-red-500/20 text-red-400 border-red-500/30",
   };
 
 export const BeatsTable: React.FC<BeatsTableProps> = ({
@@ -50,7 +52,7 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
               <th className="text-left p-4 text-slate-300 font-semibold">
                 Title
               </th>
-              <th className="text-left p-4 text-slate-300 font-semibold">
+              <th className="text-center p-4 text-slate-300 font-semibold">
                 Genre
               </th>
               <th className="text-left p-4 text-slate-300 font-semibold">
@@ -82,11 +84,11 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
                   <td className="p-4 text-white font-medium">
                     {beat?.name || ""}
                   </td>
-                  <td className="p-4">
+                  <td className="px-4 py-8 flex justify-center">
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-medium border ${
                         genreColors[beat.subCategory?.name] ||
-                        "bg-gray-500/20 text-gray-400 border-gray-500/30"
+                        "bg-gray-500/20 text-gray-400 border-gray-500/30 flex justify-center text-center"
                       }`}
                     >
                       {beat?.subCategory?.name || ""}

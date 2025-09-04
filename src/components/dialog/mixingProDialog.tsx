@@ -1,8 +1,8 @@
 "use client";
 
 import { Blend, X } from "lucide-react";
-import React from "react";
-import { FaCheckCircle } from "react-icons/fa";
+import React, { useState } from "react";
+import { FaCheck, FaCheckCircle } from "react-icons/fa";
 
 export interface MixingProEntry {
   id: number;
@@ -28,15 +28,18 @@ export interface MixingProEntry {
 interface MixingProSubmissionDetailsProps {
   entry: MixingProEntry | null;
   onClose: () => void;
-  onMarkAsCompleted?: (id: number) => void;
+  onStatusChange: (id: number) => void;
 }
 
 export default function MixingProSubmissionDetails({
   entry,
   onClose,
-  onMarkAsCompleted,
+  onStatusChange,
 }: MixingProSubmissionDetailsProps) {
   if (!entry) return null;
+
+    const [completed, setCompleted] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(false)
 
   // Fallbacks for fields not present in backend data
   const avatar = "https://i.pravatar.cc/150?img=1";
@@ -48,9 +51,15 @@ export default function MixingProSubmissionDetails({
   );
   const total = (basePrice + packageTotal).toFixed(2);
 
-  const handleMarkAsCompleted = () => {
-    if (onMarkAsCompleted && entry.status !== "completed") {
-      onMarkAsCompleted(entry.id);
+  const handleMarkAsCompleted = async(entry:MixingProEntry) => {
+    setLoading(true);
+    try{
+      await Promise.resolve(onStatusChange(entry.id));
+      setCompleted(true);
+    }catch(error){
+      console.error(error);
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -148,18 +157,25 @@ export default function MixingProSubmissionDetails({
       </div>
 
       {/* Action Button */}
-      <div>
-        <button
-          onClick={handleMarkAsCompleted}
-          disabled={entry.status === "completed"}
-          className={`bg-[#00e08f] hover:bg-[#00c97e] text-black px-5 py-2 rounded-md font-semibold text-sm flex items-center gap-2 ${
-            entry.status === "completed" ? "opacity-50 cursor-not-allowed" : ""
-          }`}
-        >
-          <FaCheckCircle className="text-sm" />
-          {entry.status === "completed" ? "Completed" : "Mark as Completed"}
-        </button>
-      </div>
+      {
+        (entry.status !== "completed" && !completed) &&
+        <div>
+          <button
+            onClick={()=>handleMarkAsCompleted(entry)} 
+            className={` hover:bg-[#00c97e] text-black px-5 py-2 rounded-md font-semibold text-sm flex items-center gap-2
+              ${loading ? "bg-[#00c97e]" : "bg-[#00e08f]"}
+            `}>
+              {loading ? (
+                  <div className="w-7 h-7 border-3 border-black border-t-transparent rounded-full animate-spin"></div>
+              ) : (
+                <>
+                  <FaCheck className="text-sm" />
+                  Mark as Delivered
+                </>
+              )}
+          </button>
+        </div>
+      }
     </div>
   );
 }
