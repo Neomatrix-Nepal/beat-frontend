@@ -1068,6 +1068,45 @@ export default function LicensePage() {
             </div>
           </div>
 
+          {/* Licensor Information */}
+          <div className="bg-slate-700 p-4 rounded">
+            <h3 className="text-lg font-bold mb-4">Licensor Information</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <label className="block">
+                Legal Name *
+                <input
+                  type="text"
+                  value={form.licensorName}
+                  onChange={onInput("licensorName")}
+                  placeholder="Full legal name"
+                  className="p-3 rounded bg-slate-600 w-full mt-1"
+                />
+              </label>
+
+              <label className="block">
+                Artist/Stage Name *
+                <input
+                  type="text"
+                  value={form.licensorArtist}
+                  onChange={onInput("licensorArtist")}
+                  placeholder="Professional name"
+                  className="p-3 rounded bg-slate-600 w-full mt-1"
+                />
+              </label>
+
+              <label className="block md:col-span-2">
+                Location *
+                <input
+                  type="text"
+                  value={form.licensorLocation}
+                  onChange={onInput("licenseeLocation")}
+                  placeholder="City, State/Province, Country"
+                  className="p-3 rounded bg-slate-600 w-full mt-1"
+                />
+              </label>
+            </div>
+          </div>
+
           {/* Licensee Information */}
           <div className="bg-slate-700 p-4 rounded">
             <h3 className="text-lg font-bold mb-4">Licensee Information</h3>

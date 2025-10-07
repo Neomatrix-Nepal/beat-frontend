@@ -34,6 +34,8 @@ export const CommissionTable: React.FC<CommissionTableProps> = ({
     string | null
   >();
 
+  console.log(entries)
+
   const handleViewClick = (entry: Commission) => {
     setSelectedEntry(entry);
     setIsPopupOpen(true);
