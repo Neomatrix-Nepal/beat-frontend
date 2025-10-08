@@ -74,3 +74,10 @@ export interface SalesChartProps {
   barGraphData: BarGraphData;
   passedToken: string;
 }
+
+export interface BeatDetailsData {
+  "standard": number | { count: number | string };
+  "premium": number | { count: number | string };
+  "mixing-pro": number | { count: number | string };
+  "custom-beat": number | { count: number | string };
+}

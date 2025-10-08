@@ -38,3 +38,12 @@ export const getPieChartData = async (token: string) => {
   });
   return response.data;
 };
+
+export const getBeatDetails = async (token: string) => {
+  const response = await api.get("/dashboard/category-breakdown", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
