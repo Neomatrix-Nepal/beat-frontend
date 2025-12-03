@@ -55,29 +55,42 @@ export default function CustomerOrderDetails({
           <h3 className="text-center text-[#00e08f] text-lg mb-4">
             Customer Information
           </h3>
-          <OrderInfoRow label="Customer" value={order.user.fullname} />
+          <OrderInfoRow label="Customer ID" value={String(order.user.id)} />
+          <OrderInfoRow label="Customer Name" value={order.user.fullname} />
           <OrderInfoRow label="Email" value={order.user.email} />
-          {/* <OrderInfoRow label="Product" value={order.product} /> */}
-          <OrderInfoRow label="Price" value={order.amount} />
-          <OrderInfoRow
-            label="Order Date"
-            value={formatDateTime(order.createdAt)}
-          />
-          <OrderInfoRow label="Payment Status" value={order.status} />
-          <OrderInfoRow label="Order ID" value={String(order.id)} />
+
+          {/* Product Info Panel */}
+          <h3 className="text-center text-[#00e08f] text-lg mb-4">
+            Product Information
+          </h3>
+          {
+            order.items.length > 0 ?
+            (
+            <>
+              <OrderInfoRow label="Product ID" value={String(order.items[0].product.id)} />
+              <OrderInfoRow label="Product Name" value={order.items[0].product.name} />
+              <OrderInfoRow label="Product Type" value="Beat" />
+            </>
+            )
+            :
+            (
+
+              <OrderInfoRow label="Product Type" value={order.paymentType} />
+            )
+            
+          }
+          <OrderInfoRow label="Price" value={`$${order.amount}`} />
         </div>
 
         {/* Delivery Info Panel */}
         <div className="bg-[#1d2733] p-6 rounded-lg space-y-2">
           <h3 className="text-center text-[#00e08f] text-lg mb-4">
-            Delivery Information
+            Delivery & Payment Information
           </h3>
+          <OrderInfoRow label="Order ID" value={String(order.id)} />
+          <OrderInfoRow label="Payment Status" value={order.status} />
           <OrderInfoRow label="Delivery Status" value={order.status} />
           <OrderInfoRow label="Delivery Address" value={order.address ?? ""} />
-          {/* Shipping Details Panel */}
-          <h3 className="text-center text-[#00e08f] text-lg mt-4">
-            Delivery Information
-          </h3>
           {order.city && <OrderInfoRow label="Delivery City" value={order.city} />}
           {order.country && <OrderInfoRow label="Delivery Country" value={order.country} />}
           {order.phone && <OrderInfoRow label="Phone Number" value={order.phone} />}
@@ -87,7 +100,7 @@ export default function CustomerOrderDetails({
             <OrderInfoRow label="Discount" value={order.discountPercentage.toString()} />
           )}
           {order.notes && <OrderInfoRow label="Notes" value={order.notes} />}
-          {order.createdAt && <OrderInfoRow label="Created Date" value={formatDateTime(order.createdAt)} />}
+          {order.createdAt && <OrderInfoRow label="Order Date" value={formatDateTime(order.createdAt)} />}
           {order.updatedAt && <OrderInfoRow label="Updated Date" value={formatDateTime(order.updatedAt)} />}
         </div>
       </div>

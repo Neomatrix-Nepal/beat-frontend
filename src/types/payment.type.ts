@@ -1,7 +1,9 @@
+import { Product } from "./beats";
 import { User } from "./user.type";
 interface Items {
   id: number;
   productId: number;
+  product:Product;
   price: string;
   quantity: number;
   createdAt: string;

@@ -26,6 +26,7 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
   onDeleteEntry,
   handleChangeStatus,
 }) => {
+  console.log(entries);
   const [deletePopUp, setDeletePopUp] = useState<boolean>(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
