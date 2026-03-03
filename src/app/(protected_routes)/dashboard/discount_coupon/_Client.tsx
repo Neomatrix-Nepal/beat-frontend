@@ -36,7 +36,14 @@ export default function _Client({
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    let nextForm = { ...form, [name]: value };
+
+    if (name === "validFrom" && form.validUntil && value > form.validUntil) {
+      nextForm.validUntil = value;
+    }
+
+    setForm(nextForm);
   };
 
   const handleSave = async () => {
@@ -51,48 +58,58 @@ export default function _Client({
     }
 
     setLoading(true);
-    const newCoupon: Coupon = {
-      ...form,
-      discountPercentage: Number(form.discountPercentage),
-    };
+    try {
+      const newCoupon: Coupon = {
+        ...form,
+        discountPercentage: Number(form.discountPercentage),
+      };
 
-    if (editing) {
-      const { id } = await updateDiscountCoupon(
-        form.id!.toString(),
-        {
-          code: newCoupon.code,
-          description: newCoupon.description,
-          discountPercentage: newCoupon.discountPercentage,
-          validFrom: newCoupon.validFrom,
-          validUntil: newCoupon.validUntil,
-        },
-        session?.user?.tokens.accessToken!
-      );
-      if (!id) {
-        toast.error("Failed to update coupon.");
-        return;
+      if (editing) {
+        const result = await updateDiscountCoupon(
+          form.id!.toString(),
+          {
+            code: newCoupon.code,
+            description: newCoupon.description,
+            discountPercentage: newCoupon.discountPercentage,
+            validFrom: newCoupon.validFrom,
+            validUntil: newCoupon.validUntil,
+          },
+          session?.user?.tokens.accessToken!
+        );
+        if (!result || !result.id) {
+          toast.error(result?.message || "Failed to update coupon.");
+          return;
+        }
+        setCoupons((prev) =>
+          prev.map((c) => (c.id === newCoupon.id ? newCoupon : c))
+        );
+        toast.success("Coupon updated.");
+      } else {
+        const result = await uploadDiscountCoupon(
+          newCoupon,
+          session?.user?.tokens.accessToken!
+        );
+        if (!result || !result.id) {
+          toast.error(result?.message || "Failed to add coupon.");
+          return;
+        }
+        newCoupon.id = result.id;
+        setCoupons((prev) => [newCoupon, ...prev]);
+        toast.success("Coupon added.");
       }
-      setCoupons((prev) =>
-        prev.map((c) => (c.id === newCoupon.id ? newCoupon : c))
-      );
-      toast.success("Coupon updated.");
-    } else {
-      const { id } = await uploadDiscountCoupon(
-        newCoupon,
-        session?.user?.tokens.accessToken!
-      );
-      if (!id) {
-        toast.error("Failed to add coupon.");
-        return;
-      }
-      newCoupon.id = id;
-      setCoupons((prev) => [newCoupon, ...prev]);
-      toast.success("Coupon added.");
+
+      setForm(defaultForm);
+      setEditing(false);
+    } catch (error: any) {
+      console.error(error);
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "An unexpected error occurred.";
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
     }
-
-    setForm(defaultForm);
-    setEditing(false);
-    setLoading(false);
   };
 
   const handleEdit = (coupon: Coupon) => {
@@ -101,20 +118,33 @@ export default function _Client({
   };
 
   const handleDelete = async (id: number) => {
-    try{
-      const { message } = await deleteDiscountCoupon(
+    setLoading(true);
+    try {
+      const result = await deleteDiscountCoupon(
         id.toString(),
         session?.user?.tokens.accessToken!
       );
-      if (message) return toast.error("Failed to delete coupon." + message);
+
+      // Assuming if the API call succeeded (no exception), the deletion was successful
+      // or handling if result has a specific error field
+      if (result?.message && !result?.id && !result?.success) {
+        // This is a bit speculative but tries to capture API-level errors
+        // that don't trigger Axios catch (e.g. 200 OK with error message)
+      }
+
       setCoupons((prev) => prev.filter((c) => c.id !== id));
       toast.success("Coupon deleted.");
       setForm(defaultForm);
       setEditing(false);
-    }catch(error){
+    } catch (error: any) {
       console.error(error);
-      toast.error("An error occurred while deleting the coupon.");
-    }finally{
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "An error occurred while deleting the coupon.";
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
       setDeleteId(null);
     }
   };
@@ -202,6 +232,7 @@ export default function _Client({
               value={toDateInputValue(form.validUntil)}
               onChange={handleChange}
               className="p-2 rounded bg-slate-700 placeholder:text-gray-400"
+              min={toDateInputValue(form.validFrom)}
             />
           </div>
         </div>
@@ -254,23 +285,23 @@ export default function _Client({
                     </td>
                     <td className="px-4 py-2 text-center flex items-center justify-center space-x-2">
                       <button
-                            disabled={loading}
-                            className={`bg-yellow-400 text-black cursor-pointer p-2 rounded-lg hover:bg-slate-600/30 transition-colors
-                                ${loading?"cursor-not-allowed" : ""}
+                        disabled={loading}
+                        className={`bg-yellow-400 text-black cursor-pointer p-2 rounded-lg hover:bg-slate-600/30 transition-colors
+                                ${loading ? "cursor-not-allowed" : ""}
                               `}
-                            onClick={() => handleEdit(coupon)}
-                          >
-                            <Edit size={16} />
-                          </button>
-                          <button
-                            disabled={loading}
-                            className={`cursor-pointer bg-black p-2 rounded-lg text-white hover:bg-slate-600/30 transition-colors
-                                ${loading?"cursor-not-allowed" : ""}
+                        onClick={() => handleEdit(coupon)}
+                      >
+                        <Edit size={16} />
+                      </button>
+                      <button
+                        disabled={loading}
+                        className={`cursor-pointer bg-black p-2 rounded-lg text-white hover:bg-slate-600/30 transition-colors
+                                ${loading ? "cursor-not-allowed" : ""}
                               `}
-                            onClick={() => setDeleteId(coupon.id!)}
-                          >
-                            <Trash size={18} className="text-red-500" />
-                          </button>
+                        onClick={() => setDeleteId(coupon.id!)}
+                      >
+                        <Trash size={18} className="text-red-500" />
+                      </button>
                     </td>
                   </tr>
                 ))

@@ -13,6 +13,8 @@ export const getBeats = async (type: string) => {
 };
 
 export const uploadProduct = async (formData: FormData, token: string) => {
+
+  console.log(token)
   const response = await api.post("/products", formData, {
     headers: {
       Authorization: `Bearer ${token}`,

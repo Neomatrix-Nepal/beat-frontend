@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 import { Upload } from "lucide-react";
 import { useState } from "react";
@@ -13,7 +14,7 @@ import {
 } from "@/src/components/ui/pagination";
 import { Product, Genre } from "@/src/types";
 import toast from "react-hot-toast";
-import { deleteProduct } from "./action";
+import { deleteProduct, getBeats } from "./action";
 import { useSession } from "next-auth/react";
 
 export default function _Client({
@@ -34,6 +35,16 @@ export default function _Client({
   const startIndex = (currentPage - 1) * itemsPerPage;
 
   const { data: session } = useSession();
+
+  const fetchBeats = async () => {
+    try {
+      const data = await getBeats("digital-asset");
+      setBeats(data);
+    } catch (error) {
+      console.error("Failed to fetch beats:", error);
+      toast.error("Failed to refresh beats list");
+    }
+  };
 
   const handleEditBeat = (beat: Product) => {
     setSelectedBeats(beat);
@@ -158,6 +169,7 @@ export default function _Client({
         initialData={selectedBeats}
         genres={genres}
         isOpen={isOpen}
+        onSuccess={fetchBeats}
         onClose={() => {
           setIsOpen(false);
           setSelectedBeats(null);

@@ -48,18 +48,22 @@ const CustomBeatsPage = () => {
     );
   }, [currentPage, fetchBeatsCallback]);
 
-  const selectedCount = beats.filter((entry) => entry.selected).length;
+  // const selectedCount = beats.filter((entry) => entry.selected).length;
   const visibleBeats = beats.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
   const goToPreviousPage = () => {
-    setCurrentPage((prev) => Math.max(prev - 1, 1));
+    if (currentPage > 1) {
+      setCurrentPage((prev) => prev - 1);
+    }
   };
 
   const goToNextPage = () => {
-    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+    if (currentPage < totalPages && beats.length > 0) {
+      setCurrentPage((prev) => prev + 1);
+    }
   };
 
   return (
@@ -98,10 +102,11 @@ const CustomBeatsPage = () => {
                     <PaginationPrevious
                       onClick={goToPreviousPage}
                       className={
-                        currentPage === 1
-                          ? "bg-gray-600 opacity-50"
-                          : "border-2 border-white"
+                        currentPage === 1 || beats.length === 0
+                          ? "bg-gray-600 opacity-50 cursor-not-allowed"
+                          : "border-2 border-white cursor-pointer"
                       }
+                      disabled={currentPage === 1 || beats.length === 0}
                     />
                   </PaginationItem>
 
@@ -110,6 +115,7 @@ const CustomBeatsPage = () => {
                       <button
                         onClick={() => setCurrentPage(currentPage - 1)}
                         className="border-2 border-white text-white px-3 py-1 rounded hover:bg-slate-700"
+                        disabled={beats.length === 0}
                       >
                         {currentPage - 1}
                       </button>
@@ -130,6 +136,7 @@ const CustomBeatsPage = () => {
                       <button
                         onClick={() => setCurrentPage(currentPage + 1)}
                         className="text-white px-3 py-1 rounded border-2 border-white hover:bg-slate-700"
+                        disabled={beats.length === 0}
                       >
                         {currentPage + 1}
                       </button>
@@ -140,10 +147,11 @@ const CustomBeatsPage = () => {
                     <PaginationNext
                       onClick={goToNextPage}
                       className={
-                        currentPage === totalPages
-                          ? "pointer-events-none bg-gray-600 opacity-50"
-                          : "border-2 border-white"
+                        currentPage === totalPages || beats.length === 0
+                          ? "pointer-events-none bg-gray-600 opacity-50 cursor-not-allowed"
+                          : "border-2 border-white cursor-pointer"
                       }
+                      disabled={currentPage === totalPages || beats.length === 0}
                     />
                   </PaginationItem>
                 </PaginationContent>

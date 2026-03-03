@@ -926,51 +926,51 @@ export default function LicensePage() {
 
   const onInput =
     (name: keyof AgreementData) =>
-    (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-      const { type } = e.target as HTMLInputElement;
-      const value =
-        type === "checkbox"
-          ? (e.target as HTMLInputElement).checked
-          : e.target.value;
+      (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { type } = e.target as HTMLInputElement;
+        const value =
+          type === "checkbox"
+            ? (e.target as HTMLInputElement).checked
+            : e.target.value;
 
-      setForm((prev: AgreementData) => {
-        const updated = { ...prev, [name]: value };
+        setForm((prev: AgreementData) => {
+          const updated = { ...prev, [name]: value };
 
-        // Auto-set license-dependent fields
-        if (name === "licenseType") {
-          if (value === "Standard") {
-            Object.assign(updated, {
-              price: "30",
-              deliveryFormat: "WAV only (44.1kHz/16-bit)",
-              streamLimit: "50,000 streams maximum",
-              producerTag: "Included (cannot be removed)",
-              stemsRequired: false,
-              tagRemoval: false,
-            });
-          } else if (value === "Premium") {
-            Object.assign(updated, {
-              price: "200",
-              deliveryFormat: "WAV + optional stems (44.1kHz/24-bit)",
-              streamLimit: "Unlimited streams",
-              producerTag: "Included (removal available for +$50)",
-              stemsRequired: false,
-              tagRemoval: false,
-            });
-          } else if (value === "Exclusive") {
-            Object.assign(updated, {
-              price: "800",
-              deliveryFormat: "WAV + stems + MIDI files",
-              streamLimit: "Unlimited (exclusive rights)",
-              producerTag: "Removed (exclusive package)",
-              stemsRequired: true,
-              tagRemoval: true,
-            });
+          // Auto-set license-dependent fields
+          if (name === "licenseType") {
+            if (value === "Standard") {
+              Object.assign(updated, {
+                price: "30",
+                deliveryFormat: "WAV only (44.1kHz/16-bit)",
+                streamLimit: "50,000 streams maximum",
+                producerTag: "Included (cannot be removed)",
+                stemsRequired: false,
+                tagRemoval: false,
+              });
+            } else if (value === "Premium") {
+              Object.assign(updated, {
+                price: "200",
+                deliveryFormat: "WAV + optional stems (44.1kHz/24-bit)",
+                streamLimit: "Unlimited streams",
+                producerTag: "Included (removal available for +$50)",
+                stemsRequired: false,
+                tagRemoval: false,
+              });
+            } else if (value === "Exclusive") {
+              Object.assign(updated, {
+                price: "800",
+                deliveryFormat: "WAV + stems + MIDI files",
+                streamLimit: "Unlimited (exclusive rights)",
+                producerTag: "Removed (exclusive package)",
+                stemsRequired: true,
+                tagRemoval: true,
+              });
+            }
           }
-        }
 
-        return updated;
-      });
-    };
+          return updated;
+        });
+      };
 
   const handleBeatTitleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
@@ -990,7 +990,12 @@ export default function LicensePage() {
 
   // Validation function
   const isFormValid = () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     const requiredFields = [
+      "licensorName",
+      "licensorArtist",
+      "licensorLocation",
       "licenseeName",
       "licenseeArtist",
       "licenseeLocation",
@@ -1001,7 +1006,14 @@ export default function LicensePage() {
       "price",
     ];
 
-    return requiredFields.every((field) => form[field as keyof AgreementData]);
+    const hasAllFields = requiredFields.every((field) => {
+      const value = form[field as keyof AgreementData];
+      return typeof value === "string" ? value.trim() !== "" : !!value;
+    });
+
+    const isEmailValid = emailRegex.test(form.deliveryEmail);
+
+    return hasAllFields && isEmailValid;
   };
 
   const getPDFComponent = () => {
@@ -1171,14 +1183,14 @@ export default function LicensePage() {
                   </select>
                   {(form.beatTitle === customBeatTitle ||
                     !beatTitles.includes(form.beatTitle)) && (
-                    <input
-                      type="text"
-                      placeholder="Enter custom beat title"
-                      value={customBeatTitle || form.beatTitle}
-                      onChange={handleCustomBeatTitle}
-                      className="p-3 rounded bg-slate-600 w-full mt-2"
-                    />
-                  )}
+                      <input
+                        type="text"
+                        placeholder="Enter custom beat title"
+                        value={customBeatTitle || form.beatTitle}
+                        onChange={handleCustomBeatTitle}
+                        className="p-3 rounded bg-slate-600 w-full mt-2"
+                      />
+                    )}
                 </label>
               </div>
 
@@ -1346,9 +1358,8 @@ export default function LicensePage() {
             {isFormValid() ? (
               <PDFDownloadLink
                 document={getPDFComponent()}
-                fileName={`ProducerFury_${form.licenseType}_License_${
-                  form.beatTitle.replace(/[^a-zA-Z0-9]/g, "_") || "Agreement"
-                }.pdf`}
+                fileName={`ProducerFury_${form.licenseType}_License_${form.beatTitle.replace(/[^a-zA-Z0-9]/g, "_") || "Agreement"
+                  }.pdf`}
                 className="inline-block"
               >
                 {({ loading }) => (
@@ -1392,7 +1403,10 @@ export default function LicensePage() {
                   Complete Required Fields
                 </button>
                 <p className="text-red-400 text-sm mt-2">
-                  Please fill in all required fields marked with *
+                  {!form.deliveryEmail ||
+                    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.deliveryEmail)
+                    ? "Please enter a valid delivery email address."
+                    : "Please fill in all required fields marked with *"}
                 </p>
               </div>
             )}

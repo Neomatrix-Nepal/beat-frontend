@@ -30,6 +30,7 @@ type BeatFormModalProps = {
   genres: { id: number; name: string }[];
   isOpen: boolean;
   onClose: () => void;
+  onSuccess?: () => void;
   initialData?: Product | null;
 };
 
@@ -37,6 +38,7 @@ export default function BeatFormModal({
   genres,
   isOpen,
   onClose,
+  onSuccess,
   initialData,
 }: BeatFormModalProps) {
   const [loading, setLoading] = useState(false);
@@ -103,7 +105,7 @@ export default function BeatFormModal({
     if (typeof initialData.digital_assets[0].contentPath === "string") {
       setPreviewAudio(
         process.env.NEXT_PUBLIC_API_URL +
-          initialData.digital_assets[0].metadata.playlistUrl
+        initialData.digital_assets[0].metadata.playlistUrl
       );
     }
   }, [initialData, genres, reset, setValue]);
@@ -124,7 +126,7 @@ export default function BeatFormModal({
     onClose();
   };
   const onSubmit = async (data: FormData) => {
-    if(!session){
+    if (!session) {
       return toast.error("session timeout please login again");
     }
     setLoading(true);
@@ -173,6 +175,7 @@ export default function BeatFormModal({
           ? "Beat updated successfully!"
           : "Beat uploaded successfully!"
       );
+      if (onSuccess) onSuccess();
       handleClose();
     } catch (error) {
       console.error(error);
@@ -359,9 +362,8 @@ export default function BeatFormModal({
           <button
             type="submit"
             disabled={loading}
-            className={`w-full bg-custom text-white py-3 rounded-lg flex items-center justify-center ${
-              loading ? "opacity-50 cursor-not-allowed" : ""
-            }`}
+            className={`w-full bg-custom text-white py-3 rounded-lg flex items-center justify-center ${loading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
           >
             {loading ? (
               <svg
