@@ -11,7 +11,7 @@ export interface Setting {
   beforeMixing: DigitalAsset | null;
   beforeMixingId: string | null;
   afterMixing: DigitalAsset | null;
-  afterMixingId: number | null;
+  afterMixingId: string | null;
   createdAt: string;
   updatedAt: string;
 }
