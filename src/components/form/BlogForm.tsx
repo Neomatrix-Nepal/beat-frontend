@@ -10,6 +10,7 @@ import {
 } from "@/src/types";
 import RichText from "@/src/components/ui/richText";
 import toast from "react-hot-toast";
+import { baseURL } from "@/src/hooks/useApi";
 
 type AddModeForm = {
   mode: "add";
@@ -29,11 +30,8 @@ type BlogFormProps = AddModeForm | EditModeForm;
 const getNormalizedImageUrl = (url: string | null) => {
   if (!url) return "";
   if (url.startsWith("http://") || url.startsWith("https://")) return url;
-  // Make sure baseUrl has no trailing slash, url has no leading slash
-  const baseUrl =
-    process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ||
-    "http://localhost:8000";
-  return `${baseUrl}/${url.replace(/^\/+/, "")}`;
+  // Make sure baseURL has no trailing slash, url has no leading slash
+  return `${baseURL.replace(/\/$/, "")}/${url.replace(/^\/+/, "")}`;
 };
 
 export default function BlogForm(props: BlogFormProps) {

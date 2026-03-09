@@ -9,8 +9,7 @@ import { updateSettings } from "./action";
 import CustomAudioPlayer from "@/src/components/HLSAudioPlayer";
 import { FiUpload, FiX, FiMusic, FiSettings, FiDollarSign, FiPercent, FiLoader } from "react-icons/fi";
 import { useRouter } from "next/navigation";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+import { baseURL as API_URL } from "@/src/hooks/useApi";
 
 export default function SettingsUI({ settings }: { settings: Setting | null }) {
   const [form, setForm] = useState<Setting | null>(settings);

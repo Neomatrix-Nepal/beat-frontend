@@ -8,8 +8,8 @@ import BlogForm from "./form/BlogForm";
 import { useState, useEffect } from "react";
 import LoadingEffect from "./loadingEffect";
 import ConfirmPopUp from "./ui/confirmPopUp";
+import { baseURL } from "@/src/hooks/useApi";
 
-const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export interface test {
   news: Blog;
@@ -85,7 +85,7 @@ export default function NewsCard({
               <div className="md:hidden flex flex-col">
                 <div className="w-full mb-3">
                   <Image
-                    src={`${baseUrl}/${news.thumbnailUrl}`} // Use base URL and normalize path
+                    src={`${baseURL}/${news.thumbnailUrl}`} // Use base URL and normalize path
                     alt={news.title}
                     width={400}
                     height={250}
@@ -119,7 +119,7 @@ export default function NewsCard({
                 <div className="w-1/3 h-full">
                   {typeof news.thumbnailUrl === "string" ? (
                     <Image
-                      src={`${baseUrl}/${news.thumbnailUrl}`}
+                      src={`${baseURL}/${news.thumbnailUrl}`}
                       alt={news.title}
                       width={400}
                       height={250}
