@@ -83,6 +83,9 @@ export default function BeatFormModal({
       return;
     }
 
+    setPreviewCover(null);
+    setPreviewAudio(null);
+
     const genreObj = genres.find(
       (g) => g.name === initialData.subCategory?.name
     );
@@ -96,17 +99,14 @@ export default function BeatFormModal({
     setValue("mood", initialData.name ?? "");
     setValue("description", initialData.description ?? "");
 
-    if (typeof initialData.images[0].url === "string") {
-      setPreviewCover(
-        process.env.NEXT_PUBLIC_API_URL + "/" + initialData.images[0].url
-      );
+    const imageUrl = initialData.images?.[0]?.url;
+    if (typeof imageUrl === "string" && imageUrl.length > 0) {
+      setPreviewCover(process.env.NEXT_PUBLIC_API_URL + "/" + imageUrl);
     }
 
-    if (typeof initialData.digital_assets[0].contentPath === "string") {
-      setPreviewAudio(
-        process.env.NEXT_PUBLIC_API_URL +
-        initialData.digital_assets[0].metadata.playlistUrl
-      );
+    const playlistUrl = initialData.digital_assets?.[0]?.metadata?.playlistUrl;
+    if (typeof playlistUrl === "string" && playlistUrl.length > 0) {
+      setPreviewAudio(process.env.NEXT_PUBLIC_API_URL + playlistUrl);
     }
   }, [initialData, genres, reset, setValue]);
 
@@ -129,6 +129,11 @@ export default function BeatFormModal({
     if (!session) {
       return toast.error("session timeout please login again");
     }
+
+    if (!selectedGenreId) {
+      return toast.error("Please select a genre");
+    }
+
     setLoading(true);
 
     try {
@@ -137,7 +142,7 @@ export default function BeatFormModal({
       formData.append("price", data.price);
       formData.append("description", data.description);
       formData.append("category_id", "1");
-      formData.append("subCategory_id", selectedGenreId?.toString()!);
+      formData.append("subCategory_id", selectedGenreId.toString());
       formData.append("user_id", session?.user.id);
       formData.append("product_type", "digital-asset");
 
@@ -261,7 +266,7 @@ export default function BeatFormModal({
                   <FiTrash2 className="mr-2" /> Delete Beat Audio
                 </button>
                 {(audioFile || previewAudio) && (
-                  <p className="text-gray-300 truncate max-w-[200px]">
+                  <p className="text-gray-300 truncate max-w-50">
                     Selected audio: {audioFile?.name ?? "Preview available"}
                   </p>
                 )}

@@ -8,6 +8,7 @@ const nextConfig = {
       "beats.neomatrix.live",
       "api.beatpasal.com",
       "bsvzmwz3-8000.inc1.devtunnels.ms",
+      "62vcwv1h-8000.inc1.devtunnels.ms"
     ],
   },
   eslint: {
