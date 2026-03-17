@@ -297,8 +297,18 @@ const AddWorkForm: React.FC<WorkFormProps> = ({ initialData, onSave }) => {
                   if (!selectedPlatform)
                     return "Please select a platform first";
 
+                  if (selectedPlatform === Platform.YOUTUBE) {
+                    const isValid =
+                      value.startsWith("https://www.youtube.com") ||
+                      value.startsWith("https://youtube.com") ||
+                      value.startsWith("https://youtu.be");
+                    return isValid
+                      ? true
+                      : "URL must start with https://youtube.com or https://youtu.be";
+                  }
+
                   const baseUrl = platformBaseUrls[selectedPlatform];
-                  if (!baseUrl) return true; // no validation if no base URL defined
+                  if (!baseUrl) return true;
 
                   return value.startsWith(baseUrl)
                     ? true
