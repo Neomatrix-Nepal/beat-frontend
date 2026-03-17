@@ -9,8 +9,8 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 export const metadata: Metadata = {
-  title: "Cute Boka Admin",
-  description: "Cute Boka Admin Dashboard",
+  title: "Lil Rock Look Admin",
+  description: "Lil Rock Look Admin Dashboard",
   icons: {
     icon: "./favicon.ico",
   },

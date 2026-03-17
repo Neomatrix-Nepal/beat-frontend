@@ -148,7 +148,7 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
                 <div className="flex items-center gap-3">
                   <div>
                     <h3 className="text-white font-medium break-all">{beat?.name}</h3>
-                    <p className="text-slate-400 text-sm">{"Cute Boka"}</p>
+                    <p className="text-slate-400 text-sm">{"Lil Rock Look"}</p>
                   </div>
                 </div>
                 <span className="text-white font-semibold">${beat.price}</span>

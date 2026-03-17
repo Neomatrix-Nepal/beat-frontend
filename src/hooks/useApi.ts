@@ -13,7 +13,7 @@ const processQueue = (error: any, token: string | null = null) => {
   });
   failedQueue = [];
 };
-export const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+export const baseURL = process.env.NEXT_PUBLIC_API_URL || "https://62vcwv1h-7000.inc1.devtunnels.ms";
 
 const api = axios.create({
   baseURL,
