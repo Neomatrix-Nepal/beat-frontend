@@ -106,7 +106,6 @@ const CustomBeatsPage = () => {
                           ? "bg-gray-600 opacity-50 cursor-not-allowed"
                           : "border-2 border-white cursor-pointer"
                       }
-                      disabled={currentPage === 1 || beats.length === 0}
                     />
                   </PaginationItem>
 
@@ -151,7 +150,6 @@ const CustomBeatsPage = () => {
                           ? "pointer-events-none bg-gray-600 opacity-50 cursor-not-allowed"
                           : "border-2 border-white cursor-pointer"
                       }
-                      disabled={currentPage === totalPages || beats.length === 0}
                     />
                   </PaginationItem>
                 </PaginationContent>
