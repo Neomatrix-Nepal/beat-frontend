@@ -5,16 +5,19 @@ export const getGenre = async (slug: string) => {
   return response.data;
 };
 
-export const getBeats = async (type: string) => {
+export const getBeats = async (
+  type: string,
+  page: number = 1,
+  limit: number = 10
+) => {
   const response = await api.get("/products/getall", {
-    params: { type },
+    params: { type, page, limit },
   });
-  return response.data.data;
+  return response.data;
 };
 
 export const uploadProduct = async (formData: FormData, token: string) => {
 
-  console.log(token)
   const response = await api.post("/products", formData, {
     headers: {
       Authorization: `Bearer ${token}`,

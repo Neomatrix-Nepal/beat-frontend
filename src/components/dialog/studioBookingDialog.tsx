@@ -40,7 +40,7 @@ export default function StudioBookingDetails({
                     />
                     <InfoRow 
                         label="Booked Date"
-                        value={booking.date}
+                        value={formatDateTime(booking.date)}
                     />
                     <InfoRow 
                         label="Duration"

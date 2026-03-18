@@ -15,7 +15,6 @@ export async function refreshAccessToken(token: JWTToken): Promise<JWTToken> {
         "refresh-token": token.refreshToken,
       },
     });
-
     const refreshedTokens = response.data.tokens;
 
     return {

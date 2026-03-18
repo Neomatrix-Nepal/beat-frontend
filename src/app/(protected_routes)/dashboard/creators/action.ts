@@ -2,10 +2,13 @@ import api from "@/src/hooks/useApi";
 import { FetchCreatorsResponse } from "@/src/types/creator";
 
 export const fetchCreators = async (
-  token: string
+  token: string,
+  page: number = 1,
+  limit: number = 10
 ): Promise<FetchCreatorsResponse> => {
   try {
     const response = await api.get("/producer-request", {
+      params: { page, limit },
       headers: {
         Authorization: `Bearer ${token}`,
       },

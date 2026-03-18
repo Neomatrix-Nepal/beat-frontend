@@ -5,41 +5,40 @@ import { useState } from "react";
 
 import BeatFormModal from "@/src/components/form/BeatForm";
 import { BeatsTable } from "@/src/components/table/BeatsTable";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/src/components/ui/pagination";
 import { Product, Genre } from "@/src/types";
 import toast from "react-hot-toast";
 import { deleteProduct, getBeats } from "./action";
 import { useSession } from "next-auth/react";
+import ReusablePagination from "@/src/components/shared/Pagination";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function _Client({
   genres,
   beatData,
 }: {
   genres: Genre[];
-  beatData: Product[];
+  beatData: { data: Product[]; meta: any };
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedBeats, setSelectedBeats] = useState<Product | null>(null);
 
-  const [beats, setBeats] = useState<Product[]>(beatData || []);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
-
-  const totalPages = Math.ceil(beats.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-
+  const [beats, setBeats] = useState<Product[]>(beatData.data || []);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
   const { data: session } = useSession();
+
+  // Update local state when beatData (from server component) change
+  useEffect(() => {
+    setBeats(beatData.data);
+    setIsLoading(false);
+  }, [beatData]);
 
   const fetchBeats = async () => {
     try {
-      const data = await getBeats("digital-asset");
-      setBeats(data);
+      const response = await getBeats("digital-asset", beatData.meta.page);
+      setBeats(response.data);
+      router.refresh();
     } catch (error) {
       console.error("Failed to fetch beats:", error);
       toast.error("Failed to refresh beats list");
@@ -59,14 +58,14 @@ export default function _Client({
     if (!message) return toast.error("Failed to delete beat");
     setBeats(beats.filter((beat) => beat.id.toString() !== id));
     toast.success("Beat deleted successfully");
+    router.refresh();
   };
 
-  const goToPreviousPage = () => {
-    setCurrentPage((prev) => Math.max(prev - 1, 1));
-  };
-
-  const goToNextPage = () => {
-    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  const handlePageChange = (page: number) => {
+    if (!isLoading) {
+      setIsLoading(true);
+      router.push(`?page=${page}&limit=${beatData.meta.limit || 10}`);
+    }
   };
 
   return (
@@ -96,64 +95,17 @@ export default function _Client({
                   onEditBeat={handleEditBeat}
                 />
 
-                <div className="mt-6 w-full font-michroma text-white flex justify-end items-center">
+                <div className="mt-8 w-full font-michroma text-white flex justify-between items-center bg-slate-800/50 p-4 rounded-xl border border-slate-700/50">
+                  <div className="text-sm text-slate-400">
+                    Showing <span className="text-white font-bold">{beats.length}</span> of <span className="text-white font-bold">{beatData.meta.total}</span> beats
+                  </div>
                   <div className="flex">
-                    <Pagination>
-                      <PaginationContent className="flex items-center gap-2 p-2 rounded">
-                        <PaginationItem>
-                          <PaginationPrevious
-                            onClick={goToPreviousPage}
-                            className={
-                              currentPage === 1
-                                ? "bg-gray-600 opacity-50"
-                                : "border-2 border-white"
-                            }
-                          />
-                        </PaginationItem>
-
-                        {currentPage > 1 && (
-                          <PaginationItem>
-                            <button
-                              onClick={() => setCurrentPage(currentPage - 1)}
-                              className="border-2 border-white text-white px-3 py-1 rounded hover:bg-slate-700"
-                            >
-                              {currentPage - 1}
-                            </button>
-                          </PaginationItem>
-                        )}
-
-                        <PaginationItem>
-                          <button
-                            disabled
-                            className="bg-purple-700 text-white font-semibold px-3 py-1 rounded"
-                          >
-                            {currentPage}
-                          </button>
-                        </PaginationItem>
-
-                        {currentPage < totalPages && (
-                          <PaginationItem>
-                            <button
-                              onClick={() => setCurrentPage(currentPage + 1)}
-                              className="text-white px-3 py-1 rounded border-2 border-white hover:bg-slate-700"
-                            >
-                              {currentPage + 1}
-                            </button>
-                          </PaginationItem>
-                        )}
-
-                        <PaginationItem>
-                          <PaginationNext
-                            onClick={goToNextPage}
-                            className={
-                              currentPage === totalPages
-                                ? "pointer-events-none bg-gray-600 opacity-50"
-                                : "border-2 border-white"
-                            }
-                          />
-                        </PaginationItem>
-                      </PaginationContent>
-                    </Pagination>
+                    <ReusablePagination
+                      currentPage={beatData.meta.page}
+                      totalPages={beatData.meta.totalPages}
+                      onPageChange={handlePageChange}
+                      isLoading={isLoading}
+                    />
                   </div>
                 </div>
               </>

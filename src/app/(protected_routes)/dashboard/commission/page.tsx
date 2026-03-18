@@ -4,15 +4,29 @@ import { getServerSession } from "next-auth";
 import CommissionClient from "./_Client";
 import { getAllCommissions } from "./action";
 
-export default async function Commission() {
+export default async function Commission({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
   const session = await getServerSession(authOptions);
-  let commissions: CommissionDto[] = [];
+  const resolvedSearchParams = await searchParams;
+  const page = parseInt((resolvedSearchParams.page as string) || "1", 10);
+  const limit = parseInt((resolvedSearchParams.limit as string) || "10", 10);
+
+  let commissionsResponse: { data: CommissionDto[]; meta: any } = {
+    data: [],
+    meta: { total: 0, page: 1, totalPages: 0 },
+  };
+
   try {
-    commissions = (
-      await getAllCommissions(session?.user.tokens.accessToken as string)
-    ).data;
+    commissionsResponse = await getAllCommissions(
+      session?.user.tokens.accessToken as string,
+      page,
+      limit
+    );
   } catch (error) {
     console.error("Failed to fetch commission:", error);
   }
-  return <CommissionClient commissions={commissions} />;
+  return <CommissionClient commissionsData={commissionsResponse} />;
 }

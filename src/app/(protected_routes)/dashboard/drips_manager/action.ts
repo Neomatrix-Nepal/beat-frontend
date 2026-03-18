@@ -5,11 +5,15 @@ export const getGenre = async (slug: string) => {
   return response.data;
 };
 
-export const getBeats = async (type: string) => {
+export const getBeats = async (
+  type: string,
+  page: number = 1,
+  limit: number = 3
+) => {
   const response = await api.get("/products/getall", {
-    params: { type },
+    params: { type, page, limit },
   });
-  return response.data.data;
+  return response.data;
 };
 
 export const updateProduct = async (formData: FormData, productId: string) => {

@@ -5,14 +5,42 @@ import { authOptions } from "@/src/app/api/auth/option";
 import { getAllOrders } from "./action";
 import { Order } from "@/src/types";
 
-export default async function ClientOrder() {
+interface PaginationMetadata {
+  page: number;
+  pageSize?: number;
+  total: number;
+  totalPages: number;
+}
+
+export default async function ClientOrder({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const resolvedSearchParams = await searchParams;
   const session = await getServerSession(authOptions);
+  const page = parseInt((resolvedSearchParams.page as string) || "1", 10);
+  const limit = parseInt((resolvedSearchParams.limit as string) || "10", 10);
+  
   let orders: Order[] = [];
+  let metadata: PaginationMetadata = {
+    page: 1,
+    pageSize: 10,
+    total: 0,
+    totalPages: 0,
+  };
+
   try {
-    orders = (await getAllOrders(session?.user.tokens.accessToken as string))
-      .data;
+    const response = await getAllOrders(
+      session?.user.tokens.accessToken as string,
+      page,
+      limit
+    );
+    orders = response.data || [];
+    metadata = response.metadata || metadata;
   } catch (error) {
     console.error("Failed to fetch orders:", error);
   }
-  return <CustomerOrdersClient orders={orders} />;
+
+  return <CustomerOrdersClient orders={orders} metadata={metadata} />;
 }

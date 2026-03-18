@@ -17,7 +17,6 @@ export default function CustomerOrderDetails({
   const [delivered, setDelivered] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
 
-  console.log(order)
 
   const onMarkAsDelivered = async(order: Order) => {
     setLoading(true);

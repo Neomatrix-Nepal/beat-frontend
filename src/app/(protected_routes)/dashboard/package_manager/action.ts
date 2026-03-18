@@ -1,11 +1,12 @@
 import api from "@/src/hooks/useApi";
 import { Package } from "@/src/types";
 
-export const fetchPackages = async () => {
+export const fetchPackages = async (page: number = 1, limit: number = 10) => {
   try {
-    const response = await api.get("/packages");
+    const response = await api.get("/packages", {
+      params: { page, limit },
+    });
     const data = response.data;
-
     return data;
   } catch (error: any) {
     console.error("Failed to fetch packages:", error);

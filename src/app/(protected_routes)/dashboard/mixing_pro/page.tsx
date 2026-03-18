@@ -2,18 +2,12 @@
 
 import { MixingProEntry } from "@/src/components/dialog/mixingProDialog";
 import { MixingProTable } from "@/src/components/table/MixingProTable";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/src/components/ui/pagination";
 import api from "@/src/hooks/useApi";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { deleteMixingOrder } from "./action";
 import toast from "react-hot-toast";
 import { useSession } from "next-auth/react";
+import ReusablePagination from "@/src/components/shared/Pagination";
 
 const BUTTON_CLASSES =
   "flex items-center gap-2 text-white px-5 py-3 font-michroma text-sm font-semibold rounded-lg bg-custom transition-transform transform hover:scale-105";
@@ -99,13 +93,6 @@ const MixingProPage = () => {
     }
   }, []);
 
-  const goToPreviousPage = useCallback(() => {
-    setCurrentPage((prev) => Math.max(prev - 1, 1));
-  }, []);
-
-  const goToNextPage = useCallback(() => {
-    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
-  }, [totalPages]);
 
   return (
     <div className="min-h-screen bg-slate-900 flex">
@@ -122,60 +109,17 @@ const MixingProPage = () => {
             onMarkAsSent={handleMarkAsSent}
           />
 
-          <div className="mt-6 w-full font-michroma text-white flex justify-end items-center">
+          <div className="mt-8 w-full font-michroma text-white flex justify-between items-center bg-slate-800/50 p-4 rounded-xl border border-slate-700/50">
+            <div className="text-sm text-slate-400">
+              Showing <span className="text-white font-bold">{uploads.length}</span> of <span className="text-white font-bold">{totalPages * itemsPerPage}</span> orders
+            </div>
             <div className="flex">
-              <Pagination>
-                <PaginationContent className="flex items-center gap-2 p-2 rounded">
-                  <PaginationItem>
-                    <PaginationPrevious
-                      onClick={goToPreviousPage}
-                      className={
-                        currentPage === 1
-                          ? "bg-gray-600 opacity-50"
-                          : "border-2 border-white"
-                      }
-                    />
-                  </PaginationItem>
-                  {currentPage > 1 && (
-                    <PaginationItem>
-                      <button
-                        onClick={() => setCurrentPage(currentPage - 1)}
-                        className="border-2 border-white text-white px-3 py-1 rounded hover:bg-slate-700"
-                      >
-                        {currentPage - 1}
-                      </button>
-                    </PaginationItem>
-                  )}
-                  <PaginationItem>
-                    <button
-                      disabled
-                      className="bg-purple-700 text-white font-semibold px-3 py-1 rounded"
-                    >
-                      {currentPage}
-                    </button>
-                  </PaginationItem>
-                  {currentPage < totalPages && (
-                    <PaginationItem>
-                      <button
-                        onClick={() => setCurrentPage(currentPage + 1)}
-                        className="text-white px-3 py-1 rounded border-2 border-white hover:bg-slate-700"
-                      >
-                        {currentPage + 1}
-                      </button>
-                    </PaginationItem>
-                  )}
-                  <PaginationItem>
-                    <PaginationNext
-                      onClick={goToNextPage}
-                      className={
-                        currentPage === totalPages
-                          ? "pointer-events-none bg-gray-600 opacity-50"
-                          : "border-2 border-white"
-                      }
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
+              <ReusablePagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+                isLoading={isLoading}
+              />
             </div>
           </div>
         </div>

@@ -50,8 +50,10 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
+        // Get refresh token from nextauth session cookie if available
         const response = await axios.get(`${baseURL}/auth/refresh-tokens`, {
-          withCredentials: true,
+          withCredentials: true, // This will send the refresh token cookie
+          timeout: 10000,
         });
 
         const { accessToken } = response.data.tokens;
@@ -65,7 +67,10 @@ api.interceptors.response.use(
       } catch (refreshError) {
         processQueue(refreshError, null);
         useAuthStore.getState().clearAuth();
-        window.location.href = "/login";
+        // Only redirect on client side
+        if (typeof window !== "undefined") {
+          window.location.href = "/login";
+        }
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
