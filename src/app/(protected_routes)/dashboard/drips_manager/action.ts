@@ -8,7 +8,7 @@ export const getGenre = async (slug: string) => {
 export const getBeats = async (
   type: string,
   page: number = 1,
-  limit: number = 3
+  limit: number = 10
 ) => {
   const response = await api.get("/products/getall", {
     params: { type, page, limit },

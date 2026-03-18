@@ -9,7 +9,7 @@ export default async function BeatsManager({
 }) {
   const resolvedSearchParams = await searchParams;
   const page = parseInt((resolvedSearchParams.page as string) || "1", 10);
-  const limit = parseInt((resolvedSearchParams.limit as string) || "3", 3);
+  const limit = parseInt((resolvedSearchParams.limit as string) || "10", 10);
 
   let dripsResponse: { data: Product[]; meta: any } = {
     data: [],

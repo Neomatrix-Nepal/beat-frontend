@@ -24,6 +24,7 @@ export type FormData = {
   description: string;
   cover: File | null;
   audio: File | null;
+  is_special: boolean;
 };
 
 type BeatFormModalProps = {
@@ -64,6 +65,7 @@ export default function BeatFormModal({
       description: "",
       cover: null,
       audio: null,
+      is_special: false,
     },
   });
 
@@ -98,6 +100,7 @@ export default function BeatFormModal({
     setValue("price", initialData.price);
     setValue("mood", initialData.name ?? "");
     setValue("description", initialData.description ?? "");
+    setValue("is_special", (initialData as any).is_special ?? false);
 
     const imageUrl = initialData.images?.[0]?.url;
     if (typeof imageUrl === "string" && imageUrl.length > 0) {
@@ -145,6 +148,7 @@ export default function BeatFormModal({
       formData.append("subCategory_id", selectedGenreId.toString());
       formData.append("user_id", session?.user.id);
       formData.append("product_type", "digital-asset");
+      formData.append("is_special", String(data.is_special));
 
       if (data.cover instanceof File) {
         formData.append("images", data.cover);
@@ -363,6 +367,18 @@ export default function BeatFormModal({
             name="description"
             register={register}
           />
+
+          <div className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              id="is_special"
+              {...register("is_special")}
+              className="w-4 h-4 rounded border-gray-600 bg-[#162133] text-purple-600 focus:ring-purple-500"
+            />
+            <label htmlFor="is_special" className="text-sm font-medium text-gray-300 cursor-pointer">
+              Special Beat (Highlight with glowing effect and fire icon)
+            </label>
+          </div>
 
           <button
             type="submit"
