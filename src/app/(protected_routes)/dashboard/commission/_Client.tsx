@@ -15,19 +15,26 @@ import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import { changePayoutStatus, deleteCommissionDetail } from "./action";
 
+import ReusablePagination from "@/src/components/shared/Pagination";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+
 const CommissionClient = ({
-  commissions: initialCommissions,
+  commissionsData,
 }: {
-  commissions: Commission[];
+  commissionsData: { data: Commission[]; meta: any };
 }) => {
-  const [commissions, setCommissions] =
-    useState<Commission[]>(initialCommissions);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
-
-  const totalPages = Math.ceil(commissions.length / itemsPerPage);
-
+  const [commissions, setCommissions] = useState<Commission[]>(
+    commissionsData.data
+  );
+  const [isLoading, setIsLoading] = useState(false);
   const { data: session } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    setCommissions(commissionsData.data);
+    setIsLoading(false);
+  }, [commissionsData]);
 
   //   const handleFilter = (status: string) => {
   //     if (status === "all") {
@@ -64,17 +71,16 @@ const CommissionClient = ({
       id,
       session?.user.tokens.accessToken as string
     );
-    if (!message) return toast.error("Failed to delete order.");
     toast.success("Order deleted successfully");
     setCommissions(commissions.filter((entry) => entry.id.toString() !== id));
+    router.refresh();
   };
 
-  const goToPreviousPage = () => {
-    setCurrentPage((prev) => Math.max(prev - 1, 1));
-  };
-
-  const goToNextPage = () => {
-    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  const handlePageChange = (page: number) => {
+    if (!isLoading) {
+      setIsLoading(true);
+      router.push(`?page=${page}&limit=${commissionsData.meta.limit || 10}`);
+    }
   };
 
   return (
@@ -91,64 +97,17 @@ const CommissionClient = ({
             handleChangeStatus={handleChangeStatus}
           />
 
-          <div className="mt-6 w-full font-michroma text-white flex justify-end items-center">
+          <div className="mt-8 w-full font-michroma text-white flex justify-between items-center bg-slate-800/50 p-4 rounded-xl border border-slate-700/50">
+            <div className="text-sm text-slate-400">
+              Showing <span className="text-white font-bold">{commissions.length}</span> of <span className="text-white font-bold">{commissionsData.meta.total}</span> commissions
+            </div>
             <div className="flex">
-              <Pagination>
-                <PaginationContent className="flex items-center gap-2 p-2 rounded">
-                  <PaginationItem>
-                    <PaginationPrevious
-                      onClick={goToPreviousPage}
-                      className={
-                        currentPage === 1
-                          ? "bg-gray-600 opacity-50"
-                          : "border-2 border-white"
-                      }
-                    />
-                  </PaginationItem>
-
-                  {currentPage > 1 && (
-                    <PaginationItem>
-                      <button
-                        onClick={() => setCurrentPage(currentPage - 1)}
-                        className="border-2 border-white text-white px-3 py-1 rounded hover:bg-slate-700"
-                      >
-                        {currentPage - 1}
-                      </button>
-                    </PaginationItem>
-                  )}
-
-                  <PaginationItem>
-                    <button
-                      disabled
-                      className="bg-purple-700 text-white font-semibold px-3 py-1 rounded"
-                    >
-                      {currentPage}
-                    </button>
-                  </PaginationItem>
-
-                  {currentPage < totalPages && (
-                    <PaginationItem>
-                      <button
-                        onClick={() => setCurrentPage(currentPage + 1)}
-                        className="text-white px-3 py-1 rounded border-2 border-white hover:bg-slate-700"
-                      >
-                        {currentPage + 1}
-                      </button>
-                    </PaginationItem>
-                  )}
-
-                  <PaginationItem>
-                    <PaginationNext
-                      onClick={goToNextPage}
-                      className={
-                        currentPage === totalPages
-                          ? "pointer-events-none bg-gray-600 opacity-50"
-                          : "border-2 border-white"
-                      }
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
+              <ReusablePagination
+                currentPage={commissionsData.meta.page}
+                totalPages={commissionsData.meta.totalPages}
+                onPageChange={handlePageChange}
+                isLoading={isLoading}
+              />
             </div>
           </div>
         </div>

@@ -21,6 +21,9 @@ import LoadingEffect from "@/src/components/loadingEffect";
 import PopupWrapper from "@/src/components/shared/PopupWrapper";
 import StudioBookingDetails from "@/src/components/dialog/studioBookingDialog";
 
+import ReusablePagination from "@/src/components/shared/Pagination";
+import { useRouter } from "next/navigation";
+
 const statusStyles = {
   confirmed: "bg-green-800/20 text-green-400 border-green-800/30",
   pending: "bg-yellow-700/20 text-yellow-400 border-yellow-700/30",
@@ -28,12 +31,12 @@ const statusStyles = {
 };
 
 export default function ManageBookings({
-  bookings: initialBookings,
+  bookingsData,
 }: {
-  bookings: StudioBooking[];
+  bookingsData: { data: StudioBooking[]; meta: any };
 }) {
-  const [bookings, setBookings] = useState<StudioBooking[]>(initialBookings);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [bookings, setBookings] = useState<StudioBooking[]>(bookingsData.data);
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<StudioBooking | null>(
     null
   );
@@ -43,23 +46,17 @@ export default function ManageBookings({
 
   const { data: session } = useSession();
   const token = session?.user?.tokens.accessToken;
-
-  const itemsPerPage = 5;
-  const totalPages = Math.ceil(bookings.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentBookings = bookings.slice(startIndex, startIndex + itemsPerPage);
+  const router = useRouter();
 
   useEffect(() => {
     setBookings(
-      bookings.map(
-        (booking) =>
-          (booking = {
-            ...booking,
-            status: formatStatus(booking.status),
-          })
-      )
+      bookingsData.data.map((booking) => ({
+        ...booking,
+        status: formatStatus(booking.status),
+      }))
     );
-  }, []);
+    setIsLoading(false);
+  }, [bookingsData]);
 
   const openModal = (booking: StudioBooking) => {
     setSelectedBooking(booking);
@@ -71,12 +68,11 @@ export default function ManageBookings({
     setViewDetails(false);
   };
 
-  const goToPreviousPage = () => {
-    setCurrentPage((prev) => Math.max(prev - 1, 1));
-  };
-
-  const goToNextPage = () => {
-    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  const handlePageChange = (page: number) => {
+    if (!isLoading) {
+      setIsLoading(true);
+      router.push(`?page=${page}&limit=${bookingsData.meta.limit || 10}`);
+    }
   };
 
   const handleChangeStatus = async (bookingId: number, status: string) => {
@@ -112,6 +108,7 @@ export default function ManageBookings({
       if (result.success) {
         setBookings(bookings.filter((booking) => booking.id !== id));
         toast.success("Booking deleted successfully");
+        router.refresh();
       } else {
         toast.error(result.error || "Failed to delete booking");
       }
@@ -152,7 +149,7 @@ export default function ManageBookings({
             </tr>
           </thead>
           <tbody>
-            {currentBookings.map((booking, index) => {
+            {bookings.map((booking, index) => {
               return (
                 <tr
                   key={`${booking.id}-${index}`}
@@ -235,7 +232,7 @@ export default function ManageBookings({
 
       {/* Mobile Cards */}
       <div className="lg:hidden space-y-4">
-        {currentBookings.map((booking, index) => (
+        {bookings.map((booking, index) => (
           <div
             key={`${booking.id}-mobile-${index}`}
             className="bg-[#13172b] rounded-lg p-4 border border-[#2d324a] flex flex-col gap-3"
@@ -306,36 +303,18 @@ export default function ManageBookings({
       </div>
 
       {/* Pagination */}
-      <div className="mt-6 flex justify-end">
-        <Pagination>
-          <PaginationContent className="flex items-center gap-2 p-2">
-            <PaginationItem>
-              <PaginationPrevious
-                onClick={goToPreviousPage}
-                className={
-                  currentPage === 1
-                    ? "opacity-50 pointer-events-none"
-                    : "border"
-                }
-              />
-            </PaginationItem>
-            <PaginationItem>
-              <button className="px-3 py-1 bg-purple-700 rounded text-white">
-                {currentPage}
-              </button>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationNext
-                onClick={goToNextPage}
-                className={
-                  currentPage === totalPages
-                    ? "opacity-50 pointer-events-none"
-                    : "border"
-                }
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+      <div className="mt-8 w-full font-michroma text-white flex justify-between items-center bg-[#13172b] p-4 rounded-xl border border-[#2d324a]">
+        <div className="text-sm text-slate-400">
+          Showing <span className="text-white font-bold">{bookings.length}</span> of <span className="text-white font-bold">{bookingsData.meta.total}</span> bookings
+        </div>
+        <div className="flex">
+          <ReusablePagination
+            currentPage={bookingsData.meta.page}
+            totalPages={bookingsData.meta.totalPages}
+            onPageChange={handlePageChange}
+            isLoading={isLoading}
+          />
+        </div>
       </div>
 
       {/* Modal */}

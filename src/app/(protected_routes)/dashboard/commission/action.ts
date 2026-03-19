@@ -1,7 +1,12 @@
 import api from "@/src/hooks/useApi";
 
-export const getAllCommissions = async (token: string) => {
+export const getAllCommissions = async (
+  token: string,
+  page: number = 1,
+  limit: number = 10
+) => {
   const response = await api.get("payment/all-commissions", {
+    params: { page, limit },
     headers: {
       Authorization: `Bearer ${token}`,
     },

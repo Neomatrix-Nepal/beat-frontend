@@ -306,7 +306,7 @@ export default function BlogForm(props: BlogFormProps) {
               className="cursor-pointer px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
               disabled={isSubmitting}
             >
-              {props.mode === "add" ? "Publish News" : "Save"}
+              {props.mode === "add" ? "Publish Blog" : "Save"}
             </button>
           </div>
         </div>

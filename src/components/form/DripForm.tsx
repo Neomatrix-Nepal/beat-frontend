@@ -13,6 +13,7 @@ import toast from "react-hot-toast";
 import { FaUpload } from "react-icons/fa";
 import { FiSave, FiX } from "react-icons/fi";
 import { MdAddPhotoAlternate } from "react-icons/md";
+import { useRouter } from "next/navigation";
 
 export type FormData = {
   dripTitle: string;
@@ -41,6 +42,7 @@ export default function DripFormModal({
   const [loading, setLoading] = useState(false);
   const [previewCover, setPreviewCover] = useState<string | null>(null);
   const { data: session } = useSession();
+  const router = useRouter();
 
   const {
     register,
@@ -133,7 +135,7 @@ export default function DripFormModal({
           ? "Drip updated successfully!"
           : "Drip uploaded successfully!"
       );
-
+      router.refresh();
       handleClose();
     } catch (error) {
       console.error(error);

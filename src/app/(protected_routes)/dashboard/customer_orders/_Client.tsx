@@ -1,32 +1,40 @@
 "use client";
 
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { CustomerOrderTable } from "@/src/components/table/CustomerOrderTable";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/src/components/ui/pagination";
 import { Order } from "@/src/types";
 import { changeStatus, deleteOrder } from "./action";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
+import ReusablePagination from "@/src/components/shared/Pagination";
+
+interface PaginationMetadata {
+  page: number;
+  pageSize?: number;
+  total: number;
+  totalPages: number;
+}
 
 const CustomerOrdersClient = ({
   orders: initialOrders,
+  metadata,
 }: {
   orders: Order[];
+  metadata: PaginationMetadata;
 }) => {
   const [orders, setOrders] = useState<Order[]>(initialOrders);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
-
-  const totalPages = Math.ceil(orders.length / itemsPerPage);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const limit = metadata.pageSize || 10;
 
   const { data: session } = useSession();
+
+  // Update local state when initialOrders (from server component) change
+  useEffect(() => {
+    setOrders(initialOrders);
+    setIsLoading(false);
+  }, [initialOrders]);
 
   const handleChangeStatus = async (id: string) => {
     const { id: orderId } = await changeStatus(
@@ -57,14 +65,14 @@ const CustomerOrdersClient = ({
     if (!message) return toast.error("Failed to delete order.");
     toast.success("Order deleted successfully");
     setOrders(orders.filter((entry) => entry.id.toString() !== id));
+    router.refresh();
   };
 
-  const goToPreviousPage = () => {
-    setCurrentPage((prev) => Math.max(prev - 1, 1));
-  };
-
-  const goToNextPage = () => {
-    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  const handlePageChange = (page: number) => {
+    if (!isLoading) {
+      setIsLoading(true);
+      router.push(`?page=${page}&limit=${limit}`);
+    }
   };
 
   return (
@@ -78,64 +86,17 @@ const CustomerOrdersClient = ({
             handleChangeStatus={handleChangeStatus}
           />
 
-          <div className="mt-6 w-full font-michroma text-white flex justify-end items-center">
+          <div className="mt-8 w-full font-michroma text-white flex justify-between items-center bg-slate-800/50 p-4 rounded-xl border border-slate-700/50">
+            <div className="text-sm text-slate-400">
+              Showing <span className="text-white font-bold">{orders.length}</span> of <span className="text-white font-bold">{metadata.total}</span> orders
+            </div>
             <div className="flex">
-              <Pagination>
-                <PaginationContent className="flex items-center gap-2 p-2 rounded">
-                  <PaginationItem>
-                    <PaginationPrevious
-                      onClick={goToPreviousPage}
-                      className={
-                        currentPage === 1
-                          ? "bg-gray-600 opacity-50"
-                          : "border-2 border-white"
-                      }
-                    />
-                  </PaginationItem>
-
-                  {currentPage > 1 && (
-                    <PaginationItem>
-                      <button
-                        onClick={() => setCurrentPage(currentPage - 1)}
-                        className="border-2 border-white text-white px-3 py-1 rounded hover:bg-slate-700"
-                      >
-                        {currentPage - 1}
-                      </button>
-                    </PaginationItem>
-                  )}
-
-                  <PaginationItem>
-                    <button
-                      disabled
-                      className="bg-purple-700 text-white font-semibold px-3 py-1 rounded"
-                    >
-                      {currentPage}
-                    </button>
-                  </PaginationItem>
-
-                  {currentPage < totalPages && (
-                    <PaginationItem>
-                      <button
-                        onClick={() => setCurrentPage(currentPage + 1)}
-                        className="text-white px-3 py-1 rounded border-2 border-white hover:bg-slate-700"
-                      >
-                        {currentPage + 1}
-                      </button>
-                    </PaginationItem>
-                  )}
-
-                  <PaginationItem>
-                    <PaginationNext
-                      onClick={goToNextPage}
-                      className={
-                        currentPage === totalPages
-                          ? "pointer-events-none bg-gray-600 opacity-50"
-                          : "border-2 border-white"
-                      }
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
+              <ReusablePagination
+                currentPage={metadata.page}
+                totalPages={metadata.totalPages}
+                onPageChange={handlePageChange}
+                isLoading={isLoading}
+              />
             </div>
           </div>
         </div>

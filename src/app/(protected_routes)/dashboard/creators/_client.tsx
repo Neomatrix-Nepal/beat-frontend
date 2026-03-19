@@ -10,23 +10,30 @@ import {
 } from "@/src/components/ui/pagination";
 import { CreatorEntry } from "@/src/types/creator";
 import { useSession } from "next-auth/react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { changeCreatorStatus, deleteCreator } from "./action";
 import LoadingEffect from "@/src/components/loadingEffect";
 
+import ReusablePagination from "@/src/components/shared/Pagination";
+import { useRouter } from "next/navigation";
+
 export default function CreatorsClient({
-  creators: initialCreators,
+  creatorsData,
 }: {
-  creators: CreatorEntry[];
+  creatorsData: { data: CreatorEntry[]; meta: any };
 }) {
   const { data: session } = useSession();
   const token = session?.user?.tokens.accessToken;
-  const [creators, setCreators] = useState<CreatorEntry[]>(initialCreators);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [creators, setCreators] = useState<CreatorEntry[]>(creatorsData.data);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    setCreators(creatorsData.data);
+    setIsLoading(false);
+  }, [creatorsData]);
 
   const handleDeleteEntry = async (id: number) => {
     try {
@@ -34,6 +41,7 @@ export default function CreatorsClient({
       if (result.success) {
         setCreators(creators.filter((entry) => entry.id !== id));
         toast.success("Creator deleted successfully");
+        router.refresh();
       } else {
         toast.error(result.error || "Failed to delete creator");
       }
@@ -76,13 +84,12 @@ export default function CreatorsClient({
     }
   };
 
-  const goToPreviousPage = useCallback(() => {
-    setCurrentPage((prev) => Math.max(prev - 1, 1));
-  }, []);
-
-  const goToNextPage = useCallback(() => {
-    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
-  }, [totalPages]);
+  const handlePageChange = (page: number) => {
+    if (!isLoading) {
+      setIsLoading(true);
+      router.push(`?page=${page}&limit=${creatorsData.meta.limit || 10}`);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-900 flex">
@@ -95,64 +102,17 @@ export default function CreatorsClient({
             isLoading={isLoading}
           />
 
-          <div className="mt-6 w-full font-michroma text-white flex justify-end items-center">
+          <div className="mt-8 w-full font-michroma text-white flex justify-between items-center bg-slate-800/50 p-4 rounded-xl border border-slate-700/50">
+            <div className="text-sm text-slate-400">
+              Showing <span className="text-white font-bold">{creators.length}</span> of <span className="text-white font-bold">{creatorsData.meta.total}</span> creators
+            </div>
             <div className="flex">
-              <Pagination>
-                <PaginationContent className="flex items-center gap-2 p-2 rounded">
-                  <PaginationItem>
-                    <PaginationPrevious
-                      onClick={goToPreviousPage}
-                      className={
-                        currentPage === 1
-                          ? "bg-gray-600 opacity-50"
-                          : "border-2 border-white"
-                      }
-                    />
-                  </PaginationItem>
-
-                  {currentPage > 1 && (
-                    <PaginationItem>
-                      <button
-                        onClick={() => setCurrentPage(currentPage - 1)}
-                        className="border-2 border-white text-white px-3 py-1 rounded hover:bg-slate-700"
-                      >
-                        {currentPage - 1}
-                      </button>
-                    </PaginationItem>
-                  )}
-
-                  <PaginationItem>
-                    <button
-                      disabled
-                      className="bg-purple-700 text-white font-semibold px-3 py-1 rounded"
-                    >
-                      {currentPage}
-                    </button>
-                  </PaginationItem>
-
-                  {currentPage < totalPages && (
-                    <PaginationItem>
-                      <button
-                        onClick={() => setCurrentPage(currentPage + 1)}
-                        className="text-white px-3 py-1 rounded border-2 border-white hover:bg-slate-700"
-                      >
-                        {currentPage + 1}
-                      </button>
-                    </PaginationItem>
-                  )}
-
-                  <PaginationItem>
-                    <PaginationNext
-                      onClick={goToNextPage}
-                      className={
-                        currentPage === totalPages
-                          ? "pointer-events-none bg-gray-600 opacity-50"
-                          : "border-2 border-white"
-                      }
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
+              <ReusablePagination
+                currentPage={creatorsData.meta.page}
+                totalPages={creatorsData.meta.totalPages}
+                onPageChange={handlePageChange}
+                isLoading={isLoading}
+              />
             </div>
           </div>
         </div>

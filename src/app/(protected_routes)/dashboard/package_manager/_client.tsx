@@ -7,6 +7,9 @@ import { useSession } from "next-auth/react";
 import { IoMdEye } from "react-icons/io";
 import { Edit, Trash } from "lucide-react";
 import ConfirmPopUp from "@/src/components/ui/confirmPopUp";
+import ReusablePagination from "@/src/components/shared/Pagination";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const defaultFormData = {
   id: 0,
@@ -18,17 +21,25 @@ const defaultFormData = {
 };
 
 export default function _client({
-  packages: packagesData,
+  packagesData,
 }: {
-  packages: Package[];
+  packagesData: { data: Package[]; meta: any };
 }) {
   const { data: session } = useSession();
-  const [packages, setPackages] = useState<Package[]>(packagesData);
+  const [packages, setPackages] = useState<Package[]>(packagesData.data);
   const [form, setForm] = useState(defaultFormData);
   const [deletePopUp, setDeletePopUp] = useState<boolean>(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [editing, setEditing] = useState(false);
+  const router = useRouter();
+
+  // Update local state when packagesData (from server component) change
+  useEffect(() => {
+    setPackages(packagesData.data);
+    setIsLoading(false);
+  }, [packagesData]);
   const [filter, setFilter] = useState<string>("all");
   const [viewPackage, setViewPackage] = useState<Package | null>(null);
 
@@ -99,6 +110,7 @@ export default function _client({
         let updatedPkg = { ...pkgData, id: response.id };
         setPackages((prev) => [updatedPkg, ...prev]);
         toast.success("Package added successfully!");
+        router.refresh();
       } else {
         toast.error("Failed to add package. Please try again.");
         console.error("Upload failed:", response.error);
@@ -131,12 +143,20 @@ export default function _client({
       );
       setPackages((prev) => prev.filter((p) => p.id !== id));
       toast.success("package deleted");
+      router.refresh();
     } catch (error) {
       console.error(error);
       toast.error("Failed to delete package");
     } finally {
       setSelectedId(null);
       setLoading(false);
+    }
+  };
+
+  const handlePageChange = (page: number) => {
+    if (!isLoading) {
+      setIsLoading(true);
+      router.push(`?page=${page}&limit=${packagesData.meta.limit || 10}`);
     }
   };
 
@@ -338,6 +358,19 @@ export default function _client({
               </tbody>
             </table>
           )}
+        </div>
+        <div className="mt-8 w-full font-michroma text-white flex justify-between items-center bg-slate-800/50 p-4 rounded-xl border border-slate-700/50">
+          <div className="text-sm text-slate-400">
+            Showing <span className="text-white font-bold">{packages.length}</span> of <span className="text-white font-bold">{packagesData.meta.total}</span> packages
+          </div>
+          <div className="flex">
+            <ReusablePagination
+              currentPage={packagesData.meta.page}
+              totalPages={packagesData.meta.totalPages}
+              onPageChange={handlePageChange}
+              isLoading={isLoading}
+            />
+          </div>
         </div>
       </div>
 

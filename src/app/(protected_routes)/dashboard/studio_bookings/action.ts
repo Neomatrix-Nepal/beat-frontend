@@ -1,8 +1,13 @@
 import api from "@/src/hooks/useApi";
 
-export const fetchBookings = async (token: string) => {
+export const fetchBookings = async (
+  token: string,
+  page: number = 1,
+  limit: number = 10
+) => {
   try {
     const response = await api.get("/bookings", {
+      params: { page, limit },
       headers: {
         Authorization: `Bearer ${token}`,
       },

@@ -6,17 +6,30 @@ import { fetchBookings } from "./action";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/src/app/api/auth/option";
 
-export default async function StudioBooking() {
+export default async function StudioBooking({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
   const session = await getServerSession(authOptions);
-  let bookings: StudioBookingDto[] = [];
+  const resolvedSearchParams = await searchParams;
+  const page = parseInt((resolvedSearchParams.page as string) || "1", 10);
+  const limit = parseInt((resolvedSearchParams.limit as string) || "10", 10);
+
+  let bookingsResponse: { data: StudioBookingDto[]; meta: any } = {
+    data: [],
+    meta: { total: 0, page: 1, totalPages: 0 },
+  };
+
   try {
-    const fetchedBookings = await fetchBookings(
-      session?.user.tokens.accessToken!
+    bookingsResponse = await fetchBookings(
+      session?.user.tokens.accessToken!,
+      page,
+      limit
     );
-    bookings = fetchedBookings;
   } catch (error) {
-    console.error("Failed to fetch packages:", error);
+    console.error("Failed to fetch bookings:", error);
   }
 
-  return <_client bookings={bookings} />;
+  return <_client bookingsData={bookingsResponse} />;
 }

@@ -8,10 +8,13 @@ import NewsCard from "@/src/components/NewsCard";
 import { Blog, BlogFormData } from "@/src/types";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import ReusablePagination from "@/src/components/shared/Pagination";
 
 export default function NewsManagement() {
+  const router = useRouter();
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
@@ -25,7 +28,7 @@ export default function NewsManagement() {
     const loadBlogs = async () => {
       try {
         setLoading(true);
-        const response = await fetchBlogs(page, 5);
+        const response = await fetchBlogs(page, 2);
         setBlogs(response.data);
         setTotalPages(response.meta.totalPages);
         setLoading(false);
@@ -81,6 +84,7 @@ export default function NewsManagement() {
         );
         setEditingId(null);
         toast.success("Blog updated successfully");
+        router.refresh();
       } else {
         toast.error(response.error || "Failed to update blog");
       }
@@ -99,6 +103,7 @@ export default function NewsManagement() {
       if (response.success) {
         setBlogs(blogs.filter((blog) => blog.id !== id));
         toast.success("Blog deleted successfully");
+        router.refresh();
       } else {
         toast.error(response.error || "Failed to delete blog");
       }
@@ -150,25 +155,13 @@ export default function NewsManagement() {
               />
             ))}
           </div>
-          {/* Pagination Controls */}
-          <div className="flex justify-center items-center space-x-4 mt-6">
-            <button
-              onClick={() => handlePageChange(page - 1)}
-              disabled={page === 1}
-              className="px-4 py-2 bg-gray-700 text-white rounded-md disabled:opacity-50"
-            >
-              Previous
-            </button>
-            <span className="text-white">
-              Page {page} of {totalPages}
-            </span>
-            <button
-              onClick={() => handlePageChange(page + 1)}
-              disabled={page === totalPages}
-              className="px-4 py-2 bg-gray-700 text-white rounded-md disabled:opacity-50"
-            >
-              Next
-            </button>
+          <div className="flex justify-center mt-6">
+            <ReusablePagination
+              currentPage={page}
+              totalPages={totalPages}
+              onPageChange={setPage}
+              isLoading={loading}
+            />
           </div>
         </div>
       </div>
