@@ -5,6 +5,7 @@ export interface StudioBooking {
   id: number;
   userId: number;
   date: string;
+  time: string;
   duration: number;
   phoneNumber: string;
   totalCost: number;

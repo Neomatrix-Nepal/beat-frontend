@@ -1,10 +1,10 @@
 import api from "@/src/hooks/useApi";
 import { Package } from "@/src/types";
 
-export const fetchPackages = async (page: number = 1, limit: number = 10) => {
+export const fetchPackages = async (page: number = 1, limit: number = 10, status?: string) => {
   try {
     const response = await api.get("/packages", {
-      params: { page, limit },
+      params: { page, limit, status },
     });
     const data = response.data;
     return data;

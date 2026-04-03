@@ -7,7 +7,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/src/components/ui/pagination";
-import { formatDateTime } from "@/src/lib/utils";
+import { formatDate, formatDateTime, formatTime } from "@/src/lib/utils";
 import { StudioBooking } from "@/src/types/studio-booking";
 import { Check, Eye, Trash, X } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -38,7 +38,7 @@ export default function ManageBookings({
   const [bookings, setBookings] = useState<StudioBooking[]>(bookingsData.data);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<StudioBooking | null>(
-    null
+    null,
   );
   const [loading, setLoading] = useState(false);
   const [deletePopUp, setDeletePopUp] = useState(false);
@@ -53,7 +53,7 @@ export default function ManageBookings({
       bookingsData.data.map((booking) => ({
         ...booking,
         status: formatStatus(booking.status),
-      }))
+      })),
     );
     setIsLoading(false);
   }, [bookingsData]);
@@ -88,8 +88,8 @@ export default function ManageBookings({
                   ...booking,
                   status: formatStatus(status),
                 }
-              : booking
-          )
+              : booking,
+          ),
         );
       } else {
         toast.error(result.error || "Failed to approve creator");
@@ -100,6 +100,7 @@ export default function ManageBookings({
       setLoading(false);
     }
   };
+
 
   const handleDelete = async (id: number) => {
     setLoading(true);
@@ -121,7 +122,7 @@ export default function ManageBookings({
   };
 
   const formatStatus = (
-    status: string
+    status: string,
   ): "pending" | "cancelled" | "confirmed" => {
     const statusMapping: Record<string, string> = {
       pending: "pending",
@@ -142,7 +143,7 @@ export default function ManageBookings({
             <tr>
               <th className="px-4 py-3 text-left">Booking ID</th>
               <th className="px-4 py-3 text-left">Client Name</th>
-              <th className="px-4 py-3 text-left">Date & Time</th>
+              <th className="px-4 py-3 text-left">Date</th>
               <th className="px-4 py-3 text-left">Beat File</th>
               <th className="px-4 py-3 text-left">Status</th>
               <th className="px-4 py-3 text-center">Actions</th>
@@ -159,7 +160,8 @@ export default function ManageBookings({
                   <td className="px-4 py-3 break-words">
                     {booking.user.fullname}
                   </td>
-                  <td className="px-4 py-3">{formatDateTime(booking.date)}</td>
+                  <td className="px-4 py-3">{formatDate(booking.date)} at {booking.time ? formatTime(booking.time) : "-"} </td>
+
                   <td className="px-4 py-3 text-blue-400 hover:underline cursor-pointer">
                     <Link href={booking.googleDriveLink} target="_blank">
                       View File
@@ -258,6 +260,14 @@ export default function ManageBookings({
               </div>
             </div>
             <div className="text-sm text-gray-400">
+              <div className="mb-2">
+                <span className="block">
+                  Date: {formatDateTime(booking.date)}
+                </span>
+                <span className="block">
+                  Time: {booking.time ? formatTime(booking.time) : "-"}
+                </span>
+              </div>
               <div className="flex gap-2 mb-2">
                 <button
                   disabled={loading}
@@ -305,7 +315,12 @@ export default function ManageBookings({
       {/* Pagination */}
       <div className="mt-8 w-full font-michroma text-white flex justify-between items-center bg-[#13172b] p-4 rounded-xl border border-[#2d324a]">
         <div className="text-sm text-slate-400">
-          Showing <span className="text-white font-bold">{bookings.length}</span> of <span className="text-white font-bold">{bookingsData.meta.total}</span> bookings
+          Showing{" "}
+          <span className="text-white font-bold">{bookings.length}</span> of{" "}
+          <span className="text-white font-bold">
+            {bookingsData.meta.total}
+          </span>{" "}
+          bookings
         </div>
         <div className="flex">
           <ReusablePagination

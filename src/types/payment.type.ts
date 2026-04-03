@@ -6,6 +6,12 @@ interface Items {
   quantity: number;
   createdAt: string;
   updatedAt: string;
+  product?: {
+    id: number;
+    name: string;
+    product_type: string;
+    price: string;
+  };
 }
 
 export interface Order {

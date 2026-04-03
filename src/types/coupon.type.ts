@@ -5,4 +5,5 @@ export interface Coupon {
   discountPercentage: number;
   validFrom: string;
   validUntil: string;
+  usageLimit?: number;
 }

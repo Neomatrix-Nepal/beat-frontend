@@ -1,3 +1,5 @@
+import { Order } from "./payment.type";
+
 export interface CustomBeat {
   selected: boolean;
   id: number;
@@ -14,6 +16,7 @@ export interface CustomBeat {
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
+  payment: Order | null;
   packages: {
     id: number;
     name: string;

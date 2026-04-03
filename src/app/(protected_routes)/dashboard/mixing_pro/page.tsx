@@ -60,7 +60,7 @@ const MixingProPage = () => {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [itemsPerPage]);
 
   // Fetch data when page changes
   useEffect(() => {

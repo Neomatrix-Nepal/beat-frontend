@@ -1,4 +1,4 @@
-import { formatDateTime } from "@/src/lib/utils";
+import { formatDate, formatDateTime, formatTime } from "@/src/lib/utils";
 import { StudioBooking } from "@/src/types/studio-booking";
 import { Calendar, X } from "lucide-react";
 import Link from "next/link";
@@ -40,7 +40,7 @@ export default function StudioBookingDetails({
                     />
                     <InfoRow 
                         label="Booked Date"
-                        value={formatDateTime(booking.date)}
+                        value={`${formatDate(booking.date)} at ${booking.time ? formatTime(booking.time) : "-"}`}
                     />
                     <InfoRow 
                         label="Duration"

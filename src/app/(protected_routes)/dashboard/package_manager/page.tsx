@@ -19,7 +19,7 @@ export default async function PackageManager({
 
 
   try {
-    packagesResponse = await fetchPackages(page, limit);
+    packagesResponse = await fetchPackages(page, limit, "all");
   } catch (error) {
     console.error("Failed to fetch packages:", error);
   }

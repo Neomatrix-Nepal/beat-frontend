@@ -41,6 +41,8 @@ const CustomBeatsPage = () => {
     setTotalPages(response.meta.totalPages);
   }, []);
 
+  console.log("BEATS", beats)
+
   useEffect(() => {
     setIsLoading(true);
     fetchCustomBeats(currentPage, itemsPerPage, fetchBeatsCallback).finally(
