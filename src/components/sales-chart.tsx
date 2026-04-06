@@ -23,7 +23,7 @@ import {
   FetchBarGraphParams,
   SalesChartProps,
 } from "../types/stats";
-import { barColors, baseLabels, months } from "../constants/salesChart";
+import { barColors, months } from "../constants/salesChart";
 
 const currentMonth = new Date().getMonth() + 1;
 const currentYear = new Date().getFullYear();
@@ -43,10 +43,19 @@ export function SalesChart({
     year: currentYear,
   });
   const [barGraphData, setBarGraphData] = useState<BarGraphData>(
-    initialData ?? []
+    initialData ?? [],
   );
   const [animationKey, setAnimationKey] = useState(0);
-  const labelsToShow = baseLabels.slice(0, barGraphData.length);
+
+  // Transform data to add labels showing Admin vs Creator
+  const transformedData = barGraphData.map((item, index) => ({
+    ...item,
+    displayName:
+      index === 0
+        ? `${item.creatorName} (Admin)`
+        : `${item.creatorName} (Creator)`,
+    type: index === 0 ? "admin" : "creator",
+  }));
 
   useEffect(() => {
     async function fetchData() {
@@ -66,7 +75,7 @@ export function SalesChart({
 
     //remount the chart for animation
     setAnimationKey((k) => k + 1);
-  }, [filterBarGraph]);
+  }, [filterBarGraph, passedToken]);
 
   const windowWidth = useWindowSize();
   let barSize = 40;
@@ -81,10 +90,12 @@ export function SalesChart({
   return (
     <Card className="bg-[#1a1a2e] border-[#2d2d44] flex flex-col w-full h-full relative">
       <CardHeader>
-        <CardTitle className="text-white">Sales Performance</CardTitle>
+        <CardTitle className="text-white">
+          Sales Performance (Admin & Creators)
+        </CardTitle>
         <div className="flex gap-2 md:gap-4 w-full flex-row justify-center md:justify-between items-center shrink">
           <select
-            className="bg-[#3b3b5c] text-white px-2 py-1 rounded-md outline-none"
+            className="bg-[#3b3b5c] text-white px-2 py-1 rounded-md outline-none text-sm"
             value={filterBarGraph.type}
             onChange={(e) => {
               setFilterBarGraph({
@@ -99,14 +110,14 @@ export function SalesChart({
 
           <div className="flex gap-2 md:gap-4">
             <select
-              className="bg-[#3b3b5c] text-white px-2 md:px-4 py-1 rounded-md outline-none"
+              className="bg-[#3b3b5c] text-white px-2 md:px-4 py-1 rounded-md outline-none text-sm"
               value={
                 months.find((m) => m.monthNumber === filterBarGraph.month)!
                   .monthName
               }
               onChange={(e) => {
                 const selectedMonth = months.find(
-                  (m) => m.monthName === e.target.value
+                  (m) => m.monthName === e.target.value,
                 );
                 if (selectedMonth) {
                   setFilterBarGraph({
@@ -122,7 +133,7 @@ export function SalesChart({
             </select>
 
             <select
-              className="bg-[#3b3b5c] text-white px-2 md:px-4 py-1 rounded-md outline-none"
+              className="bg-[#3b3b5c] text-white px-2 md:px-4 py-1 rounded-md outline-none text-sm"
               value={filterBarGraph.year}
               onChange={(e) => {
                 setFilterBarGraph({
@@ -141,26 +152,49 @@ export function SalesChart({
         </div>
       </CardHeader>
 
-      <CardContent className="w-full">
+      <CardContent className="w-full h-full flex-1">
         <ResponsiveContainer
           key={animationKey}
           width="100%"
-          height={300}
+          height="100%"
+          minHeight={500}
           className="-ml-7"
         >
-          <BarChart data={barGraphData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="creatorName" hide />
-            <YAxis />
-            <Tooltip />
+          <BarChart data={transformedData}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#3a3a52" />
+            <XAxis
+              dataKey="displayName"
+              angle={-45}
+              textAnchor="end"
+              height={80}
+              tick={{ fontSize: 12, fill: "#a0aec0" }}
+            />
+            <YAxis tick={{ fontSize: 12, fill: "#a0aec0" }} />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "#252540",
+                border: "1px solid #3a3a52",
+                borderRadius: "6px",
+              }}
+              formatter={(value: number) => [`${value} units`, "Units Sold"]}
+              labelStyle={{
+                color: "#ffffff",
+              }}
+              itemStyle={{
+                color: "#ffffff",
+              }}
+            />
             <Bar
               dataKey="sold"
               radius={[6, 6, 0, 0]}
-              activeBar={{ stroke: "black", strokeWidth: 2 }}
+              activeBar={{ stroke: "white", strokeWidth: 2 }}
               barSize={barSize}
             >
-              {barGraphData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={barColors[index]} />
+              {transformedData.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={entry.type === "admin" ? "#ff7675" : barColors[index]}
+                />
               ))}
             </Bar>
           </BarChart>
@@ -168,28 +202,10 @@ export function SalesChart({
 
         {/* Overlay when there's no data */}
         {barGraphData.length === 1 && barGraphData[0]?.earning === 0 && (
-          <div className="absolute top-25 bottom-10 left-10 right-10 bg-black/50 bg-opacity-60 flex items-center justify-center text-white text-lg font-semibold">
-            No Data
+          <div className="absolute top-25 bottom-10 left-10 right-10 bg-black/50 bg-opacity-60 flex items-center justify-center text-white text-lg font-semibold rounded-lg">
+            No Data Available
           </div>
         )}
-
-        <div className="flex flex-wrap justify-center gap-4 mt-4 text-sm text-gray-400">
-          {barGraphData.length === 1 && barGraphData[0]?.earning === 0 ? (
-            ""
-          ) : (
-            <>
-              {barGraphData.map((_, index) => (
-                <div key={index} className="flex items-center gap-2">
-                  <div
-                    className="w-3 h-3 rounded-sm"
-                    style={{ backgroundColor: barColors[index] }}
-                  />
-                  <span>{labelsToShow[index]}</span>
-                </div>
-              ))}
-            </>
-          )}
-        </div>
       </CardContent>
     </Card>
   );

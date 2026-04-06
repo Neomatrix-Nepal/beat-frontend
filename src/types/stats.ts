@@ -59,9 +59,11 @@ export type BarGraphDataItem = {
 export type BarGraphData = BarGraphDataItem[];
 
 export type PieChartData = {
-  beatsAmount: number;
-  dripsAmount: number;
-  commissionAmount: number;
+  adminBeatsEarnings: number;
+  creatorBeatsEarnings: number;
+  customBeatsEarnings: number;
+  mixingProEarnings: number;
+  studioBookingsEarnings: number;
 };
 
 export type ChartsSectionProps = {

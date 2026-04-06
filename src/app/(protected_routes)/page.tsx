@@ -38,7 +38,7 @@ export default async function Dashboard() {
         <ChartsSection
           barGraphData={barGraphData}
           pieChartData={pieChartData}
-          token={session?.user?.tokens.accessToken!}
+          token={(session?.user?.tokens.accessToken as string) || ""}
         />
       </div>
     </AdminLayout>
