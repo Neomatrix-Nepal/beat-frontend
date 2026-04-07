@@ -55,7 +55,7 @@ export function EarningsChart({
     <Card className="bg-[#1a1a2e] border-[#2d2d44] h-full flex flex-col">
       <CardHeader>
         <div>
-          <CardTitle className="text-white">Earnings Breakdown</CardTitle>
+          <CardTitle className="text-white font-michroma">Earnings Breakdown</CardTitle>
           <p className="text-green-400 text-sm mt-2 font-semibold">
             Total: $
             {totalEarnings.toLocaleString("en-US", {
@@ -127,7 +127,7 @@ export function EarningsChart({
         </div>
 
         {/* Legend and Details */}
-        <div className="mt-6 space-y-2">
+        <div className="mt-6 space-y-2 font-michroma">
           {transformedData.map((item, index) => (
             <div
               key={index}

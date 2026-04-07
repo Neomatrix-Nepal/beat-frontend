@@ -147,9 +147,18 @@ export default function _client({
     );
 
     try {
-      const { id, ...rest } = pkg;
+      const updateData: Package = {
+        id: pkg.id,
+        name: pkg.name,
+        description: pkg.description || "",
+        price: typeof pkg.price === "string" ? parseFloat(pkg.price) : pkg.price,
+        purpose: pkg.purpose,
+        status: newStatus as any,
+        features: pkg.features,
+      };
+      
       await updatePackage(
-        { ...rest, status: newStatus as any } as Package,
+        updateData,
         pkg.id.toString(),
         session?.user.tokens.accessToken as string
       );
@@ -368,18 +377,15 @@ export default function _client({
                       <td className="px-4 py-2 capitalize">{pkg.purpose}</td>
                       <td className="px-4 py-2">${pkg?.price}</td>
                       <td className="px-4 py-2 text-center">
-                        <button
-                          onClick={() => handleToggleStatus(pkg)}
-                          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${
-                            pkg.status === "active" ? "bg-[#00e08f]" : "bg-gray-600"
+                        <span
+                          className={`inline-block px-3 py-1 text-xs font-semibold rounded-full ${
+                            pkg.status === "active"
+                              ? "bg-[#00e08f]/20 text-[#00e08f]"
+                              : "bg-red-500/20 text-red-400"
                           }`}
                         >
-                          <span
-                            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                              pkg.status === "active" ? "translate-x-6" : "translate-x-1"
-                            }`}
-                          />
-                        </button>
+                          {pkg.status === "active" ? "Active" : "Inactive"}
+                        </span>
                       </td>
                       <td className="px-4 py-2">
                         <div className="flex items-center justify-center h-full w-full gap-2">

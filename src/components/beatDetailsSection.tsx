@@ -37,7 +37,7 @@ export default function BeatDetailsSection({
 
   return (
     <>
-      <h2 className="text-lg text-white font-bold mb-4">Beat Sales Details</h2>
+      <h2 className="text-lg text-white font-bold mb-4 font-michroma">Beat Sales Details</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {statsData.map((stat, index) => (
           <StatCard

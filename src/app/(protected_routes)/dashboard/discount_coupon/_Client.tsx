@@ -258,13 +258,27 @@ export default function _Client({
           </div>
         </div>
 
-        <button
-          onClick={handleSave}
-          disabled={loading}
-          className="mt-6 bg-custom px-6 py-2 rounded hover:scale-105 transition-transform disabled:opacity-50"
-        >
-          {loading ? "Saving..." : editing ? "Update Coupon" : "Add Coupon"}
-        </button>
+        <div className="mt-6 flex gap-3">
+          <button
+            onClick={handleSave}
+            disabled={loading}
+            className="bg-custom px-6 py-2 rounded hover:scale-105 transition-transform disabled:opacity-50"
+          >
+            {loading ? "Saving..." : editing ? "Update Coupon" : "Add Coupon"}
+          </button>
+          {editing && (
+            <button
+              onClick={() => {
+                setForm(defaultForm);
+                setEditing(false);
+              }}
+              disabled={loading}
+              className="bg-slate-600 px-6 py-2 rounded hover:bg-slate-500 transition-colors disabled:opacity-50"
+            >
+              Cancel
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Table */}

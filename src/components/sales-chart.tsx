@@ -53,7 +53,7 @@ export function SalesChart({
     displayName:
       index === 0
         ? `${item.creatorName} (Admin)`
-        : `${item.creatorName} (Creator)`,
+        : `${item.creatorName}`,
     type: index === 0 ? "admin" : "creator",
   }));
 
@@ -90,7 +90,7 @@ export function SalesChart({
   return (
     <Card className="bg-[#1a1a2e] border-[#2d2d44] flex flex-col w-full h-full relative">
       <CardHeader>
-        <CardTitle className="text-white">
+        <CardTitle className="text-white font-michroma">
           Sales Performance (Admin & Creators)
         </CardTitle>
         <div className="flex gap-2 md:gap-4 w-full flex-row justify-center md:justify-between items-center shrink">
@@ -152,7 +152,7 @@ export function SalesChart({
         </div>
       </CardHeader>
 
-      <CardContent className="w-full h-full flex-1">
+      <CardContent className="w-full h-full flex-1 font-michroma ">
         <ResponsiveContainer
           key={animationKey}
           width="100%"
@@ -166,7 +166,7 @@ export function SalesChart({
               dataKey="displayName"
               angle={-45}
               textAnchor="end"
-              height={80}
+              height={150}
               tick={{ fontSize: 12, fill: "#a0aec0" }}
             />
             <YAxis tick={{ fontSize: 12, fill: "#a0aec0" }} />
