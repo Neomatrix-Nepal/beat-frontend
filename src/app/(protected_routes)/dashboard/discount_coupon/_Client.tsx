@@ -18,6 +18,7 @@ const defaultForm: Coupon = {
   discountPercentage: 1,
   validFrom: "",
   validUntil: "",
+  usageLimit: undefined,
 };
 
 export default function _Client({
@@ -73,6 +74,7 @@ export default function _Client({
             discountPercentage: newCoupon.discountPercentage,
             validFrom: newCoupon.validFrom,
             validUntil: newCoupon.validUntil,
+            usageLimit: newCoupon.usageLimit ? Number(newCoupon.usageLimit) : undefined,
           },
           session?.user?.tokens.accessToken!
         );
@@ -86,7 +88,10 @@ export default function _Client({
         toast.success("Coupon updated.");
       } else {
         const result = await uploadDiscountCoupon(
-          newCoupon,
+          {
+            ...newCoupon,
+            usageLimit: newCoupon.usageLimit ? Number(newCoupon.usageLimit) : undefined,
+          },
           session?.user?.tokens.accessToken!
         );
         if (!result || !result.id) {
@@ -235,15 +240,45 @@ export default function _Client({
               min={toDateInputValue(form.validFrom)}
             />
           </div>
+
+          <div className="flex flex-col">
+            <label htmlFor="usageLimit" className="mb-1">
+              Usage Limit (Optional)
+            </label>
+            <input
+              id="usageLimit"
+              type="number"
+              name="usageLimit"
+              value={form.usageLimit === undefined ? "" : form.usageLimit}
+              onChange={handleChange}
+              placeholder="e.g., 10"
+              className="p-2 rounded bg-slate-700 placeholder:text-gray-400"
+              min={1}
+            />
+          </div>
         </div>
 
-        <button
-          onClick={handleSave}
-          disabled={loading}
-          className="mt-6 bg-custom px-6 py-2 rounded hover:scale-105 transition-transform disabled:opacity-50"
-        >
-          {loading ? "Saving..." : editing ? "Update Coupon" : "Add Coupon"}
-        </button>
+        <div className="mt-6 flex gap-3">
+          <button
+            onClick={handleSave}
+            disabled={loading}
+            className="bg-custom px-6 py-2 rounded hover:scale-105 transition-transform disabled:opacity-50"
+          >
+            {loading ? "Saving..." : editing ? "Update Coupon" : "Add Coupon"}
+          </button>
+          {editing && (
+            <button
+              onClick={() => {
+                setForm(defaultForm);
+                setEditing(false);
+              }}
+              disabled={loading}
+              className="bg-slate-600 px-6 py-2 rounded hover:bg-slate-500 transition-colors disabled:opacity-50"
+            >
+              Cancel
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Table */}
@@ -258,6 +293,7 @@ export default function _Client({
                 <th className="px-4 py-2">Discount %</th>
                 <th className="px-4 py-2">Valid From</th>
                 <th className="px-4 py-2">Valid Until</th>
+                <th className="px-4 py-2">Usage Limit</th>
                 <th className="px-4 py-2 text-center">Actions</th>
               </tr>
             </thead>
@@ -282,6 +318,9 @@ export default function _Client({
                     </td>
                     <td className="px-4 py-2">
                       {formatDateTime(coupon.validUntil)}
+                    </td>
+                    <td className="px-4 py-2">
+                       {coupon.usageLimit ? coupon.usageLimit : "Unlimited"}
                     </td>
                     <td className="px-4 py-2 text-center flex items-center justify-center space-x-2">
                       <button

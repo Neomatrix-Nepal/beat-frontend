@@ -5,4 +5,5 @@ export interface Package {
   price: number;
   purpose: "product" | "mixing_order" | "custom_beats";
   features?: string[];
+  status: "active" | "inactive";
 }

@@ -288,10 +288,10 @@ const AddWorkForm: React.FC<WorkFormProps> = ({ initialData, onSave }) => {
               className="bg-[#1a1a2e] p-8 border-none text-white font-michroma"
               {...register("workLink", {
                 required: "Work link is required",
-                pattern: {
-                  value: /^(https?:\/\/)/,
-                  message: "Please enter a valid URL",
-                },
+                // pattern: {
+                //   value: /^(https?:\/\/)/,
+                //   message: "Please enter a valid URL",
+                // },
                 validate: (value) => {
                   const selectedPlatform = watch("platform") as Platform | "";
                   if (!selectedPlatform)

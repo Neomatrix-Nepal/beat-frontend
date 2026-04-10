@@ -28,6 +28,8 @@ const CustomerOrdersClient = ({
   const router = useRouter();
   const limit = metadata.pageSize || 10;
 
+  console.log("ORDERS", orders)
+
   const { data: session } = useSession();
 
   // Update local state when initialOrders (from server component) change

@@ -1,13 +1,12 @@
-"use client";
-import { Check, Trash } from "lucide-react";
+import { Check, Trash, Eye, ExternalLink } from "lucide-react";
 import React, { useState } from "react";
-import { IoMdEye } from "react-icons/io";
 import MixingProSubmissionDetails, {
   MixingProEntry,
 } from "../dialog/mixingProDialog";
 import LoadingEffect from "../loadingEffect";
 import PopupWrapper from "../shared/PopupWrapper";
 import ConfirmPopUp from "../ui/confirmPopUp";
+import { formatDateTime } from "@/src/lib/utils";
 
 interface MixingProTableProps {
   entries: MixingProEntry[];
@@ -18,7 +17,7 @@ interface MixingProTableProps {
 const statusStyles = {
   pending: "bg-yellow-700/20 text-yellow-400 border-yellow-700/30",
   in_progress: "bg-blue-800/20 text-blue-400 border-blue-800/30",
-  completed: "bg-green-800/20 text-green-400 border-green-800/30",
+  completed: "bg-green-800/20 text-[#00e08f] border-[#00e08f]/30",
 };
 
 export const MixingProTable: React.FC<MixingProTableProps> = ({
@@ -63,129 +62,148 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
         <table className="w-full text-sm">
           <thead className="bg-[#1A2233] text-[#E4E4E7] border-b border-[#2C3A4F]">
             <tr>
-              <th className="text-left p-4">Name</th>
-              <th className=" p-4">Uploaded Link</th>
-              <th className="text-left p-4">Uploaded Date</th>
+              <th className="text-left p-4">ID</th>
+              <th className="text-left p-4">Customer Name</th>
+              <th className="text-center p-4">Asset Link</th>
+              <th className="text-left p-4">Date Received</th>
               <th className="text-center p-4">Status</th>
               <th className="text-center p-4">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {entries.map((entry, index) => (
-              <tr
-                key={entry.id}
-                className={`border-b border-[#2C3A4F] hover:bg-[#1A2233]/50 transition-colors ${
-                  index % 2 === 0 ? "bg-[#1C2433]" : "bg-[#1A1F2E]"
-                }`}
-              >
-                <td className="p-4 text-white font-medium max-w-50">
-                  {entry.name}
-                </td>
-                <td className="p-4 text-blue-400">
-                  <a
-                    href={entry.referenceTrack}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex justify-center"
-                  >
-                    Visit Link
-                  </a>
-                </td>
-                <td className="p-4 text-slate-400">
-                  {new Date(entry.createdAt).toLocaleDateString()}
-                </td>
-                <td className="p-4 text-center">
-                  <div
-                    className={`py-2 rounded-sm text-md font-medium border ${
-                      statusStyles[entry.status]
-                    }`}
-                  >
-                    {entry.status.charAt(0).toUpperCase() +
-                      entry.status.slice(1)}
-                  </div>
-                </td>
-                <td className="p-4">
-                  <div className="flex justify-center items-center gap-2">
-                    <button
-                      onClick={() => handleViewClick(entry)}
-                      className="cursor-pointer p-2 text-white bg-foreground hover:bg-purple-700 rounded-lg transition-colors"
+            {entries.length > 0 ? (
+              entries.map((entry, index) => (
+                <tr
+                  key={entry.id}
+                  className={`border-b border-[#2C3A4F] hover:bg-[#1A2233]/50 transition-colors ${
+                    index % 2 === 0 ? "bg-[#1C2433]" : "bg-[#1A1F2E]"
+                  }`}
+                >
+                  <td className="p-4 text-white font-medium">{entry.id}</td>
+                  <td className="p-4">
+                    <div className="flex flex-col">
+                      <span className="text-white font-bold">{entry.name}</span>
+                      <span className="text-[10px] text-slate-500 lowercase">{entry.email}</span>
+                    </div>
+                  </td>
+                  <td className="p-4 text-center">
+                    <a
+                      href={entry.referenceTrack}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-[#00e08f] hover:underline text-xs"
                     >
-                      <IoMdEye size={16} />
-                    </button>
-                    <button
-                      onClick={() => onMarkAsSent(entry.id)}
-                      className="cursor-pointer p-2 rounded-lg bg-black text-white hover:bg-purple-700 transition-colors"
-                      title="Mark Sent"
+                      Drive Asset <ExternalLink size={12} />
+                    </a>
+                  </td>
+                  <td className="p-4 text-slate-400 text-xs">
+                    {formatDateTime(entry.createdAt)}
+                  </td>
+                  <td className="p-4 text-center">
+                    <div
+                      className={`py-1.5 px-3 rounded-md text-[10px] font-bold uppercase tracking-wider border inline-block ${
+                        statusStyles[entry.status as keyof typeof statusStyles]
+                      }`}
                     >
-                      <Check size={16} />
-                    </button>
-                    <button
-                      onClick={() => {
-                        setSelectedEntryId(entry.id);
-                        setDeletePopUp(true);
-                      }}
-                      className="cursor-pointer p-2 bg-black rounded-lg text-red-400 hover:bg-red-600/20 transition-colors"
-                    >
-                      <Trash size={16} className="text-red-500" />
-                    </button>
-                  </div>
+                      {entry.status.replace("_", " ")}
+                    </div>
+                  </td>
+                  <td className="p-4">
+                    <div className="flex justify-center items-center gap-2">
+                      <button
+                        onClick={() => handleViewClick(entry)}
+                        className="p-2 text-white bg-foreground hover:bg-slate-700/50 rounded-lg transition-all"
+                        title="View Details"
+                      >
+                        <Eye size={16} />
+                      </button>
+                      <button
+                        onClick={() => onMarkAsSent(entry.id)}
+                        disabled={entry.status === "completed"}
+                        className="p-2 rounded-lg bg-foreground hover:bg-[#00e08f]/20 text-[#00e08f] transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                        title="Mark Delivered"
+                      >
+                        <Check size={16} />
+                      </button>
+                      <button
+                        onClick={() => {
+                          setSelectedEntryId(entry.id);
+                          setDeletePopUp(true);
+                        }}
+                        className="p-2 bg-black rounded-lg text-red-400 hover:bg-red-600/20 transition-all"
+                        title="Delete order"
+                      >
+                        <Trash size={16} className="text-red-500" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={6} className="p-8 text-center text-slate-500 italic">
+                  No mixing orders found.
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
 
-      {/* Mobile Table */}
+      {/* Mobile Cards */}
       <div className="lg:hidden space-y-4 p-4">
         {entries.map((entry) => (
           <div
             key={entry.id}
-            className="bg-[#1A1F2E] rounded-lg p-4 border border-[#2C3A4F] "
+            className="bg-[#1A1F2E] rounded-lg p-5 border border-[#2C3A4F] space-y-4 shadow-lg"
           >
-            <div className="flex items-start justify-between mb-3">
+            <div className="flex items-start justify-between">
               <div>
-                <h3 className="text-white font-medium">{entry.name}</h3>
-                <p className="text-white text-sm break-all">{entry.email}</p>
-                <p className="text-white text-sm">{entry.musicGenre}</p>
+                <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-1">ID: {entry.id}</p>
+                <h3 className="text-white font-bold text-base">{entry.name}</h3>
+                <p className="text-slate-400 text-[11px] break-all">{entry.email}</p>
               </div>
               <span
-                className={`px-3 py-1 rounded-md text-xs font-medium border ${
-                  statusStyles[entry.status]
+                className={`px-3 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider border ${
+                  statusStyles[entry.status as keyof typeof statusStyles]
                 }`}
               >
-                {entry.status.charAt(0).toUpperCase() + entry.status.slice(1)}
+                {entry.status.replace("_", " ")}
               </span>
             </div>
 
-            <div className="flex items-center justify-between mt-2">
-              <span className="text-slate-400 text-sm">
-                {new Date(entry.createdAt).toLocaleDateString()}
-              </span>
+            <div className="flex items-center justify-between border-t border-white/5 pt-4">
+              <div className="flex flex-col gap-1">
+                <span className="text-[10px] text-slate-500 uppercase">Received</span>
+                <span className="text-slate-300 text-xs">
+                  {formatDateTime(entry.createdAt).split(",")[0]}
+                </span>
+              </div>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => handleViewClick(entry)}
-                  className="p-2 rounded-lg text-white hover:bg-slate-600/30 transition-colors"
+                  className="p-2.5 rounded-xl bg-white/5 text-white hover:bg-white/10 transition-all border border-white/5"
                   title="View"
                 >
-                  <IoMdEye size={16} />
+                  <Eye size={18} />
                 </button>
                 <button
                   onClick={() => onMarkAsSent(entry.id)}
-                  className="p-2 rounded-lg text-green-400 hover:bg-green-600/20 transition-colors"
+                  disabled={entry.status === "completed"}
+                  className="p-2.5 rounded-xl bg-[#00e08f]/10 text-[#00e08f] hover:bg-[#00e08f]/20 transition-all border border-[#00e08f]/10 disabled:opacity-20"
                   title="Mark Sent"
                 >
-                  <Check size={16} />
+                  <Check size={18} />
                 </button>
                 <button
                   onClick={() => {
                     setSelectedEntryId(entry.id);
                     setDeletePopUp(true);
                   }}
-                  className="p-2 rounded-lg hover:bg-red-600/20 transition-colors"
+                  className="p-2.5 rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-all border border-red-500/10"
                   title="Delete"
                 >
-                  <Trash size={16} className="text-red-400"/>
+                  <Trash size={18} />
                 </button>
               </div>
             </div>
@@ -194,17 +212,19 @@ export const MixingProTable: React.FC<MixingProTableProps> = ({
       </div>
 
       <PopupWrapper isOpen={isPopupOpen}>
-        <MixingProSubmissionDetails
-          entry={selectedEntry}
-          onClose={handleClosePopup}
-          onStatusChange={onMarkAsSent}
-        />
+        <div className="mx-4">
+          <MixingProSubmissionDetails
+            entry={selectedEntry}
+            onClose={handleClosePopup}
+            onStatusChange={onMarkAsSent}
+          />
+        </div>
       </PopupWrapper>
 
       {deletePopUp && (
         <ConfirmPopUp
-          title={"Delete Customer order?"}
-          message={"Are you sure you want to delete this order?"}
+          title={"Delete Mixing Order?"}
+          message={"Are you sure you want to remove this mixing request documentation? This action cannot be undone."}
           onCancel={() => setDeletePopUp(false)}
           onConfirm={() => {
             setDeletePopUp(false);

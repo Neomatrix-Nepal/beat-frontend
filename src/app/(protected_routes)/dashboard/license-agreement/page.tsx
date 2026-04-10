@@ -941,7 +941,7 @@ export default function LicensePage() {
                     onChange={onInput("price")}
                     placeholder="Enter price"
                     className="p-3 rounded bg-slate-600 w-full mt-1"
-                    disabled={form.licenseType !== "Exclusive"}
+                    // disabled={form.licenseType !== "Exclusive"}
                   />
                 </label>
                 {form.licenseType !== "Exclusive" && (

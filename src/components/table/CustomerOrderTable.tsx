@@ -18,7 +18,9 @@ interface CustomerOrderTableProps {
 const statusStyles = {
   completed: "bg-green-800/20 text-green-400 border-green-800/30",
   pending: "bg-yellow-700/20 text-yellow-400 border-yellow-700/30",
+  cancelled: "bg-red-800/20 text-red-400 border-red-800/30",
   failed: "bg-red-800/20 text-red-400 border-red-800/30",
+
 };
 
 export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
@@ -62,7 +64,7 @@ export const CustomerOrderTable: React.FC<CustomerOrderTableProps> = ({
           <thead className="bg-[#1A2233] text-[#E4E4E7] border-b border-[#2C3A4F]">
             <tr>
               <th className="text-left p-4">Id</th>
-              <th className="text-left p-4">Customer's Name</th>
+              <th className="text-left p-4">Customer&apos;s Name</th>
               <th className="text-left p-4">Price</th>
               <th className="text-left p-4">Order Date</th>
               <th className="text-center p-4">Status</th>

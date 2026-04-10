@@ -18,6 +18,7 @@ const defaultFormData = {
   price: "",
   purpose: "product",
   features: [""],
+  status: "active",
 };
 
 export default function _client({
@@ -77,6 +78,7 @@ export default function _client({
       description: form.description,
       price: parseFloat(form.price),
       purpose: form.purpose as Package["purpose"],
+      status: editing ? (form.status as Package["status"]) : "active",
       features:
         form.purpose === "product"
           ? form.features.filter((f) => f.trim() !== "")
@@ -130,8 +132,46 @@ export default function _client({
       price: pkg.price.toString(),
       purpose: pkg.purpose,
       features: pkg.features || [""],
+      status: pkg.status,
     });
     setEditing(true);
+  };
+
+  const handleToggleStatus = async (pkg: Package) => {
+    const newStatus = pkg.status === "active" ? "inactive" : "active";
+    const oldStatus = pkg.status;
+
+    // Optimistic update
+    setPackages((prev) =>
+      prev.map((p) => (p.id === pkg.id ? { ...p, status: newStatus as any } : p))
+    );
+
+    try {
+      const updateData: Package = {
+        id: pkg.id,
+        name: pkg.name,
+        description: pkg.description || "",
+        price: typeof pkg.price === "string" ? parseFloat(pkg.price) : pkg.price,
+        purpose: pkg.purpose,
+        status: newStatus as any,
+        features: pkg.features,
+      };
+      
+      await updatePackage(
+        updateData,
+        pkg.id.toString(),
+        session?.user.tokens.accessToken as string
+      );
+      toast.success(`Package ${newStatus === "active" ? "activated" : "deactivated"}`);
+      router.refresh();
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to update status");
+      // Revert on error
+      setPackages((prev) =>
+        prev.map((p) => (p.id === pkg.id ? { ...p, status: oldStatus } : p))
+      );
+    }
   };
 
   const handleDelete = async (id: number) => {
@@ -167,6 +207,8 @@ export default function _client({
 
   const filteredPackages =
     filter === "all" ? packages : packages.filter((p) => p.purpose === filter);
+
+    console.log(packages)
 
   return (
     <div className="min-h-screen bg-slate-900 text-white p-6 font-michroma">
@@ -218,6 +260,24 @@ export default function _client({
             <option value="mixing_order">Mixing Order</option>
             <option value="custom_beats">Custom Beats</option>
           </select>
+          <div className="flex items-center gap-3 bg-slate-700/50 p-2 rounded px-4 border border-slate-600/30">
+            <span className="text-sm text-gray-400">Status:</span>
+            <button
+              onClick={() => setForm({ ...form, status: form.status === "active" ? "inactive" : "active" })}
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${
+                form.status === "active" ? "bg-[#00e08f]" : "bg-gray-600"
+              }`}
+            >
+              <span
+                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                  form.status === "active" ? "translate-x-6" : "translate-x-1"
+                }`}
+              />
+            </button>
+            <span className={`text-[10px] font-bold uppercase tracking-wider ${form.status === "active" ? "text-[#00e08f]" : "text-gray-400"}`}>
+              {form.status}
+            </span>
+          </div>
           <textarea
             name="description"
             value={form.description}
@@ -296,6 +356,7 @@ export default function _client({
                   <th className="px-4 py-2">Name</th>
                   <th className="px-4 py-2">Purpose</th>
                   <th className="px-4 py-2">Price</th>
+                  <th className="px-4 py-2 text-center">Status</th>
                   <th className="px-4 py-2 text-center">Actions</th>
                 </tr>
               </thead>
@@ -315,6 +376,17 @@ export default function _client({
                       <td className="px-4 py-2">{pkg.name}</td>
                       <td className="px-4 py-2 capitalize">{pkg.purpose}</td>
                       <td className="px-4 py-2">${pkg?.price}</td>
+                      <td className="px-4 py-2 text-center">
+                        <span
+                          className={`inline-block px-3 py-1 text-xs font-semibold rounded-full ${
+                            pkg.status === "active"
+                              ? "bg-[#00e08f]/20 text-[#00e08f]"
+                              : "bg-red-500/20 text-red-400"
+                          }`}
+                        >
+                          {pkg.status === "active" ? "Active" : "Inactive"}
+                        </span>
+                      </td>
                       <td className="px-4 py-2">
                         <div className="flex items-center justify-center h-full w-full gap-2">
                           <button
@@ -395,6 +467,12 @@ export default function _client({
               <p>
                 <strong className="text-[#8f8f8f]">Price:</strong> $
                 {viewPackage.price}
+              </p>
+              <p>
+                <strong className="text-[#8f8f8f]">Status:</strong>{" "}
+                <span className={viewPackage.status === "active" ? "text-[#00e08f]" : "text-red-400"}>
+                  {viewPackage.status.toUpperCase()}
+                </span>
               </p>
               {viewPackage.description && (
                 <p>

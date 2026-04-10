@@ -1,8 +1,7 @@
 "use client";
 import { CustomBeat } from "@/src/types";
-import { Check, Trash } from "lucide-react";
+import { Check, Trash, Eye } from "lucide-react";
 import React, { useState } from "react";
-import { IoMdEye } from "react-icons/io";
 import BeatsDialogDetails from "../dialog/beatsDialog";
 import LoadingEffect from "../loadingEffect";
 import PopupWrapper from "../shared/PopupWrapper";
@@ -16,9 +15,9 @@ interface CustomBeatsTableProps {
 }
 
 const statusStyles = {
-  pending: "bg-yellow-700/20 text-yellow-400 border-yellow-700/30",
-  sent: "bg-orange-800/20 text-orange-400 border-orange-800/30",
-  completed: "bg-green-800/20 text-green-400 border-green-800/30",
+  pending: "text-yellow-400 bg-yellow-400/10 border-yellow-400/20",
+  sent: "text-blue-400 bg-blue-400/10 border-blue-400/20",
+  completed: "text-[#00e08f] bg-[#00e08f1a] border-[#00e08f33]",
 };
 
 export const CustombeatsTable: React.FC<CustomBeatsTableProps> = ({
@@ -52,10 +51,10 @@ export const CustombeatsTable: React.FC<CustomBeatsTableProps> = ({
       setBeats((prev) =>
         prev.map((beat) => (beat.id === id ? { ...beat, status } : beat))
       );
-      toast.success("Beat approved");
+      toast.success("Beat status updated");
     } catch (error) {
       console.error(error);
-      toast.error("Failed to approve beat");
+      toast.error("Failed to update beat status");
     }
   };
 
@@ -75,76 +74,81 @@ export const CustombeatsTable: React.FC<CustomBeatsTableProps> = ({
   };
 
   return (
-    <div className="bg-[#101828] rounded-xl border border-[#1D2939] overflow-hidden font-michroma">
+    <div className="bg-[#101828] rounded-2xl border border-white/5 overflow-hidden font-michroma shadow-2xl">
       {/* Desktop Table */}
       <div className="hidden lg:block overflow-x-auto">
         <table className="w-full text-sm">
-          <thead className="bg-[#1A2233] text-[#E4E4E7] border-b border-[#2C3A4F]">
+          <thead className="bg-white/5 text-[#E4E4E7] border-b border-white/10">
             <tr>
-              <th className="text-left p-4">Name</th>
-              <th className="text-center p-4">Reference Track</th>
-              <th className="text-left p-4">Upload Date</th>
-              <th className="p-4 text-center">Status</th>
-              <th className="text-center p-4">Actions</th>
+              <th className="text-left p-5 font-bold uppercase tracking-wider text-[10px] text-gray-500">Name</th>
+              <th className="text-center p-5 font-bold uppercase tracking-wider text-[10px] text-gray-500">Reference Track</th>
+              <th className="text-left p-5 font-bold uppercase tracking-wider text-[10px] text-gray-500">Upload Date</th>
+              <th className="p-5 text-center font-bold uppercase tracking-wider text-[10px] text-gray-500">Status</th>
+              <th className="text-center p-5 font-bold uppercase tracking-wider text-[10px] text-gray-500">Actions</th>
             </tr>
           </thead>
           <tbody>
             {beats.map((entry, index) => (
               <tr
                 key={entry.id}
-                className={`border-b border-[#2C3A4F] hover:bg-[#1A2233]/50 transition-colors ${
-                  index % 2 === 0 ? "bg-[#1C2433]" : "bg-[#1A1F2E]"
-                }`}
+                className={`border-b border-white/5 hover:bg-white/10 transition-all duration-200 group`}
               >
-                <td className="p-4 text-white font-medium max-w-50">
+                <td className="p-5 text-white font-medium">
                   {entry.name}
                 </td>
-                <td className="p-4 text-blue-400">
+                <td className="p-5 text-[#00e08f] text-center">
                   <a
                     href={entry.referenceTrack}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex justify-center"
+                    className="hover:underline text-[11px] font-bold"
                   >
-                    Visit Link
+                    View File
                   </a>
                 </td>
-                <td className="p-4 text-slate-400">
-                  {new Date(entry.createdAt).toLocaleDateString()}
+                <td className="p-5 text-slate-400 text-xs">
+                  {new Date(entry.createdAt).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric"
+                  })}
                 </td>
-                <td className="p-4 text-center">
-                  <div
-                    className={`py-2 rounded-sm text-md font-medium border ${
+                <td className="p-5 text-center">
+                  <span
+                    className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border ${
                       statusStyles[entry.status]
                     }`}
                   >
                     {entry.status}
-                  </div>
+                  </span>
                 </td>
-                <td className="p-4">
-                  <div className="flex justify-center items-center gap-2">
+                <td className="p-5">
+                  <div className="flex justify-center items-center gap-3">
                     <button
                       onClick={() => handleViewClick(entry)}
-                      className="cursor-pointer p-2 text-white bg-foreground hover:bg-purple-700 rounded-lg transition-colors"
+                      className="p-2 text-white bg-white/5 hover:bg-[#00e08f] hover:text-black rounded-xl transition-all duration-300 shadow-lg"
+                      title="View Details"
                     >
-                      <IoMdEye size={16} />
+                      <Eye size={18} />
                     </button>
-                    <button
-                      onClick={() => {
-                        handleStatusChange(entry.id, "completed");
-                      }}
-                      className="cursor-pointer p-2 bg-foreground hover:bg-purple-700 rounded-lg transition-colors"
-                    >
-                      <Check size={16} className="text-white" />
-                    </button>
+                    {entry.status !== "completed" && (
+                      <button
+                        onClick={() => handleStatusChange(entry.id, "completed")}
+                        className="p-2 text-white bg-white/5 hover:bg-[#00e08f] hover:text-black rounded-xl transition-all duration-300 shadow-lg"
+                        title="Mark Completed"
+                      >
+                        <Check size={18} />
+                      </button>
+                    )}
                     <button
                       onClick={() => {
                         setSelectedEntryId(entry.id);
                         setDeletePopUp(true);
                       }}
-                      className="cursor-pointer p-2 text-red-400 bg-foreground hover:bg-purple-600/20 rounded-lg transition-colors"
+                      className="p-2 text-red-400 bg-white/5 hover:bg-red-500 hover:text-white rounded-xl transition-all duration-300 shadow-lg"
+                      title="Delete Entry"
                     >
-                      <Trash size={16} className="text-red-500" />
+                      <Trash size={18} />
                     </button>
                   </div>
                 </td>
@@ -155,30 +159,23 @@ export const CustombeatsTable: React.FC<CustomBeatsTableProps> = ({
       </div>
 
       {/* Mobile Cards */}
-      <div className="lg:hidden space-y-4 p-4">
-        {beats.map((entry, index) => (
+      <div className="lg:hidden space-y-4 p-4 bg-[#0f0f10]">
+        {beats.map((entry) => (
           <div
             key={entry.id}
-            className="bg-[#1A1F2E] rounded-lg p-4 border border-[#2C3A4F]"
+            className="bg-[#1d2733] rounded-2xl p-5 border border-white/5 shadow-lg group"
           >
-            <div className="flex items-start justify-between mb-3">
-              <div className="flex items-center gap-3">
-                <div>
-                  <h3 className="text-white font-medium break-all">
-                    {entry.name}
-                  </h3>
-                  <a
-                    href={entry.referenceTrack}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-400 underline text-sm"
-                  >
-                    View Link
-                  </a>
-                </div>
+            <div className="flex items-start justify-between mb-4">
+              <div className="min-w-0">
+                <h3 className="text-white font-bold text-sm truncate pr-2">
+                  {entry.name}
+                </h3>
+                <p className="text-gray-500 text-[10px] mt-1">
+                  ID: {entry.id} • {new Date(entry.createdAt).toLocaleDateString()}
+                </p>
               </div>
               <span
-                className={`px-3 py-1 rounded-md text-xs font-medium border ${
+                className={`flex-shrink-0 px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest border ${
                   statusStyles[entry.status]
                 }`}
               >
@@ -186,43 +183,46 @@ export const CustombeatsTable: React.FC<CustomBeatsTableProps> = ({
               </span>
             </div>
 
-            <div className="flex items-center justify-between mt-2">
-              <span className="text-slate-400 text-sm">
-                {new Date(entry.createdAt).toLocaleDateString()}
-              </span>
+            <div className="flex items-center justify-between border-t border-white/5 pt-4">
+              <a
+                href={entry.referenceTrack}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#00e08f] text-[11px] font-bold hover:underline"
+              >
+                Reference Track
+              </a>
 
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => handleViewClick(entry)}
-                  className="p-2 rounded-lg text-white hover:bg-slate-600/30 transition-colors"
-                  title="View"
+                  className="p-2 bg-white/5 text-white hover:bg-[#00e08f] hover:text-black rounded-lg transition-all"
                 >
-                  <IoMdEye size={16} />
+                  <Eye size={16} />
                 </button>
-                <button
-                  onClick={() => {
-                    handleStatusChange(entry.id, "completed");
-                  }}
-                  className="p-2 rounded-lg text-green-400 hover:bg-green-600/20 transition-colors"
-                  title="Mark Sent"
-                >
-                  <Check size={16} className="text-white" />
-                </button>
+                {entry.status !== "completed" && (
+                   <button
+                   onClick={() => handleStatusChange(entry.id, "completed")}
+                   className="p-2 bg-white/5 text-white hover:bg-[#00e08f] hover:text-black rounded-lg transition-all"
+                 >
+                   <Check size={16} />
+                 </button>
+                )}
                 <button
                   onClick={() => {
                     setSelectedEntryId(entry.id);
                     setDeletePopUp(true);
                   }}
-                  className="p-2 rounded-lg text-purple-400 hover:bg-purple-600/20 transition-colors"
-                  title="Delete"
+                  className="p-2 bg-white/5 text-red-500 hover:bg-red-500 hover:text-white rounded-lg transition-all"
                 >
-                  <Trash size={16} className="text-red-500" />
+                  <Trash size={16} />
                 </button>
               </div>
             </div>
           </div>
         ))}
       </div>
+
       <PopupWrapper isOpen={isPopupOpen}>
         <BeatsDialogDetails
           onClose={handleClosePopup}
@@ -234,7 +234,7 @@ export const CustombeatsTable: React.FC<CustomBeatsTableProps> = ({
       {deletePopUp && (
         <ConfirmPopUp
           title={"Delete Custom beat?"}
-          message={"Are you sure you want to delete this custom beat?"}
+          message={"Are you sure you want to delete this custom beat? This action cannot be undone."}
           onCancel={() => setDeletePopUp(false)}
           onConfirm={() => {
             setDeletePopUp(false);

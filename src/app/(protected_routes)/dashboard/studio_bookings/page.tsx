@@ -30,6 +30,7 @@ export default async function StudioBooking({
   } catch (error) {
     console.error("Failed to fetch bookings:", error);
   }
+  console.log("STUDIO BOOKING", bookingsResponse)
 
   return <_client bookingsData={bookingsResponse} />;
 }
