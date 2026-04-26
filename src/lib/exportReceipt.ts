@@ -82,7 +82,7 @@ export function exportReceiptAsPDF(order: Order): void {
   <!-- Header -->
   <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #e5e7eb;padding-bottom:16px;margin-bottom:16px;">
     <div>
-      <h1 style="font-size:26px;font-weight:900;color:#059669;letter-spacing:-0.5px;">BEATS NEPAL</h1>
+      <h1 style="font-size:26px;font-weight:900;color:#059669;letter-spacing:-0.5px;">BEAT PASAL</h1>
       <p style="font-size:9px;color:#9ca3af;text-transform:uppercase;letter-spacing:2px;margin-top:3px;">Official Receipt / Tax Invoice</p>
     </div>
     <div style="text-align:right;">
@@ -144,7 +144,7 @@ export function exportReceiptAsPDF(order: Order): void {
   <!-- Footer -->
   <div style="border-top:1px solid #e5e7eb;padding-top:14px;text-align:center;">
     <p style="font-size:11px;color:#6b7280;margin-bottom:3px;">Thank you for your purchase!</p>
-    <p style="font-size:9px;color:#9ca3af;">Beats Nepal &middot; beatsnepal.com &middot; support@beatsnepal.com</p>
+    <p style="font-size:9px;color:#9ca3af;">Beat Pasal &middot; beatpasal.com &middot; support@beatpasal.com</p>
     <p style="font-size:8px;color:#d1d5db;margin-top:6px;">This is a computer-generated receipt. No signature required.</p>
   </div>
 
