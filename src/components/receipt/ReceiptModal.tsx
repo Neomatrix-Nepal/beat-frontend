@@ -104,7 +104,7 @@ export default function ReceiptModal({ order, onClose }: ReceiptModalProps) {
             <div className="flex items-start justify-between border-b border-white/10 pb-6">
               <div>
                 <h1 className="text-2xl font-extrabold tracking-tight text-[#00e08f]">
-                  BEATS NEPAL
+                  BEAT PASAL
                 </h1>
                 <p className="text-[10px] text-gray-500 uppercase tracking-widest mt-1">
                   Official Receipt / Tax Invoice
@@ -301,7 +301,7 @@ export default function ReceiptModal({ order, onClose }: ReceiptModalProps) {
                 Thank you for your purchase!
               </p>
               <p className="text-[10px] text-gray-600">
-                Beats Nepal · beatsnepal.com · support@beatsnepal.com
+                Beat Pasal · beatpasal.com · support@beatpasal.com
               </p>
               <p className="text-[10px] text-gray-700 mt-2">
                 This is a computer-generated receipt. No signature required.
