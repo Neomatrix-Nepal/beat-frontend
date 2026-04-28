@@ -60,7 +60,7 @@ const sidebarItems: SidebarItem[] = [
     href: "/dashboard/studio_bookings",
   },
   { icon: Users, label: "Creators", href: "/dashboard/creators" },
-  { icon: Users, label: "Vendors", href: "/dashboard/vendors" },
+  // { icon: Users, label: "Vendors", href: "/dashboard/vendors" },
   {
     icon: RiFilePdfFill,
     label: "License Agreement",
