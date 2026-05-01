@@ -1,6 +1,6 @@
 import { User } from "./user.type";
 
-export type BookingStatus = "pending" | "confirmed" | "cancelled";
+export type BookingStatus = "pending" | "confirmed" | "cancelled" | "completed";
 export interface StudioBooking {
   id: number;
   userId: number;
@@ -14,4 +14,5 @@ export interface StudioBooking {
   createdAt: string;
   updatedAt: string;
   user: User;
+  payment:any
 }
