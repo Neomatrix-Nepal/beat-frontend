@@ -71,7 +71,7 @@ const ReusablePagination = ({
               className={
                 currentPage === 1 || isLoading
                   ? "opacity-50 pointer-events-none"
-                  : "cursor-pointer hover:bg-slate-800 border-slate-700"
+                  : "cursor-pointer hover:bg-slate-800 hover:text-gray-200 border-slate-700"
               }
             />
           </PaginationItem>
@@ -109,7 +109,7 @@ const ReusablePagination = ({
               className={
                 currentPage === totalPages || isLoading
                   ? "opacity-50 pointer-events-none"
-                  : "cursor-pointer hover:bg-slate-800 border-slate-700"
+                  : "cursor-pointer hover:bg-slate-800 hover:text-gray-200 border-slate-700"
               }
             />
           </PaginationItem>

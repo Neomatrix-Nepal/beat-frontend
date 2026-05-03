@@ -70,7 +70,7 @@ export function StatCard({
             <div>
               <p className="text-gray-400 text-sm font-michroma">{title}</p>
               <p className={`text-3xl font-bold font-michroma ${valueColor}`}>
-                {value}
+                {typeof value === 'number' ? value.toFixed(2) : Number(value).toFixed(2)}
               </p>
             </div>
           </div>
