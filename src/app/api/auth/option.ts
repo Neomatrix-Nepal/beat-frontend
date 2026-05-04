@@ -40,6 +40,19 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
   },
+
+    cookies: {
+    sessionToken: {
+      name: "admin-session-token",
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: true
+      }
+    }
+  },
+
   callbacks: {
     async jwt({ token, user }) {
       if (user) {

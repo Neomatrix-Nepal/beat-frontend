@@ -1,7 +1,7 @@
 "use client";
 import { formatDateTime } from "@/src/lib/utils";
 import { BeatsTableProps } from "@/src/types";
-import { Edit, Pencil, Play, Trash } from "lucide-react";
+import { Edit, Info, Pencil, Play, Trash } from "lucide-react";
 import React, { useState } from "react";
 import LoadingEffect from "../loadingEffect";
 import ConfirmPopUp from "../ui/confirmPopUp";
@@ -16,10 +16,11 @@ import CustomAudioPlayer from "../HLSAudioPlayer";
     "rock": "bg-red-500/20 text-red-400 border-red-500/30",
   };
 
-export const BeatsTable: React.FC<BeatsTableProps> = ({
+export const BeatsTable: React.FC<BeatsTableProps & { onViewDetail?: (id: number) => void }> = ({
   beats,
   onEditBeat,
   onDeleteBeat,
+  onViewDetail,
 }) => {
   const [deletePopUp, setDeletePopUp] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -113,6 +114,15 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
                       </div>
                       <button
                         onClick={() => {
+                          if (onViewDetail) onViewDetail(beat.id);
+                        }}
+                        className="cursor-pointer p-2 text-white bg-black hover:bg-blue-600 rounded-lg transition-colors duration-300"
+                        title="View Details"
+                      >
+                        <Info size={16} />
+                      </button>
+                      <button
+                        onClick={() => {
                           onEditBeat(beat);
                         }}
                         className="cursor-pointer p-2 text-white bg-black hover:bg-purple-700 rounded-lg transition-colors duration-300"
@@ -180,6 +190,16 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
                   </div>
 
                   <div>
+                    <button
+                      onClick={() => {
+                        if (onViewDetail) onViewDetail(beat.id);
+                      }}
+                      className="p-2 text-blue-400 hover:bg-blue-500/20 rounded-lg transition-colors"
+                      title="View Details"
+                    >
+                      <Info size={16} />
+                    </button>
+
                     <button
                       onClick={() => {
                         onEditBeat(beat);
