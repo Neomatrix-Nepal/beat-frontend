@@ -41,16 +41,35 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
 
-    cookies: {
+  cookies: {
     sessionToken: {
-      name: "admin-session-token",
+      name: "admin.session-token",
       options: {
         httpOnly: true,
         sameSite: "lax",
         path: "/",
-        secure: true
-      }
-    }
+        secure: true,
+      },
+    },
+
+    callbackUrl: {
+      name: "admin.callback-url",
+      options: {
+        sameSite: "lax",
+        path: "/",
+        secure: true,
+      },
+    },
+
+    csrfToken: {
+      name: "admin.csrf-token",
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: true,
+      },
+    },
   },
 
   callbacks: {
