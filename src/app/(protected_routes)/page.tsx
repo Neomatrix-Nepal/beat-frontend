@@ -6,32 +6,55 @@ import { authOptions } from "@/src/app/api/auth/option";
 import {
   getBarGraphData,
   getBeatDetails,
-  getPieChartData,
   getStatGridData,
   getGenreSalesBreakdown,
   getEarningBreakdown,
 } from "./action";
 import BeatDetailsSection from "@/src/components/beatDetailsSection";
-import { EarningBreakdownReport } from "@/src/components/earning-breakdown-report";
 import { GenreSalesChart } from "@/src/components/genre-sales-chart";
+import type { EarningBreakdownData } from "@/src/components/earning-breakdown-report";
+import type { GenreSalesItem } from "@/src/components/genre-sales-chart";
+import type { BarGraphData, BeatDetailsData, StatsGridData } from "@/src/types/stats";
+
+const emptyStatsData: StatsGridData = {
+  totalBeatsUploaded: { count: 0, subCount: {} },
+  beatsSoldThisMonth: { count: 0, subCount: {} },
+  totalBeatsEarnings: { count: 0, subCount: {} },
+  totalDripsAdded: 0,
+  dripsSoldThisMonth: 0,
+  totalDripsEarnings: 0,
+};
+
+const emptyBeatDetailsData: BeatDetailsData = {
+  standard: 0,
+  premium: 0,
+  "mixing-pro": 0,
+  "custom-beat": 0,
+};
+
+const emptyEarningBreakdownData: EarningBreakdownData = {
+  adminBeatsEarnings: 0,
+  creatorBeatsEarnings: 0,
+  customBeatsEarnings: 0,
+  mixingProEarnings: 0,
+  studioBookingsEarnings: 0,
+};
 
 export default async function Dashboard() {
   const session = await getServerSession(authOptions);
   const token = (session?.user?.tokens.accessToken as string) || "";
 
-  let gridData: any = [];
-  let barGraphData: any = [];
-  let pieChartData: any = {};
-  let beatDetails: any = [];
-  let genreSalesData: any = [];
-  let earningBreakdown: any = {};
+  let gridData: StatsGridData = emptyStatsData;
+  let barGraphData: BarGraphData = [];
+  let beatDetails: BeatDetailsData = emptyBeatDetailsData;
+  let genreSalesData: GenreSalesItem[] = [];
+  let earningBreakdown: EarningBreakdownData = emptyEarningBreakdownData;
 
   try {
-    [gridData, barGraphData, pieChartData, beatDetails, genreSalesData, earningBreakdown] =
+    [gridData, barGraphData, beatDetails, genreSalesData, earningBreakdown] =
       await Promise.all([
         getStatGridData(token),
         getBarGraphData(token),
-        getPieChartData(token),
         getBeatDetails(token),
         getGenreSalesBreakdown(token),
         getEarningBreakdown(token),
@@ -58,7 +81,7 @@ export default async function Dashboard() {
 
         <ChartsSection
           barGraphData={barGraphData}
-          pieChartData={pieChartData}
+          pieChartData={earningBreakdown}
           token={token}
         />
       </div>
