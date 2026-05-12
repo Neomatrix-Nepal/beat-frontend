@@ -7,6 +7,7 @@ export const statConfig= [
         icon: FileText,
         iconColor: "bg-[#00B894]",
         valueColor: "text-[#00B894]",
+        isCurrency: false,
     },
     {
         title: "Premium",
@@ -14,6 +15,7 @@ export const statConfig= [
         icon: Crown,
         iconColor: "bg-[#FF7675]",
         valueColor: "text-[#FF7675]",
+        isCurrency: false,
     },
     {
         title: "Custom Pro",
@@ -21,6 +23,7 @@ export const statConfig= [
         icon: Pencil,
         iconColor: "bg-[#6C5CE7]",
         valueColor: "text-[#6C5CE7]",
+        isCurrency: false,
     },
     {
         title: "Mixing Pro",
@@ -28,5 +31,6 @@ export const statConfig= [
         icon: SlidersHorizontal,
         iconColor: "bg-[#FFEAA7]",
         valueColor: "text-[#FFEAA7]",
+        isCurrency: false,
     },
 ];

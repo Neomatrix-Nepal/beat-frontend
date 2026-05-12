@@ -9,12 +9,16 @@ import {
   getStatGridData,
   getGenreSalesBreakdown,
   getEarningBreakdown,
+  getTopSellingBeats,
+  getRecentOrders,
 } from "./action";
 import BeatDetailsSection from "@/src/components/beatDetailsSection";
 import { GenreSalesChart } from "@/src/components/genre-sales-chart";
+import { TopSellingBeats } from "@/src/components/top-selling-beats";
+import { RecentOrdersList } from "@/src/components/recent-orders-list";
 import type { EarningBreakdownData } from "@/src/components/earning-breakdown-report";
 import type { GenreSalesItem } from "@/src/components/genre-sales-chart";
-import type { BarGraphData, BeatDetailsData, StatsGridData } from "@/src/types/stats";
+import type { BarGraphData, BeatDetailsData, StatsGridData, TopSellingBeat } from "@/src/types/stats";
 
 const emptyStatsData: StatsGridData = {
   totalBeatsUploaded: { count: 0, subCount: {} },
@@ -49,16 +53,27 @@ export default async function Dashboard() {
   let beatDetails: BeatDetailsData = emptyBeatDetailsData;
   let genreSalesData: GenreSalesItem[] = [];
   let earningBreakdown: EarningBreakdownData = emptyEarningBreakdownData;
+  let topSellingBeats: TopSellingBeat[] = [];
+  let recentOrders: any[] = [];
 
   try {
-    [gridData, barGraphData, beatDetails, genreSalesData, earningBreakdown] =
-      await Promise.all([
+    const results = await Promise.all([
         getStatGridData(token),
         getBarGraphData(token),
         getBeatDetails(token),
         getGenreSalesBreakdown(token),
         getEarningBreakdown(token),
+        getTopSellingBeats(token),
+        // getRecentOrders(token),
       ]);
+    
+    gridData = results[0];
+    barGraphData = results[1];
+    beatDetails = results[2];
+    genreSalesData = results[3];
+    earningBreakdown = results[4];
+    topSellingBeats = results[5];
+    // recentOrders = results[6]?.data || [];
   } catch (error) {
     console.error("Failed to fetch dashboard info: ", error);
   }
@@ -75,8 +90,14 @@ export default async function Dashboard() {
           </h2>
 
           {/* <EarningBreakdownReport data={earningBreakdown} /> */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <GenreSalesChart data={genreSalesData} />
+            <TopSellingBeats data={topSellingBeats} />
+          </div>
 
-          <GenreSalesChart data={genreSalesData} />
+          {/* <div className="mt-6">
+            <RecentOrdersList data={recentOrders} />
+          </div> */}
         </section>
 
         <ChartsSection

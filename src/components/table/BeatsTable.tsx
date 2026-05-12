@@ -1,5 +1,5 @@
 "use client";
-import { formatDateTime } from "@/src/lib/utils";
+import { formatDate, formatDateTime } from "@/src/lib/utils";
 import { BeatsTableProps } from "@/src/types";
 import { Edit, Info, Pencil, Play, Trash } from "lucide-react";
 import React, { useState } from "react";
@@ -25,6 +25,8 @@ export const BeatsTable: React.FC<BeatsTableProps & { onViewDetail?: (id: number
   const [deletePopUp, setDeletePopUp] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedBeatId, setSelectedBeatId] = useState<string | null>();
+
+  console.log(beats)
 
   const deleteBeat = async (id: string) => {
     setIsLoading(true);
@@ -59,8 +61,8 @@ export const BeatsTable: React.FC<BeatsTableProps & { onViewDetail?: (id: number
               <th className="text-left p-4 text-slate-300 font-semibold">
                 Price
               </th>
-              <th className="text-center p-4 text-slate-300 font-semibold">
-                Producer Id
+              <th className="text-left p-4 text-slate-300 font-semibold">
+                Producer
               </th>
               <th className="text-left p-4 text-slate-300 font-semibold">
                 Upload Date
@@ -98,9 +100,18 @@ export const BeatsTable: React.FC<BeatsTableProps & { onViewDetail?: (id: number
                   <td className="p-4 text-white font-semibold">
                     ${beat.price}
                   </td>
-                  <td className="p-4 text-slate-300 text-center">{beat.user_id}</td>
+                  <td className="p-4 text-slate-300">
+                    <div className="flex flex-col">
+                      <span className="font-bold text-white text-xs truncate max-w-[150px]">
+                        {beat.user?.fullname || "Unknown"}
+                      </span>
+                      <span className="text-[10px] text-slate-400 truncate max-w-[150px]">
+                        {beat.user?.email || "N/A"}
+                      </span>
+                    </div>
+                  </td>
                   <td className="p-4 text-slate-400">
-                    {formatDateTime(beat.updated_at)}
+                    {formatDate(beat.updated_at)}
                   </td>
                   <td className="p-4">
                     <div className="flex items-center gap-2">
@@ -158,7 +169,7 @@ export const BeatsTable: React.FC<BeatsTableProps & { onViewDetail?: (id: number
                 <div className="flex items-center gap-3">
                   <div>
                     <h3 className="text-white font-medium break-all">{beat?.name}</h3>
-                    <p className="text-slate-400 text-sm">{"Lil Rock Look"}</p>
+                    <p className="text-slate-400 text-[10px] uppercase tracking-wider">{beat.user?.fullname || "Producer"}</p>
                   </div>
                 </div>
                 <span className="text-white font-semibold">${beat.price}</span>
