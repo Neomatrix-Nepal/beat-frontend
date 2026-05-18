@@ -9,6 +9,7 @@ export interface StatCardProps {
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   iconColor: string;
   valueColor: string;
+  isCurrency?: boolean;
 }
 
 export type StatCardData = {
@@ -19,6 +20,7 @@ export type StatCardData = {
   icon: ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>
   iconColor: string;
   valueColor: string;
+  isCurrency?: boolean;
 };
 
 type SubCount = {
@@ -82,4 +84,12 @@ export interface BeatDetailsData {
   "premium": number | { count: number | string };
   "mixing-pro": number | { count: number | string };
   "custom-beat": number | { count: number | string };
+}
+
+export interface TopSellingBeat {
+  productId: number;
+  productName: string;
+  totalSold: number;
+  totalRevenue: number;
+  lastSoldAt: string;
 }

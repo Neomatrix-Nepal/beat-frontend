@@ -10,6 +10,7 @@ export function StatCard({
   icon: Icon,
   iconColor,
   valueColor,
+  isCurrency,
 }: StatCardProps) {
   const [hoverPos, setHoverPos] = useState<{ x: number; y: number } | null>(
     null
@@ -70,7 +71,7 @@ export function StatCard({
             <div>
               <p className="text-gray-400 text-sm font-michroma">{title}</p>
               <p className={`text-3xl font-bold font-michroma ${valueColor}`}>
-                {typeof value === 'number' ? value.toFixed(2) : Number(value).toFixed(2)}
+                {isCurrency ? Number(value).toFixed(2) : Number(value)}
               </p>
             </div>
           </div>

@@ -1,7 +1,7 @@
 "use client";
-import { formatDateTime } from "@/src/lib/utils";
+import { formatDate, formatDateTime } from "@/src/lib/utils";
 import { BeatsTableProps } from "@/src/types";
-import { Edit, Pencil, Play, Trash } from "lucide-react";
+import { Edit, Info, Pencil, Play, Trash } from "lucide-react";
 import React, { useState } from "react";
 import LoadingEffect from "../loadingEffect";
 import ConfirmPopUp from "../ui/confirmPopUp";
@@ -16,14 +16,17 @@ import CustomAudioPlayer from "../HLSAudioPlayer";
     "rock": "bg-red-500/20 text-red-400 border-red-500/30",
   };
 
-export const BeatsTable: React.FC<BeatsTableProps> = ({
+export const BeatsTable: React.FC<BeatsTableProps & { onViewDetail?: (id: number) => void }> = ({
   beats,
   onEditBeat,
   onDeleteBeat,
+  onViewDetail,
 }) => {
   const [deletePopUp, setDeletePopUp] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedBeatId, setSelectedBeatId] = useState<string | null>();
+
+  console.log(beats)
 
   const deleteBeat = async (id: string) => {
     setIsLoading(true);
@@ -58,8 +61,8 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
               <th className="text-left p-4 text-slate-300 font-semibold">
                 Price
               </th>
-              <th className="text-center p-4 text-slate-300 font-semibold">
-                Producer Id
+              <th className="text-left p-4 text-slate-300 font-semibold">
+                Producer
               </th>
               <th className="text-left p-4 text-slate-300 font-semibold">
                 Upload Date
@@ -97,9 +100,18 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
                   <td className="p-4 text-white font-semibold">
                     ${beat.price}
                   </td>
-                  <td className="p-4 text-slate-300 text-center">{beat.user_id}</td>
+                  <td className="p-4 text-slate-300">
+                    <div className="flex flex-col">
+                      <span className="font-bold text-white text-xs truncate max-w-[150px]">
+                        {beat.user?.fullname || "Unknown"}
+                      </span>
+                      <span className="text-[10px] text-slate-400 truncate max-w-[150px]">
+                        {beat.user?.email || "N/A"}
+                      </span>
+                    </div>
+                  </td>
                   <td className="p-4 text-slate-400">
-                    {formatDateTime(beat.updated_at)}
+                    {formatDate(beat.updated_at)}
                   </td>
                   <td className="p-4">
                     <div className="flex items-center gap-2">
@@ -111,6 +123,15 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
                           }
                         />
                       </div>
+                      <button
+                        onClick={() => {
+                          if (onViewDetail) onViewDetail(beat.id);
+                        }}
+                        className="cursor-pointer p-2 text-white bg-black hover:bg-blue-600 rounded-lg transition-colors duration-300"
+                        title="View Details"
+                      >
+                        <Info size={16} />
+                      </button>
                       <button
                         onClick={() => {
                           onEditBeat(beat);
@@ -148,7 +169,7 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
                 <div className="flex items-center gap-3">
                   <div>
                     <h3 className="text-white font-medium break-all">{beat?.name}</h3>
-                    <p className="text-slate-400 text-sm">{"Lil Rock Look"}</p>
+                    <p className="text-slate-400 text-[10px] uppercase tracking-wider">{beat.user?.fullname || "Producer"}</p>
                   </div>
                 </div>
                 <span className="text-white font-semibold">${beat.price}</span>
@@ -180,6 +201,16 @@ export const BeatsTable: React.FC<BeatsTableProps> = ({
                   </div>
 
                   <div>
+                    <button
+                      onClick={() => {
+                        if (onViewDetail) onViewDetail(beat.id);
+                      }}
+                      className="p-2 text-blue-400 hover:bg-blue-500/20 rounded-lg transition-colors"
+                      title="View Details"
+                    >
+                      <Info size={16} />
+                    </button>
+
                     <button
                       onClick={() => {
                         onEditBeat(beat);

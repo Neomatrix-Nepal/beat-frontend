@@ -5,6 +5,7 @@ import { useState } from "react";
 
 import BeatFormModal from "@/src/components/form/BeatForm";
 import { BeatsTable } from "@/src/components/table/BeatsTable";
+import BeatDetailModal from "@/src/components/BeatDetailModal";
 import { Product, Genre } from "@/src/types";
 import toast from "react-hot-toast";
 import { deleteProduct, getBeats } from "./action";
@@ -22,6 +23,9 @@ export default function _Client({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedBeats, setSelectedBeats] = useState<Product | null>(null);
+
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [selectedBeatId, setSelectedBeatId] = useState<number | null>(null);
 
   const [beats, setBeats] = useState<Product[]>(beatData.data || []);
   const [isLoading, setIsLoading] = useState(false);
@@ -48,6 +52,11 @@ export default function _Client({
   const handleEditBeat = (beat: Product) => {
     setSelectedBeats(beat);
     setIsOpen(true);
+  };
+
+  const handleViewDetail = (id: number) => {
+    setSelectedBeatId(id);
+    setIsDetailModalOpen(true);
   };
 
   const handleDeleteBeat = async (id: string) => {
@@ -93,6 +102,7 @@ export default function _Client({
                   beats={beats}
                   onDeleteBeat={handleDeleteBeat}
                   onEditBeat={handleEditBeat}
+                  onViewDetail={handleViewDetail}
                 />
 
                 <div className="mt-8 w-full font-michroma text-white flex justify-between items-center bg-slate-800/50 p-4 rounded-xl border border-slate-700/50">
@@ -117,6 +127,7 @@ export default function _Client({
           </div>
         </div>
       </div>
+      
       <BeatFormModal
         initialData={selectedBeats}
         genres={genres}
@@ -127,6 +138,16 @@ export default function _Client({
           setSelectedBeats(null);
         }}
       />
+
+      <BeatDetailModal
+        beatId={selectedBeatId}
+        isOpen={isDetailModalOpen}
+        onClose={() => {
+          setIsDetailModalOpen(false);
+          setSelectedBeatId(null);
+        }}
+      />
     </>
   );
 }
+

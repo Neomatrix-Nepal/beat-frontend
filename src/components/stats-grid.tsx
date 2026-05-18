@@ -15,6 +15,7 @@ function mapStatsResponseToData(stats: StatsGridData): StatCardData[] {
       icon: cfg.icon,
       iconColor: cfg.iconColor,
       valueColor: cfg.valueColor,
+      isCurrency: cfg.isCurrency,
     };
   });
 }
@@ -34,6 +35,7 @@ export function StatsGrid({ data }: StatsGridProps) {
           icon={stat.icon}
           iconColor={stat.iconColor}
           valueColor={stat.valueColor}
+          isCurrency={stat.isCurrency}
         />
       ))}
     </div>
