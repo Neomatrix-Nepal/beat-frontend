@@ -22,6 +22,11 @@ export interface Product {
   digital_assets: DigitalAsset[];
   category: Category;
   subCategory: SubCategory;
+  mood: string | null;
+  is_special: boolean;
+  is_trending: boolean;
+  show_on_homepage: boolean;
+  user:any
 }
 
 export interface BeatImage {

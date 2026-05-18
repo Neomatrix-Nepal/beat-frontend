@@ -25,6 +25,8 @@ export type FormData = {
   cover: File | null;
   audio: File | null;
   is_special: boolean;
+  is_trending: boolean;
+  show_on_homepage: boolean;
 };
 
 type BeatFormModalProps = {
@@ -66,6 +68,8 @@ export default function BeatFormModal({
       cover: null,
       audio: null,
       is_special: false,
+      is_trending: false,
+      show_on_homepage: false,
     },
   });
 
@@ -98,9 +102,11 @@ export default function BeatFormModal({
 
     setValue("beatTitle", initialData.name);
     setValue("price", initialData.price);
-    setValue("mood", initialData.name ?? "");
+    setValue("mood", initialData.mood ?? "");
     setValue("description", initialData.description ?? "");
     setValue("is_special", (initialData as any).is_special ?? false);
+    setValue("is_trending", (initialData as any).is_trending ?? false);
+    setValue("show_on_homepage", (initialData as any).show_on_homepage ?? false);
 
     const imageUrl = initialData.images?.[0]?.url;
     if (typeof imageUrl === "string" && imageUrl.length > 0) {
@@ -149,6 +155,9 @@ export default function BeatFormModal({
       formData.append("user_id", session?.user.id);
       formData.append("product_type", "digital-asset");
       formData.append("is_special", String(data.is_special));
+      formData.append("is_trending", String(data.is_trending));
+      formData.append("show_on_homepage", String(data.is_trending)); // Use is_trending for both
+      formData.append("mood", data.mood);
 
       if (data.cover instanceof File) {
         formData.append("images", data.cover);
@@ -368,16 +377,30 @@ export default function BeatFormModal({
             register={register}
           />
 
-          <div className="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              id="is_special"
-              {...register("is_special")}
-              className="w-4 h-4 rounded border-gray-600 bg-[#162133] text-purple-600 focus:ring-purple-500"
-            />
-            <label htmlFor="is_special" className="text-sm font-medium text-gray-300 cursor-pointer">
-              Special Beat (Highlight with glowing effect and fire icon)
-            </label>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="is_special"
+                {...register("is_special")}
+                className="w-4 h-4 rounded border-gray-600 bg-[#162133] text-purple-600 focus:ring-purple-500"
+              />
+              <label htmlFor="is_special" className="text-sm font-medium text-gray-300 cursor-pointer">
+                Special Beat (Glow effect)
+              </label>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="is_trending"
+                {...register("is_trending")}
+                className="w-4 h-4 rounded border-gray-600 bg-[#162133] text-purple-600 focus:ring-purple-500"
+              />
+              <label htmlFor="is_trending" className="text-sm font-medium text-gray-300 cursor-pointer">
+                Trending Track (Will show on home page)
+              </label>
+            </div>
           </div>
 
           <button

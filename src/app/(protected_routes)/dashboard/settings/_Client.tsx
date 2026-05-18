@@ -5,11 +5,14 @@ import { Setting } from "@/src/types/setting.type";
 import { useSession } from "next-auth/react";
 import { ChangeEvent, useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { updateSettings } from "./action";
+import { updateSettings, getGenres, addGenreAction, updateGenreAction, deleteGenreAction, getCategories } from "./action";
 import CustomAudioPlayer from "@/src/components/HLSAudioPlayer";
-import { FiUpload, FiX, FiMusic, FiSettings, FiDollarSign, FiPercent, FiLoader } from "react-icons/fi";
+import { FiUpload, FiX, FiMusic, FiSettings, FiDollarSign, FiPercent, FiLoader, FiPlus, FiTrash2, FiEdit2, FiCheck, FiTrendingUp } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import { baseURL as API_URL } from "@/src/hooks/useApi";
+import { Genre } from "@/src/types/genres.type";
+import { Button } from "@/src/components/ui/button";
+import ConfirmPopUp from "@/src/components/ui/confirmPopUp";
 
 export default function SettingsUI({ settings }: { settings: Setting | null }) {
   const [form, setForm] = useState<Setting | null>(settings);
@@ -22,9 +25,106 @@ export default function SettingsUI({ settings }: { settings: Setting | null }) {
   const { data: session } = useSession();
   const router = useRouter();
 
+  const [genres, setGenres] = useState<Genre[]>([]);
+  const [musicCategoryId, setMusicCategoryId] = useState<number | null>(null);
+  const [newGenreName, setNewGenreName] = useState("");
+  const [isTrendingOnly, setIsTrendingOnly] = useState(false);
+  const [editingGenre, setEditingGenre] = useState<{ id: number; name: string } | null>(null);
+  const [fetchingGenres, setFetchingGenres] = useState(false);
+  const [genreToDelete, setGenreToDelete] = useState<number | null>(null);
+
   useEffect(() => {
     setForm(settings);
-  }, [settings]);
+    if (session?.user?.tokens?.accessToken) {
+      fetchMusicCategory();
+    }
+  }, [settings, session]);
+
+  useEffect(() => {
+    if (session?.user?.tokens?.accessToken) {
+      fetchGenres();
+    }
+  }, [session, isTrendingOnly]);
+
+  const fetchMusicCategory = async () => {
+    try {
+      const categories = await getCategories(session?.user?.tokens?.accessToken as string);
+      const musicCat = categories.find((c: any) => c.name.toLowerCase() === "music");
+      if (musicCat) setMusicCategoryId(musicCat.id);
+    } catch (error) {
+      console.error("Failed to fetch categories", error);
+    }
+  };
+
+  const fetchGenres = async () => {
+    setFetchingGenres(true);
+    try {
+      const data = await getGenres(
+        session?.user?.tokens?.accessToken as string,
+        "music",
+        isTrendingOnly ? true : undefined
+      );
+      setGenres(data || []);
+    } catch (error) {
+      console.error("Failed to fetch genres", error);
+      toast.error("Failed to load genres");
+    } finally {
+      setFetchingGenres(false);
+    }
+  };
+
+  const handleAddGenre = async () => {
+    if (!newGenreName.trim() || !musicCategoryId) return;
+    try {
+      await addGenreAction(session?.user?.tokens?.accessToken as string, {
+        name: newGenreName.trim(),
+        category_id: musicCategoryId,
+        slug: newGenreName.trim().toLowerCase().replace(/\s+/g, "-"),
+      });
+      setNewGenreName("");
+      toast.success("Genre added!");
+      fetchGenres();
+    } catch (error) {
+      toast.error("Failed to add genre");
+    }
+  };
+
+  const handleUpdateGenre = async (
+    id: number,
+    data: { name?: string; is_trending?: boolean; slug?: string }
+  ) => {
+    try {
+      // If name is updated, auto-generate slug if not provided
+      const updateData = { ...data };
+      if (data.name && !data.slug) {
+        updateData.slug = data.name.toLowerCase().replace(/\s+/g, "-");
+      }
+
+      await updateGenreAction(
+        session?.user?.tokens?.accessToken as string,
+        id,
+        updateData
+      );
+      toast.success("Genre updated!");
+      setEditingGenre(null);
+      fetchGenres();
+    } catch (error) {
+      toast.error("Failed to update genre");
+    }
+  };
+
+  const handleDeleteGenre = async () => {
+    if (!genreToDelete) return;
+    try {
+      await deleteGenreAction(session?.user?.tokens?.accessToken as string, genreToDelete);
+      toast.success("Genre deleted!");
+      fetchGenres();
+    } catch (error) {
+      toast.error("Failed to delete genre");
+    } finally {
+      setGenreToDelete(null);
+    }
+  };
 
   useEffect(() => {
     if (beforeFile) {
@@ -271,9 +371,9 @@ export default function SettingsUI({ settings }: { settings: Setting | null }) {
                         <div className="flex items-center gap-3 text-purple-400">
                           <FiMusic className="text-xl" />
                           <span className="text-sm font-medium truncate max-w-[150px]">{beforeFile.name}</span>
-                          <button onClick={(e) => { e.preventDefault(); setBeforeFile(null); }} className="p-1 hover:bg-white/10 rounded-full">
+                          <Button variant="ghost" size="icon" onClick={(e) => { e.preventDefault(); setBeforeFile(null); }} className="h-6 w-6 rounded-full hover:bg-white/10">
                             <FiX />
-                          </button>
+                          </Button>
                         </div>
                       ) : (
                         <div className="flex flex-col items-center gap-2 text-gray-500 group-hover:text-purple-400 transition-colors text-center">
@@ -321,9 +421,9 @@ export default function SettingsUI({ settings }: { settings: Setting | null }) {
                         <div className="flex items-center gap-3 text-pink-400">
                           <FiMusic className="text-xl" />
                           <span className="text-sm font-medium truncate max-w-[150px]">{afterFile.name}</span>
-                          <button onClick={(e) => { e.preventDefault(); setAfterFile(null); }} className="p-1 hover:bg-white/10 rounded-full">
+                          <Button variant="ghost" size="icon" onClick={(e) => { e.preventDefault(); setAfterFile(null); }} className="h-6 w-6 rounded-full hover:bg-white/10">
                             <FiX />
-                          </button>
+                          </Button>
                         </div>
                       ) : (
                         <div className="flex flex-col items-center gap-2 text-gray-500 group-hover:text-pink-400 transition-colors text-center">
@@ -337,11 +437,137 @@ export default function SettingsUI({ settings }: { settings: Setting | null }) {
               </div>
             </div>
 
+            {/* Genres Management Section */}
+            <div className="pt-8 border-t border-white/10">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                  <FiMusic className="text-blue-400" /> Music Genres
+                </h2>
+                <div className="flex items-center gap-4">
+                  <label className="flex items-center gap-2 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      checked={isTrendingOnly}
+                      onChange={(e) => setIsTrendingOnly(e.target.checked)}
+                      className="hidden"
+                    />
+                    <div className={`w-8 h-4 rounded-full transition-all relative ${isTrendingOnly ? "bg-blue-500" : "bg-gray-700"}`}>
+                      <div className={`absolute top-1 w-2 h-2 rounded-full bg-white transition-all ${isTrendingOnly ? "left-5" : "left-1"}`} />
+                    </div>
+                    <span className="text-[10px] uppercase font-bold text-gray-400 group-hover:text-white transition-colors">Trending Only</span>
+                  </label>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                {/* Add Genre Input */}
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="Add new genre..."
+                    value={newGenreName}
+                    onChange={(e) => setNewGenreName(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleAddGenre()}
+                    className="flex-1 bg-[#121212] border border-[#333333] rounded-md p-3 focus:border-blue-500 outline-none transition-all text-sm tracking-wider font-michroma"
+                  />
+                  <Button
+                    onClick={handleAddGenre}
+                    disabled={!newGenreName.trim() || !musicCategoryId}
+                    className="h-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 px-6 flex items-center gap-2"
+                  >
+                    <FiPlus />
+                    <span className="text-[10px] uppercase font-bold tracking-widest">Add</span>
+                  </Button>
+                </div>
+
+                {/* Genres List */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {fetchingGenres ? (
+                    <div className="col-span-full py-8 flex justify-center">
+                      <FiLoader className="animate-spin text-blue-500 text-xl" />
+                    </div>
+                  ) : genres.length > 0 ? (
+                    genres.map((genre) => (
+                      <div
+                        key={genre.id}
+                        className={`bg-[#121212] border p-3 rounded-lg flex items-center justify-between group transition-all ${
+                          genre.is_trending ? "border-blue-500/30 bg-blue-500/5" : "border-[#333333] hover:border-blue-500/20"
+                        }`}
+                      >
+                        <div className="flex-1 min-w-0">
+                          {editingGenre?.id === genre.id ? (
+                            <div className="flex items-center gap-2">
+                              <input
+                                autoFocus
+                                type="text"
+                                value={editingGenre.name}
+                                onChange={(e) => setEditingGenre({ ...editingGenre, name: e.target.value })}
+                                onKeyDown={(e) => e.key === "Enter" && handleUpdateGenre(genre.id, { name: editingGenre.name })}
+                                className="w-full bg-transparent border-b border-blue-500 outline-none text-xs text-blue-400 font-bold py-1"
+                              />
+                              <Button variant="ghost" size="icon" onClick={() => handleUpdateGenre(genre.id, { name: editingGenre.name })} className="h-6 w-6 text-green-500 hover:bg-green-500/10">
+                                <FiCheck />
+                              </Button>
+                              <Button variant="ghost" size="icon" onClick={() => setEditingGenre(null)} className="h-6 w-6 text-red-500 hover:bg-red-500/10">
+                                <FiX />
+                              </Button>
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-2 truncate">
+                              <span className="text-[11px] font-bold tracking-wider truncate">
+                                {genre.name}
+                              </span>
+                              {genre.is_trending && (
+                                <div className="px-1.5 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/20">
+                                  <FiTrendingUp className="text-blue-500 text-[10px]" title="Trending" />
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleUpdateGenre(genre.id, { is_trending: !genre.is_trending })}
+                            className={`h-8 w-8 transition-colors ${genre.is_trending ? "text-blue-500 bg-blue-500/10 hover:bg-blue-500/20 hover:text-blue-400" : "text-gray-500 hover:bg-gray-500/10 hover:text-gray-300"}`}
+                            title={genre.is_trending ? "Remove from Trending" : "Mark as Trending"}
+                          >
+                            <FiTrendingUp className="text-xs" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setEditingGenre({ id: genre.id, name: genre.name })}
+                            className="h-8 w-8 text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
+                          >
+                            <FiEdit2 className="text-xs" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setGenreToDelete(genre.id)}
+                            className="h-8 w-8 text-gray-400 hover:text-red-500 hover:bg-red-500/10 transition-colors"
+                          >
+                            <FiTrash2 className="text-xs" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="col-span-full py-8 text-center text-gray-500 text-[10px] uppercase tracking-[0.2em] bg-white/5 rounded-xl border border-dashed border-white/10">
+                      No genres found
+                    </div>
+                  )}
+                </div>
+              </div>
+
             <div className="pt-8 flex justify-end gap-4 border-t border-white/10">
-              <button
+              <Button
                 onClick={handleSave}
                 disabled={loading}
-                className={`px-12 py-4 rounded-md font-bold uppercase tracking-widest transition-all ${loading
+                className={`px-12 py-6 rounded-md font-bold uppercase tracking-widest transition-all ${loading
                   ? "bg-gray-600 text-white cursor-not-allowed"
                   : "bg-white text-black hover:bg-gray-200 active:scale-95 shadow-xl"
                   }`}
@@ -352,11 +578,21 @@ export default function SettingsUI({ settings }: { settings: Setting | null }) {
                     <span>Saving...</span>
                   </div>
                 ) : "Save Settings"}
-              </button>
+              </Button>
             </div>
           </div>
         </div>
       </div>
+
+      {genreToDelete && (
+        <ConfirmPopUp
+          title="Delete Genre"
+          message="Are you sure you want to delete this genre? This action cannot be undone."
+          onCancel={() => setGenreToDelete(null)}
+          onConfirm={handleDeleteGenre}
+        />
+      )}
+    </div>
     </div>
   );
 }

@@ -11,6 +11,9 @@ import { formatDateTime, toDateInputValue } from "@/src/lib/utils";
 import toast from "react-hot-toast";
 import { Edit, Trash } from "lucide-react";
 import ConfirmPopUp from "@/src/components/ui/confirmPopUp";
+import { Input } from "@/src/components/ui/input";
+import { Label } from "@/src/components/ui/label";
+import { Button } from "@/src/components/ui/button";
 
 const defaultForm: Coupon = {
   code: "",
@@ -165,10 +168,10 @@ export default function _Client({
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           <div className="flex flex-col">
-            <label htmlFor="code" className="mb-1">
+            <Label htmlFor="code" className="mb-1">
               Coupon Code *
-            </label>
-            <input
+            </Label>
+            <Input
               id="code"
               type="text"
               name="code"
@@ -180,9 +183,9 @@ export default function _Client({
           </div>
 
           <div className="flex flex-col sm:col-span-2 md:col-span-3">
-            <label htmlFor="description" className="mb-1">
+            <Label htmlFor="description" className="mb-1">
               Description
-            </label>
+            </Label>
             <textarea
               id="description"
               name="description"
@@ -195,10 +198,10 @@ export default function _Client({
           </div>
 
           <div className="flex flex-col">
-            <label htmlFor="discountPercentage" className="mb-1">
+            <Label htmlFor="discountPercentage" className="mb-1">
               Discount % *
-            </label>
-            <input
+            </Label>
+            <Input
               id="discountPercentage"
               type="number"
               name="discountPercentage"
@@ -213,10 +216,10 @@ export default function _Client({
           </div>
 
           <div className="flex flex-col">
-            <label htmlFor="validFrom" className="mb-1">
+            <Label htmlFor="validFrom" className="mb-1">
               Valid From *
-            </label>
-            <input
+            </Label>
+            <Input
               id="validFrom"
               type="date"
               name="validFrom"
@@ -227,10 +230,10 @@ export default function _Client({
           </div>
 
           <div className="flex flex-col">
-            <label htmlFor="validUntil" className="mb-1">
+            <Label htmlFor="validUntil" className="mb-1">
               Valid Until *
-            </label>
-            <input
+            </Label>
+            <Input
               id="validUntil"
               type="date"
               name="validUntil"
@@ -242,10 +245,10 @@ export default function _Client({
           </div>
 
           <div className="flex flex-col">
-            <label htmlFor="usageLimit" className="mb-1">
+            <Label htmlFor="usageLimit" className="mb-1">
               Usage Limit (Optional)
-            </label>
-            <input
+            </Label>
+            <Input
               id="usageLimit"
               type="number"
               name="usageLimit"
@@ -259,15 +262,15 @@ export default function _Client({
         </div>
 
         <div className="mt-6 flex gap-3">
-          <button
+          <Button
             onClick={handleSave}
             disabled={loading}
             className="bg-custom px-6 py-2 rounded hover:scale-105 transition-transform disabled:opacity-50"
           >
             {loading ? "Saving..." : editing ? "Update Coupon" : "Add Coupon"}
-          </button>
+          </Button>
           {editing && (
-            <button
+            <Button
               onClick={() => {
                 setForm(defaultForm);
                 setEditing(false);
@@ -276,7 +279,7 @@ export default function _Client({
               className="bg-slate-600 px-6 py-2 rounded hover:bg-slate-500 transition-colors disabled:opacity-50"
             >
               Cancel
-            </button>
+            </Button>
           )}
         </div>
       </div>
@@ -323,7 +326,7 @@ export default function _Client({
                        {coupon.usageLimit ? coupon.usageLimit : "Unlimited"}
                     </td>
                     <td className="px-4 py-2 text-center flex items-center justify-center space-x-2">
-                      <button
+                      <Button
                         disabled={loading}
                         className={`bg-yellow-400 text-black cursor-pointer p-2 rounded-lg hover:bg-slate-600/30 transition-colors
                                 ${loading ? "cursor-not-allowed" : ""}
@@ -331,8 +334,8 @@ export default function _Client({
                         onClick={() => handleEdit(coupon)}
                       >
                         <Edit size={16} />
-                      </button>
-                      <button
+                      </Button>
+                      <Button
                         disabled={loading}
                         className={`cursor-pointer bg-black p-2 rounded-lg text-white hover:bg-slate-600/30 transition-colors
                                 ${loading ? "cursor-not-allowed" : ""}
@@ -340,7 +343,7 @@ export default function _Client({
                         onClick={() => setDeleteId(coupon.id!)}
                       >
                         <Trash size={18} className="text-red-500" />
-                      </button>
+                      </Button>
                     </td>
                   </tr>
                 ))

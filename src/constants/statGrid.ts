@@ -7,6 +7,7 @@ export const statConfig = [
     iconColor: "bg-[#6c5ce7]",
     valueColor: "text-[#6c5ce7]",
     hasSubCount: true,
+    isCurrency: false,
   },
   {
     key: "beatsSoldThisMonth",
@@ -15,6 +16,7 @@ export const statConfig = [
     iconColor: "bg-[#fd79a8]",
     valueColor: "text-[#fd79a8]",
     hasSubCount: true,
+    isCurrency: false,
   },
   {
     key: "totalBeatsEarnings",
@@ -23,6 +25,7 @@ export const statConfig = [
     iconColor: "bg-[#fdcb6e]",
     valueColor: "text-[#fdcb6e]",
     hasSubCount: true,
+    isCurrency: true,
   },
   {
     key: "totalDripsAdded",
@@ -31,6 +34,7 @@ export const statConfig = [
     iconColor: "bg-[#74b9ff]",
     valueColor: "text-[#74b9ff]",
     hasSubCount: false,
+    isCurrency: false,
   },
   {
     key: "dripsSoldThisMonth",
@@ -39,6 +43,7 @@ export const statConfig = [
     iconColor: "bg-[#a29bfe]",
     valueColor: "text-[#a29bfe]",
     hasSubCount: false,
+    isCurrency: false,
   },
   {
     key: "totalDripsEarnings",
@@ -47,5 +52,6 @@ export const statConfig = [
     iconColor: "bg-[#00b894]",
     valueColor: "text-[#00b894]",
     hasSubCount: false,
+    isCurrency: true,
   },
 ];

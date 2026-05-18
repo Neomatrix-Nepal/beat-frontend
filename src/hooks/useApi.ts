@@ -17,6 +17,7 @@ const processQueue = (error: any, token: string | null = null) => {
       resolve(token!);
     }
   });
+
   failedQueue = [];
 };
 
@@ -25,45 +26,60 @@ export const baseURL =
 
 const api = axios.create({
   baseURL,
+
   withCredentials: true,
+
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
-// ✅ Attach access token to every request
-api.interceptors.request.use((config) => {
-  const token = useAuthStore.getState().accessToken;
+api.interceptors.request.use(
+  (config) => {
+    const token = useAuthStore.getState().accessToken;
 
-  if (token && config.headers) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
+    if (token && config.headers) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
 
-  return config;
-});
+    return config;
+  },
+  (error) => Promise.reject(error),
+);
 
-// ✅ Handle response errors (refresh logic)
+//
+// RESPONSE INTERCEPTOR
+//
 api.interceptors.response.use(
   (response) => response,
+
   async (error) => {
     const originalRequest = error.config;
 
-    // 🔴 Avoid retrying auth endpoints (VERY IMPORTANT)
-    const isAuthRoute = originalRequest?.url?.includes("/auth/");
+    // Prevent crashes
+    if (!originalRequest) {
+      return Promise.reject(error);
+    }
+
+    const isAuthRoute =
+      originalRequest.url?.includes("/auth/login") ||
+      originalRequest.url?.includes("/auth/refresh") ||
+      originalRequest.url?.includes("/auth/logout");
 
     if (
       error.response?.status === 401 &&
-      !originalRequest?._retry &&
+      !originalRequest._retry &&
       !isAuthRoute
     ) {
       originalRequest._retry = true;
 
-      // ✅ If refresh already in progress → queue requests
       if (isRefreshing) {
         return new Promise<string>((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
           .then((token) => {
-            if (originalRequest.headers) {
-              originalRequest.headers.Authorization = `Bearer ${token}`;
-            }
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+
             return api(originalRequest);
           })
           .catch((err) => Promise.reject(err));
@@ -72,42 +88,51 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        // ✅ Call refresh endpoint (cookie-based)
         const response = await axios.get(
-          `${baseURL}/auth/refresh-tokens`,
+          `${baseURL}/admin/auth/refresh-tokens`,
           {
             withCredentials: true,
+
+            headers: {
+              "x-admin-panel": "true",
+            },
+
             timeout: 10000,
-          }
+          },
         );
 
-        const { accessToken } = response.data.tokens;
+        const accessToken = response.data?.tokens?.accessToken;
 
-        // ✅ Save new token
+        if (!accessToken) {
+          throw new Error("No access token returned");
+        }
+
         useAuthStore.getState().setAccessToken(accessToken);
 
-        // ✅ Resolve all queued requests
         processQueue(null, accessToken);
 
-        // ✅ Retry original request
-        if (originalRequest.headers) {
-          originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-        }
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
 
         return api(originalRequest);
       } catch (refreshError) {
-        // ❌ Refresh failed → clear auth
         processQueue(refreshError, null);
+
         useAuthStore.getState().clearAuth();
 
-        // ✅ Prevent infinite redirect loop
         if (typeof window !== "undefined" && !isRedirecting) {
           isRedirecting = true;
 
-          // Optional: small delay avoids race conditions
-          setTimeout(() => {
-            window.location.href = "/login";
-          }, 100);
+          try {
+            await axios.post(
+              `${baseURL}/admin/auth/logout`,
+              {},
+              {
+                withCredentials: true,
+              },
+            );
+          } catch {}
+
+          window.location.href = "/login";
         }
 
         return Promise.reject(refreshError);
@@ -117,7 +142,7 @@ api.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;
