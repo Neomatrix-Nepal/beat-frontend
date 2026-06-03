@@ -119,7 +119,7 @@ export const BeatsTable: React.FC<BeatsTableProps & { onViewDetail?: (id: number
                         <CustomAudioPlayer
                           audioSrc={
                             process.env.NEXT_PUBLIC_API_URL +
-                            beat.digital_assets[0].metadata.playlistUrl
+                            (beat.digital_assets?.[0]?.metadata?.playlistUrl || "")
                           }
                         />
                       </div>
@@ -195,7 +195,7 @@ export const BeatsTable: React.FC<BeatsTableProps & { onViewDetail?: (id: number
                     <CustomAudioPlayer
                       audioSrc={
                         process.env.NEXT_PUBLIC_API_URL +
-                        beat.digital_assets[0].metadata.playlistUrl
+                        (beat.digital_assets?.[0]?.metadata?.playlistUrl || "")
                       }
                     />
                   </div>

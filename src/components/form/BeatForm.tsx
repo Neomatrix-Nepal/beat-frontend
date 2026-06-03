@@ -79,7 +79,6 @@ export default function BeatFormModal({
   const coverFile = watch("cover");
   const audioFile = watch("audio");
 
-
   useEffect(() => {
     if (!initialData) {
       reset();
@@ -125,6 +124,9 @@ export default function BeatFormModal({
   const removeAudio = () => {
     setValue("audio", null);
     setPreviewAudio(null);
+    if (audioInputRef.current) {
+      audioInputRef.current.value = "";
+    }
   };
 
   const handleClose = () => {
@@ -134,13 +136,26 @@ export default function BeatFormModal({
     setSelectedGenreId(null);
     onClose();
   };
+
   const onSubmit = async (data: FormData) => {
     if (!session) {
-      return toast.error("session timeout please login again");
+      return toast.error("Session timeout, please login again");
     }
 
     if (!selectedGenreId) {
       return toast.error("Please select a genre");
+    }
+
+    // ✅ Audio validation
+    const hasAudio = data.audio instanceof File || !!previewAudio;
+    if (!hasAudio) {
+      return toast.error("Please upload a beat audio file");
+    }
+
+    // ✅ Cover image validation
+    const hasCover = data.cover instanceof File || !!previewCover;
+    if (!hasCover) {
+      return toast.error("Please upload a cover image");
     }
 
     setLoading(true);
@@ -156,7 +171,7 @@ export default function BeatFormModal({
       formData.append("product_type", "digital-asset");
       formData.append("is_special", String(data.is_special));
       formData.append("is_trending", String(data.is_trending));
-      formData.append("show_on_homepage", String(data.is_trending)); // Use is_trending for both
+      formData.append("show_on_homepage", String(data.is_trending));
       formData.append("mood", data.mood);
 
       if (data.cover instanceof File) {
@@ -205,6 +220,9 @@ export default function BeatFormModal({
 
   if (!isOpen) return null;
 
+  const hasCover = coverFile instanceof File || !!previewCover;
+  const hasAudio = audioFile instanceof File || !!previewAudio;
+
   return (
     <div className="fixed inset-0 mx-3 z-50 flex items-center justify-center bg-black/70">
       <div className="bg-[#1E293B] w-full max-w-4xl rounded-xl p-6 relative text-white overflow-y-auto max-h-[90vh] border border-gray-700">
@@ -227,28 +245,39 @@ export default function BeatFormModal({
               Upload Cover & Beat Audio
             </p>
             <div className="flex space-x-4 items-center">
-              <div
-                onClick={openCoverDialog}
-                className="w-24 h-24 bg-[#162133] rounded-lg cursor-pointer overflow-hidden relative flex items-center justify-center border border-gray-600"
-              >
-                {coverFile ? (
-                  <Image
-                    src={URL.createObjectURL(coverFile)}
-                    alt="Cover"
-                    fill
-                    className="object-cover"
-                  />
-                ) : previewCover ? (
-                  <Image
-                    src={previewCover}
-                    alt="Preview"
-                    fill
-                    className="object-cover"
-                  />
-                ) : (
-                  <MdInsertPhoto className="w-10 h-10 text-gray-500" />
-                )}
+              {/* Cover image upload */}
+              <div className="flex flex-col items-center gap-1">
+                <div
+                  onClick={openCoverDialog}
+                  className={`w-24 h-24 bg-[#162133] rounded-lg cursor-pointer overflow-hidden relative flex items-center justify-center border-2 transition-colors ${
+                    hasCover
+                      ? "border-gray-600"
+                      : "border-red-500 border-dashed"
+                  }`}
+                >
+                  {coverFile ? (
+                    <Image
+                      src={URL.createObjectURL(coverFile)}
+                      alt="Cover"
+                      fill
+                      className="object-cover"
+                    />
+                  ) : previewCover ? (
+                    <Image
+                      src={previewCover}
+                      alt="Preview"
+                      fill
+                      className="object-cover"
+                    />
+                  ) : (
+                    <MdInsertPhoto className="w-10 h-10 text-gray-500" />
+                  )}
+                </div>
+                {/* {!hasCover && (
+                  <p className="text-xs text-red-400">* Required</p>
+                )} */}
               </div>
+
               <input
                 type="file"
                 accept="image/*"
@@ -260,6 +289,8 @@ export default function BeatFormModal({
                   setValue("cover", file, { shouldValidate: true });
                 }}
               />
+
+              {/* Audio upload */}
               <div className="flex-1 space-y-2">
                 <button
                   type="button"
@@ -267,7 +298,11 @@ export default function BeatFormModal({
                     setPreviewAudio(null);
                     openAudioDialog();
                   }}
-                  className="w-full bg-custom text-white py-2 px-4 rounded-lg flex items-center justify-center"
+                  className={`w-full py-2 px-4 rounded-lg flex items-center justify-center transition-colors ${
+                    hasAudio
+                      ? "bg-custom text-white"
+                      : "bg-custom text-white ring-2 ring-red-500"
+                  }`}
                 >
                   <FiUpload className="mr-2" /> Upload Beat Audio
                 </button>
@@ -278,12 +313,19 @@ export default function BeatFormModal({
                 >
                   <FiTrash2 className="mr-2" /> Delete Beat Audio
                 </button>
-                {(audioFile || previewAudio) && (
-                  <p className="text-gray-300 truncate max-w-50">
-                    Selected audio: {audioFile?.name ?? "Preview available"}
+
+                {/* Audio status */}
+                {audioFile || previewAudio ? (
+                  <p className="text-green-400 text-xs truncate max-w-50">
+                    ✓ {audioFile?.name ?? "Existing audio loaded"}
+                  </p>
+                ) : (
+                  <p className="text-red-400 text-xs">
+                    * Beat audio is required
                   </p>
                 )}
               </div>
+
               <input
                 type="file"
                 accept="audio/*"
@@ -297,6 +339,7 @@ export default function BeatFormModal({
                 }}
               />
             </div>
+
             {audioFile ? (
               <audio
                 controls
@@ -385,7 +428,10 @@ export default function BeatFormModal({
                 {...register("is_special")}
                 className="w-4 h-4 rounded border-gray-600 bg-[#162133] text-purple-600 focus:ring-purple-500"
               />
-              <label htmlFor="is_special" className="text-sm font-medium text-gray-300 cursor-pointer">
+              <label
+                htmlFor="is_special"
+                className="text-sm font-medium text-gray-300 cursor-pointer"
+              >
                 Special Beat (Glow effect)
               </label>
             </div>
@@ -397,7 +443,10 @@ export default function BeatFormModal({
                 {...register("is_trending")}
                 className="w-4 h-4 rounded border-gray-600 bg-[#162133] text-purple-600 focus:ring-purple-500"
               />
-              <label htmlFor="is_trending" className="text-sm font-medium text-gray-300 cursor-pointer">
+              <label
+                htmlFor="is_trending"
+                className="text-sm font-medium text-gray-300 cursor-pointer"
+              >
                 Trending Track (Will show on home page)
               </label>
             </div>
@@ -406,8 +455,9 @@ export default function BeatFormModal({
           <button
             type="submit"
             disabled={loading}
-            className={`w-full bg-custom text-white py-3 rounded-lg flex items-center justify-center ${loading ? "opacity-50 cursor-not-allowed" : ""
-              }`}
+            className={`w-full bg-custom text-white py-3 rounded-lg flex items-center justify-center ${
+              loading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
           >
             {loading ? (
               <svg
@@ -422,7 +472,11 @@ export default function BeatFormModal({
             ) : (
               <FiSave className="mr-2" />
             )}
-            {loading ? "Uploading your songs..." : initialData ? "Update Beat" : "Save Beat"}
+            {loading
+              ? "Uploading your songs..."
+              : initialData
+              ? "Update Beat"
+              : "Save Beat"}
           </button>
         </form>
       </div>
