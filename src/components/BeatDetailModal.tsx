@@ -31,6 +31,7 @@ import {
   ResponsiveContainer,
   Cell,
 } from "recharts";
+import AudioPlayer from "./HLSAudioPlayer";
 
 const baseURL = process.env.NEXT_PUBLIC_API_URL || "";
 
@@ -95,6 +96,8 @@ export default function BeatDetailModal({ beatId, isOpen, onClose }: BeatDetailM
     }
     return null;
   };
+
+  const playlistUrl = product?.digital_assets?.[0]?.metadata?.playlistUrl;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4  ">
@@ -173,6 +176,14 @@ export default function BeatDetailModal({ beatId, isOpen, onClose }: BeatDetailM
                     <Info className="w-4 h-4" />
                     Beat Information
                   </h3>
+                  
+                  {/* Audio Player Integration */}
+                  {playlistUrl && (
+                    <div className="bg-black/20 p-2 rounded-lg border border-white/5 mb-4">
+                      <AudioPlayer audioSrc={`${baseURL}${playlistUrl}`} />
+                    </div>
+                  )}
+
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-3">
                       <OrderInfoRow icon={Music} label="Name" value={product.name} />
@@ -373,4 +384,3 @@ function OrderInfoRow({
     </div>
   );
 }
-

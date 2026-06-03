@@ -54,7 +54,7 @@ export type AddBlogFormType = {
   title: string;
   date: string;
   content: string;
-  thumbnailUrl: File | null;
+  thumbnailUrl: File | string | null;
 };
 
 export type BlogFormErrorsType = {

@@ -59,3 +59,17 @@ export const getEarningBreakdown = async (token: string) => {
   });
   return response.data;
 };
+
+export const getTopSellingBeats = async (token: string) => {
+  const response = await api.get("/dashboard/top-selling-beats", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+};
+
+export const getRecentOrders = async (token: string) => {
+  const response = await api.get("/payment/recent-orders", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+};

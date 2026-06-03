@@ -70,8 +70,8 @@ const ReusablePagination = ({
               onClick={() => currentPage > 1 && !isLoading && onPageChange(currentPage - 1)}
               className={
                 currentPage === 1 || isLoading
-                  ? "opacity-50 pointer-events-none"
-                  : "cursor-pointer hover:bg-slate-800 hover:text-gray-200 border-slate-700"
+                  ? "opacity-50 pointer-events-none text-slate-500"
+                  : "cursor-pointer text-slate-300 hover:bg-purple-600/20 hover:text-white border-slate-700 transition-all active:scale-95"
               }
             />
           </PaginationItem>
@@ -91,10 +91,10 @@ const ReusablePagination = ({
                 <PaginationLink
                   onClick={() => !isLoading && onPageChange(pageNum)}
                   isActive={currentPage === pageNum}
-                  className={`cursor-pointer transition-colors ${
+                  className={`cursor-pointer transition-all active:scale-95 ${
                     currentPage === pageNum
-                      ? "bg-purple-700 text-white hover:bg-purple-600 border-purple-600"
-                      : "text-slate-300 hover:bg-slate-800 border-slate-700"
+                      ? "bg-purple-700 text-white hover:bg-purple-600 border-purple-600 shadow-lg shadow-purple-500/20"
+                      : "text-slate-400 hover:bg-slate-800 hover:text-white border-slate-700"
                   } ${isLoading ? "pointer-events-none opacity-50" : ""}`}
                 >
                   {pageNum}
@@ -108,8 +108,8 @@ const ReusablePagination = ({
               onClick={() => currentPage < totalPages && !isLoading && onPageChange(currentPage + 1)}
               className={
                 currentPage === totalPages || isLoading
-                  ? "opacity-50 pointer-events-none"
-                  : "cursor-pointer hover:bg-slate-800 hover:text-gray-200 border-slate-700"
+                  ? "opacity-50 pointer-events-none text-slate-500"
+                  : "cursor-pointer text-slate-300 hover:bg-purple-600/20 hover:text-white border-slate-700 transition-all active:scale-95"
               }
             />
           </PaginationItem>
