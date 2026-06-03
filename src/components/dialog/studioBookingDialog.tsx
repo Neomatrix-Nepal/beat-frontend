@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import type { Booking } from "./StudioBookings";
 import {
   X,
   Printer,
@@ -19,7 +18,7 @@ import {
 } from "lucide-react";
 
 interface StudioBookingReceiptModalProps {
-  booking: Booking;
+  booking: any;
   onClose: () => void;
 }
 

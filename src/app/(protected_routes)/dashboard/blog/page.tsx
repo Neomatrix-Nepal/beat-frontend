@@ -65,7 +65,7 @@ export default function NewsManagement() {
           date: updatedBlog.date,
           content: updatedBlog.content,
         },
-        imageFile,
+        imageFile instanceof File ? imageFile : undefined,
         session?.user?.tokens?.accessToken as string
       );
       if (response.success) {
