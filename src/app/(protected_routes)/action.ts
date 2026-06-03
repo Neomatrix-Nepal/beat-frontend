@@ -41,9 +41,35 @@ export const getPieChartData = async (token: string) => {
 
 export const getBeatDetails = async (token: string) => {
   const response = await api.get("/dashboard/category-breakdown", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+};
+
+export const getGenreSalesBreakdown = async (token: string) => {
+  const response = await api.get("/dashboard/genre-sales-breakdown", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+};
+
+export const getEarningBreakdown = async (token: string) => {
+  const response = await api.get("/dashboard/earning-breakdown", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+};
+
+export const getTopSellingBeats = async (token: string) => {
+  const response = await api.get("/dashboard/top-selling-beats", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+};
+
+export const getRecentOrders = async (token: string) => {
+  const response = await api.get("/payment/recent-orders", {
+    headers: { Authorization: `Bearer ${token}` },
   });
   return response.data;
 };

@@ -320,7 +320,7 @@ const StandardLicensePDF = ({ data }: { data: AgreementData }) => (
         <Text style={styles.signatureLine}> Signature: <Text style={styles.underline}>{data.signatureInitials || "_____First & Last Initials____"}</Text>  Date: <Text style={styles.underline}>{data.dateSigned}</Text></Text>
       </View>
 
-      <Text style={styles.footer}>LIL Rock Look – Standard Package License Agreement</Text>
+      <Text style={styles.footer}>Standard Package License Agreement</Text>
     </Page>
   </Document>
 );
@@ -514,7 +514,7 @@ const PremiumLicensePDF = ({ data }: { data: AgreementData }) => (
         <Text style={styles.signatureLine}> Signature: <Text style={styles.underline}>{data.signatureInitials || "_____First & Last Initials____"}</Text>  Date: <Text style={styles.underline}>{data.dateSigned}</Text></Text>
       </View>
 
-      <Text style={styles.footer}>LIL Rock Look – Premium Package License Agreement</Text>
+      <Text style={styles.footer}>Premium Package License Agreement</Text>
     </Page>
   </Document>
 );
@@ -712,7 +712,7 @@ const ExclusiveLicensePDF = ({ data }: { data: AgreementData }) => (
         <Text style={styles.signatureLine}> Signature: <Text style={styles.underline}>{data.signatureInitials || "_____First & Last Initials____"}</Text>  Date: <Text style={styles.underline}>{data.dateSigned}</Text></Text>
       </View>
 
-      <Text style={styles.footer}>LIL Rock Look – Exclusive License Agreement</Text>
+      <Text style={styles.footer}>Exclusive License Agreement</Text>
     </Page>
   </Document>
 );

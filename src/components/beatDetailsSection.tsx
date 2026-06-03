@@ -29,6 +29,7 @@ export default function BeatDetailsSection({
         icon: cfg.icon,
         iconColor: cfg.iconColor,
         valueColor: cfg.valueColor,
+        isCurrency: cfg.isCurrency,
       };
     });
   }
@@ -47,6 +48,7 @@ export default function BeatDetailsSection({
             icon={stat.icon}
             iconColor={stat.iconColor}
             valueColor={stat.valueColor}
+            isCurrency={stat.isCurrency}
           />
         ))}
       </div>

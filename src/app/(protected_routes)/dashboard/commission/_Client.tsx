@@ -3,13 +3,6 @@
 import { useState } from "react";
 
 import { CommissionTable } from "@/src/components/table/CommissionTable";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/src/components/ui/pagination";
 import { Commission } from "@/src/types";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
@@ -35,15 +28,6 @@ const CommissionClient = ({
     setCommissions(commissionsData.data);
     setIsLoading(false);
   }, [commissionsData]);
-
-  //   const handleFilter = (status: string) => {
-  //     if (status === "all") {
-  //       setOrders(initialOrders);
-  //     } else {
-  //       setOrders(initialOrders.filter((order) => order.status === status));
-  //     }
-  //     setCurrentPage(1);
-  //   };
 
   const handleChangeStatus = async (id: string) => {
     const { id: commissionId } = await changePayoutStatus(

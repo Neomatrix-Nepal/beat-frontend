@@ -60,3 +60,10 @@ export const uploadMusic = async (formData: FormData, token: string) => {
   });
   return response.data;
 };
+
+export const getBeatDetail = async (id: number, token: string) => {
+  const response = await api.get(`/products/${id}/detail`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+};

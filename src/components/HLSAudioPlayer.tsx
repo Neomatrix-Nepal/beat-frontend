@@ -20,27 +20,32 @@ const CustomAudioPlayer = ({ title, sub, audioSrc }: AudioPlayerProps) => {
     if (!internalAudio) return;
 
     let hls: Hls | null = null;
+    const isHls = audioSrc.toLowerCase().includes(".m3u8");
 
-    if (Hls.isSupported()) {
-      hls = new Hls({
-        debug: process.env.NODE_ENV === "development" ? true : false,
-        autoStartLoad: true,
-      });
-      hls.loadSource(audioSrc);
-      hls.attachMedia(internalAudio);
+    if (isHls) {
+      if (Hls.isSupported()) {
+        hls = new Hls({
+          debug: process.env.NODE_ENV === "development" ? true : false,
+          autoStartLoad: true,
+        });
+        hls.loadSource(audioSrc);
+        hls.attachMedia(internalAudio);
 
-      hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        console.log("HLS manifest parsed");
-        // internalAudio.play(); // Optional autoplay
-      });
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          console.log("HLS manifest parsed");
+        });
 
-      hls.on(Hls.Events.ERROR, (event, data) => {
-        console.error("HLS.js error:", event, data);
-      });
-    } else if (internalAudio.canPlayType("application/vnd.apple.mpegurl")) {
-      internalAudio.src = audioSrc;
+        hls.on(Hls.Events.ERROR, (event, data) => {
+          console.error("HLS.js error:", event, data);
+        });
+      } else if (internalAudio.canPlayType("application/vnd.apple.mpegurl")) {
+        internalAudio.src = audioSrc;
+      } else {
+        console.error("HLS is not supported in this browser.");
+      }
     } else {
-      console.error("HLS is not supported in this browser.");
+      // Raw audio file (.mp3, .wav, etc.)
+      internalAudio.src = audioSrc;
     }
 
     return () => {
@@ -69,6 +74,7 @@ const CustomAudioPlayer = ({ title, sub, audioSrc }: AudioPlayerProps) => {
           showJumpControls={false}
           customAdditionalControls={[]}
           customVolumeControls={[]}
+          crossOrigin="anonymous"
           layout="horizontal-reverse"
           style={{
             background: "transparent",
