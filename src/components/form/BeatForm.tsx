@@ -124,6 +124,9 @@ export default function BeatFormModal({
   const removeAudio = () => {
     setValue("audio", null);
     setPreviewAudio(null);
+    if (audioInputRef.current) {
+      audioInputRef.current.value = "";
+    }
   };
 
   const handleClose = () => {
