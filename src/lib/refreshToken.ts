@@ -21,7 +21,7 @@ export async function refreshAccessToken(token: JWTToken): Promise<JWTToken> {
       ...token,
       accessToken: refreshedTokens.accessToken,
       refreshToken: refreshedTokens.refreshToken,
-      accessTokenExpires: Date.now() + 20 * 1000,
+      accessTokenExpires: Date.now() + 55 * 60 * 1000, // 55 min (backend access token TTL is 1h)
     };
   } catch (error) {
     console.error("RefreshAccessToken error:", error);

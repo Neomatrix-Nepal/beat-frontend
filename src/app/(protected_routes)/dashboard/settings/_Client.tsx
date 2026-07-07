@@ -201,6 +201,7 @@ export default function SettingsUI({ settings }: { settings: Setting | null }) {
       const payload = {
         tax: form.tax?.toString(),
         commission: form.commission?.toString(),
+        minPayoutThreshold: form.minPayoutThreshold?.toString(),
         beforeMixingId: beforeAssetId ? beforeAssetId.toString() : null,
         afterMixingId: afterAssetId ? afterAssetId.toString() : null,
         customBeatsBasePrice: form.customBeatsBasePrice?.toString(),
@@ -272,6 +273,16 @@ export default function SettingsUI({ settings }: { settings: Setting | null }) {
                       type="number"
                       name="tax"
                       value={form?.tax}
+                      onChange={handleChange}
+                      className="w-full bg-[#121212] border border-[#333333] rounded-md p-3 focus:border-blue-500 outline-none transition-all"
+                    />
+                  </div>
+                  <div className="space-y-2 col-span-2">
+                    <label className="text-xs text-gray-500 uppercase">Min Payout Threshold</label>
+                    <input
+                      type="number"
+                      name="minPayoutThreshold"
+                      value={form?.minPayoutThreshold}
                       onChange={handleChange}
                       className="w-full bg-[#121212] border border-[#333333] rounded-md p-3 focus:border-blue-500 outline-none transition-all"
                     />

@@ -8,6 +8,7 @@ export interface Setting {
   studioTwoHourPrice: string;
   tax: string;
   commission: string;
+  minPayoutThreshold: string;
   beforeMixing: DigitalAsset | null;
   beforeMixingId: string | null;
   afterMixing: DigitalAsset | null;
@@ -23,6 +24,7 @@ export interface FormSetting {
   studioTwoHourPrice: string;
   tax: string;
   commission: string;
+  minPayoutThreshold: string;
   beforeMixingId: string | null;
   afterMixingId: string | null;
 }

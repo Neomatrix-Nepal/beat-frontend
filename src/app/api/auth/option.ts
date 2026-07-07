@@ -32,7 +32,7 @@ export const authOptions: NextAuthOptions = {
             accessToken: res.tokens.accessToken,
             refreshToken: res.tokens.refreshToken,
           },
-          accessTokenExpires: Date.now() + 20 * 1000, // 15 minutes
+          accessTokenExpires: Date.now() + 55 * 60 * 1000, // 55 min (backend access token TTL is 1h)
         };
       },
     }),
