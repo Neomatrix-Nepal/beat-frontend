@@ -1,7 +1,7 @@
 "use client";
 import { formatDateTime } from "@/src/lib/utils";
 import { Commission } from "@/src/types";
-import { Check, Eye, Trash } from "lucide-react";
+import { Check, Eye, Loader2, Trash } from "lucide-react";
 import React, { useState } from "react";
 import { IoMdEye } from "react-icons/io";
 import CommissionDetails from "../dialog/commissionDialog";
@@ -13,6 +13,7 @@ interface CommissionTableProps {
   entries: Commission[];
   onDeleteEntry: (id: string) => void;
   handleChangeStatus: (id: string) => void;
+  updatingIds?: Set<string>;
 }
 
 const statusStyles = {
@@ -26,6 +27,7 @@ export const CommissionTable: React.FC<CommissionTableProps> = ({
   entries,
   onDeleteEntry,
   handleChangeStatus,
+  updatingIds = new Set(),
 }) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState<Commission | null>(null);
@@ -110,10 +112,15 @@ export const CommissionTable: React.FC<CommissionTableProps> = ({
                     </button>
                     <button
                       onClick={() => handleChangeStatus(entry.id.toString())}
-                      disabled={entry.status === "paid"}
-                      className="cursor-pointer p-2 bg-foreground hover:bg-purple-700 rounded-lg transition-colors"
+                      disabled={entry.status === "paid" || updatingIds.has(entry.id.toString())}
+                      className="cursor-pointer p-2 bg-foreground hover:bg-purple-700 rounded-lg transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                      title="Mark as Paid"
                     >
-                      <Check size={16} className="text-white" />
+                      {updatingIds.has(entry.id.toString()) ? (
+                        <Loader2 size={16} className="text-white animate-spin" />
+                      ) : (
+                        <Check size={16} className="text-white" />
+                      )}
                     </button>
                     <button
                       onClick={() => {
@@ -174,11 +181,15 @@ export const CommissionTable: React.FC<CommissionTableProps> = ({
                 </button>
                 <button
                   onClick={() => handleChangeStatus(entry.id.toString())}
-                  disabled={entry.status === "paid"}
-                  className="p-2 rounded-lg text-green-400 hover:bg-green-600/20 transition-colors"
-                  title="Mark Sent"
+                  disabled={entry.status === "paid" || updatingIds.has(entry.id.toString())}
+                  className="p-2 rounded-lg text-green-400 hover:bg-green-600/20 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                  title="Mark as Paid"
                 >
-                  <Check size={16} />
+                  {updatingIds.has(entry.id.toString()) ? (
+                    <Loader2 size={16} className="animate-spin" />
+                  ) : (
+                    <Check size={16} />
+                  )}
                 </button>
                 <button
                   onClick={() => {

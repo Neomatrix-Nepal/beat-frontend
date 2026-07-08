@@ -21,6 +21,7 @@ const CommissionClient = ({
     commissionsData.data
   );
   const [isLoading, setIsLoading] = useState(false);
+  const [updatingIds, setUpdatingIds] = useState<Set<string>>(new Set());
   const { data: session } = useSession();
   const router = useRouter();
 
@@ -30,24 +31,32 @@ const CommissionClient = ({
   }, [commissionsData]);
 
   const handleChangeStatus = async (id: string) => {
-    const { id: commissionId } = await changePayoutStatus(
-      id,
-      "paid",
-      session?.user.tokens.accessToken as string
-    );
-    if (!commissionId) return toast.error("Failed to change status.");
-    const updatedOrders = commissions.map((order) => {
-      if (order.id.toString() === id) {
-        return {
-          ...order,
-          status: "paid",
-        };
+    setUpdatingIds((prev) => new Set(prev).add(id));
+    try {
+      const { id: commissionId } = await changePayoutStatus(
+        id,
+        "paid",
+        session?.user.tokens.accessToken as string
+      );
+      if (!commissionId) {
+        toast.error("Failed to change status.");
+        return;
       }
-      return order;
-    });
-
-    setCommissions(updatedOrders);
-    toast.success("Status changed successfully");
+      setCommissions((prev) =>
+        prev.map((order) =>
+          order.id.toString() === id ? { ...order, status: "paid" } : order
+        )
+      );
+      toast.success("Status changed successfully");
+    } catch {
+      toast.error("Failed to change status.");
+    } finally {
+      setUpdatingIds((prev) => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
+    }
   };
 
   const deleteEntry = async (id: string) => {
@@ -79,6 +88,7 @@ const CommissionClient = ({
             entries={commissions}
             onDeleteEntry={deleteEntry}
             handleChangeStatus={handleChangeStatus}
+            updatingIds={updatingIds}
           />
 
           <div className="mt-8 w-full font-michroma text-white flex justify-between items-center bg-slate-800/50 p-4 rounded-xl border border-slate-700/50">

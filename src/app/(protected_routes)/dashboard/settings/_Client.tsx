@@ -209,6 +209,7 @@ export default function SettingsUI({ settings }: { settings: Setting | null }) {
         studioOneHourPrice: form.studioOneHourPrice?.toString(),
         studioTwoHourPrice: form.studioTwoHourPrice?.toString(),
         studioThreeHourPrice: form.studioThreeHourPrice?.toString(),
+        usdToNprRate: form.usdToNprRate?.toString(),
       };
 
       const result = await updateSettings(
@@ -344,6 +345,17 @@ export default function SettingsUI({ settings }: { settings: Setting | null }) {
                       value={form?.studioThreeHourPrice}
                       onChange={handleChange}
                       className="w-full bg-[#121212] border border-[#333333] rounded-md p-3 focus:border-green-500 outline-none transition-all"
+                    />
+                  </div>
+                  <div className="space-y-2 col-span-2">
+                    <label className="text-xs text-gray-500 uppercase">USD → NPR Rate</label>
+                    <input
+                      type="number"
+                      name="usdToNprRate"
+                      value={form?.usdToNprRate}
+                      onChange={handleChange}
+                      className="w-full bg-[#121212] border border-[#333333] rounded-md p-3 focus:border-green-500 outline-none transition-all"
+                      placeholder="e.g. 140"
                     />
                   </div>
                 </div>
@@ -591,7 +603,7 @@ export default function SettingsUI({ settings }: { settings: Setting | null }) {
                 disabled={loading}
                 className={`px-12 py-6 rounded-md font-bold uppercase tracking-widest transition-all ${loading
                   ? "bg-gray-600 text-white cursor-not-allowed"
-                  : "bg-white text-black hover:bg-gray-200 active:scale-95 shadow-xl"
+                  : "bg-white text-black hover:bg-gray-200 hover:text-gray-700 active:scale-95 shadow-xl"
                   }`}
               >
                 {loading ? (

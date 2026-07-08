@@ -7,6 +7,7 @@ export interface Setting {
   studioOneHourPrice: string;
   studioTwoHourPrice: string;
   studioThreeHourPrice: string;
+  usdToNprRate: string;
   tax: string;
   commission: string;
   minPayoutThreshold: string;
@@ -24,6 +25,7 @@ export interface FormSetting {
   studioOneHourPrice: string;
   studioTwoHourPrice: string;
   studioThreeHourPrice: string;
+  usdToNprRate: string;
   tax: string;
   commission: string;
   minPayoutThreshold: string;
