@@ -208,6 +208,7 @@ export default function SettingsUI({ settings }: { settings: Setting | null }) {
         mixingProBasePrice: form.mixingProBasePrice?.toString(),
         studioOneHourPrice: form.studioOneHourPrice?.toString(),
         studioTwoHourPrice: form.studioTwoHourPrice?.toString(),
+        studioThreeHourPrice: form.studioThreeHourPrice?.toString(),
       };
 
       const result = await updateSettings(
@@ -331,6 +332,16 @@ export default function SettingsUI({ settings }: { settings: Setting | null }) {
                       type="number"
                       name="studioTwoHourPrice"
                       value={form?.studioTwoHourPrice}
+                      onChange={handleChange}
+                      className="w-full bg-[#121212] border border-[#333333] rounded-md p-3 focus:border-green-500 outline-none transition-all"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs text-gray-500 uppercase">Studio 3 (hr)</label>
+                    <input
+                      type="number"
+                      name="studioThreeHourPrice"
+                      value={form?.studioThreeHourPrice}
                       onChange={handleChange}
                       className="w-full bg-[#121212] border border-[#333333] rounded-md p-3 focus:border-green-500 outline-none transition-all"
                     />

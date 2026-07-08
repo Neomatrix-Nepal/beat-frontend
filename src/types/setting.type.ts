@@ -6,6 +6,7 @@ export interface Setting {
   mixingProBasePrice: string;
   studioOneHourPrice: string;
   studioTwoHourPrice: string;
+  studioThreeHourPrice: string;
   tax: string;
   commission: string;
   minPayoutThreshold: string;
@@ -22,6 +23,7 @@ export interface FormSetting {
   mixingProBasePrice: string;
   studioOneHourPrice: string;
   studioTwoHourPrice: string;
+  studioThreeHourPrice: string;
   tax: string;
   commission: string;
   minPayoutThreshold: string;
