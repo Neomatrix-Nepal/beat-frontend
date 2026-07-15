@@ -10,6 +10,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { isAllowedAudio } from "../../utils/validateFileType";
 import { FaUpload } from "react-icons/fa";
 import { FiSave, FiTrash2, FiUpload, FiX } from "react-icons/fi";
 import { MdInsertPhoto } from "react-icons/md";
@@ -328,15 +329,21 @@ export default function BeatFormModal({
 
               <input
                 type="file"
-                accept="audio/*"
+                accept=".wav,.mp3,.flac,.ogg,.aiff,.sf2,.xi"
                 ref={audioInputRef}
                 className="hidden"
-                onChange={(e) => {
-                  setPreviewAudio(null);
-                  const file = e.target.files?.[0] || null;
-                  if (file) setPreviewAudio(URL.createObjectURL(file));
-                  setValue("audio", file, { shouldValidate: true });
-                }}
+onChange={(e) => {
+  setPreviewAudio(null);
+  const file = e.target.files?.[0] || null;
+  if (file) {
+    if (!isAllowedAudio(file)) {
+      toast.error('Unsupported audio format');
+      return;
+    }
+    setPreviewAudio(URL.createObjectURL(file));
+  }
+  setValue("audio", file, { shouldValidate: true });
+}}
               />
             </div>
 
